@@ -1,3 +1,11 @@
+# custom
+.vscode/**
+build/**
+out/**
+calculations/**
+docs/**
+!docs/doxyfile
+
 # Prerequisites
 *.d
 
