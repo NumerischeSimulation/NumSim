@@ -10,7 +10,7 @@ The project consists of four parts:
 
 You need
 - gcc
-- libvtk7.1 and
+- libvtk7.1(p) and
 - cmake
 - paraview
 
@@ -32,6 +32,10 @@ Run ```doxygen ./docs/doxyfile``` in the project folder to create the html and l
 
 ``` cd build && cmake .. & make -j && ctest -r ```
 
+## Styleguide
+
+This project follows the [C++ core guidelines](https://github.com/isocpp/CppCoreGuidelines).
+
 ## Authors
 
 * **Author 1** - *tba* - [janiswissinger](https://github.com/janiswissinger)
@@ -39,5 +43,3 @@ Run ```doxygen ./docs/doxyfile``` in the project folder to create the html and l
 * **Author 2** - *tba* - [kimkroener](https://github.com/kimkroener)
 
 * **Author 3** - *tba* - [magnusostertag](https://github.com/magnusostertag)
-
-* **Author 4** - *Provided a template for the repo* - [kaiserls](https://github.com/kaiserls)
