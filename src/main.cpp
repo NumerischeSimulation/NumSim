@@ -1,4 +1,6 @@
+#include "settings.h"
 #include <iostream>
+#include <cstdlib>
 
 int main(int argc, char *argv[])
 {
@@ -9,5 +11,18 @@ int main(int argc, char *argv[])
 
     return EXIT_FAILURE;
   }
+
+  // read in the first argument
+  std::string filename = argv[1];
+
+  // print message
+  std::cout << "Filename: \"" << filename << "\"" << std::endl;
+
+  Settings settings;
+  
+  settings.loadFromFile(filename);
+
+  settings.printSettings();
+
   return EXIT_SUCCESS;
 }
