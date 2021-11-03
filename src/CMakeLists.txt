@@ -1,13 +1,19 @@
+cmake_minimum_required(VERSION 3.8)
+
+# Define the project name.
+project(numsim)
+
 # Specify the name of the executable (${PROJECT_NAME} which is equal to what was set in the project() command).
 # Also specify the source files.
-# Use cmake recursive file search in ${PROJECT_SOURCE_DIR}/src
-file(GLOB_RECURSE SOURCES RELATIVE ${PROJECT_SOURCE_DIR}/src "**.cpp")
-add_executable(${PROJECT_NAME} ${SOURCES})
+add_executable(${PROJECT_NAME}
+   main.cpp
+   output_writer/write_paraview_output.cpp
+   settings.cpp
+)
 
 # Add the project directory to include directories, to be able to include all project header files from anywhere
-target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/src)
+target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR})
 
-######################## EXTERNAL PACKAGES ########################
 # Search for the external package "VTK"
 find_package(VTK)
 
@@ -23,7 +29,7 @@ if (VTK_FOUND)
 endif(VTK_FOUND)
 
 # install numsim executable in build directory
-install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/build)
+install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/../build)
 
 # Add additonial compile options to enable more warnings
 add_compile_options(-Wall -Wextra)
@@ -33,3 +39,4 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 message("CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
+
