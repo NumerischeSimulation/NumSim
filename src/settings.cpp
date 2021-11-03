@@ -79,10 +79,10 @@ void Settings::loadFromFile(std::string filename)
     // mapping of parameter to read value - all the if's
     // ordering according to struct
     if (parameterName == "nCellsX"){
-      nCells[0] = atoi(valueString.c_str()); // int
+      nCells[0] = int(atof(valueString.c_str())); // int
     }
     else if (parameterName == "nCellsY"){
-      nCells[1] = atoi(valueString.c_str());  // int
+      nCells[1] = int(atof(valueString.c_str()));  // int
     } 
     else if (parameterName == "physicalSizeX"){
       physicalSize[0] = atof(valueString.c_str()); // double
@@ -109,6 +109,14 @@ void Settings::loadFromFile(std::string filename)
       g[1] = atof(valueString.c_str()); // double
     }
     else if (parameterName == "useDonorCell"){
+      if (valueString == "true"){
+        useDonorCell = true;
+      } else if (valueString == "false"){
+        useDonorCell = false;
+      } else {
+        std::cout << "The donor cell parameter is not understood: " << parameterName << std::endl;
+        return;
+      }
       useDonorCell = (valueString == "true"); // bool
     }
     else if (parameterName == "alpha"){
