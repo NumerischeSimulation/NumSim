@@ -6,6 +6,7 @@
 
 class StaggeredGrid{
 public:
+
     //! construct staggered grid 
     StaggeredGrid(std::array<int,2> nCells, std::array<double,2> meshWidth);
     //! get the mesh width, i.e. the length of a single cell in x and y direction
