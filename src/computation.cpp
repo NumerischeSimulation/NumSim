@@ -20,7 +20,7 @@ void Computation::initialize(int argc, char *argv[])
     std::array<double, 2> meshWidth_;
     for (int i = 0; i++; i < 2)
     {
-        meshWidth_[i] = = settings_.physicalSize[i] / settings_.nCells[i];
+        meshWidth_[i] =  settings_.physicalSize[i] / settings_.nCells[i];
     }
 
     // initialize
