@@ -1,4 +1,4 @@
-#prada once
+#pragma once
 
 #include <iostream>
 #include <cstdlib>
