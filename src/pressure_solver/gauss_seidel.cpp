@@ -56,7 +56,5 @@ void GaussSeidel::solve()
         setBoundaryValues();
     }
        
-
-    return solve();
 }
 
