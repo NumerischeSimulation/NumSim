@@ -1,0 +1,48 @@
+\hypertarget{classArray2D}{}\doxysection{Array2D Class Reference}
+\label{classArray2D}\index{Array2D@{Array2D}}
+
+
+{\ttfamily \#include $<$array2\+D.\+h$>$}
+
+
+
+Inheritance diagram for Array2D\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=160pt]{classArray2D__inherit__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classArray2D_a16521417dfdf67ec694bfb7747df9000}\label{classArray2D_a16521417dfdf67ec694bfb7747df9000}} 
+\mbox{\hyperlink{classArray2D_a16521417dfdf67ec694bfb7747df9000}{Array2D}} (std\+::array$<$ int, 2 $>$ \mbox{\hyperlink{classArray2D_accf87be860645d6c50d6ba6fa39ec6f9}{size}})
+\begin{DoxyCompactList}\small\item\em constructor \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classArray2D_accf87be860645d6c50d6ba6fa39ec6f9}\label{classArray2D_accf87be860645d6c50d6ba6fa39ec6f9}} 
+std\+::array$<$ int, 2 $>$ \mbox{\hyperlink{classArray2D_accf87be860645d6c50d6ba6fa39ec6f9}{size}} () const
+\begin{DoxyCompactList}\small\item\em get the size \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classArray2D_a9d49e5544f4acf51a57dcbb0ed1bb0f8}\label{classArray2D_a9d49e5544f4acf51a57dcbb0ed1bb0f8}} 
+double \& \mbox{\hyperlink{classArray2D_a9d49e5544f4acf51a57dcbb0ed1bb0f8}{operator()}} (int i, int j)
+\begin{DoxyCompactList}\small\item\em access the value at coordinate (i,j), declared not const, i.\+e. the value can be changed \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classArray2D_af745718ec25b815051de2d0c3c94e0d2}\label{classArray2D_af745718ec25b815051de2d0c3c94e0d2}} 
+double \mbox{\hyperlink{classArray2D_af745718ec25b815051de2d0c3c94e0d2}{operator()}} (int i, int j) const
+\begin{DoxyCompactList}\small\item\em get the value at coordinate (i,j), declared const, i.\+e. it is not possible to change the value \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classArray2D_af1572f75d219caab4b2372a98341b991}\label{classArray2D_af1572f75d219caab4b2372a98341b991}} 
+std\+::vector$<$ double $>$ {\bfseries data\+\_\+}
+\item 
+\mbox{\Hypertarget{classArray2D_a6494778c15c3feb46e6299aa2e0bd3c6}\label{classArray2D_a6494778c15c3feb46e6299aa2e0bd3c6}} 
+const std\+::array$<$ int, 2 $>$ {\bfseries size\+\_\+}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+This class represents a 2D array of double values. Internally they are stored consecutively in memory. The entries can be accessed by two indices i,j. 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/home/work/\+Dokumente/\+Studium/\+Sim\+Tech\+\_\+\+M\+Sc/13. Semester/\+Numerische Simulation/\+Num\+Sim/src/storage/array2\+D.\+h\item 
+/home/work/\+Dokumente/\+Studium/\+Sim\+Tech\+\_\+\+M\+Sc/13. Semester/\+Numerische Simulation/\+Num\+Sim/src/storage/array2\+D.\+cpp\end{DoxyCompactItemize}

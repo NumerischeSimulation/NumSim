@@ -1,0 +1,102 @@
+\hypertarget{classDiscretization}{}\doxysection{Discretization Class Reference}
+\label{classDiscretization}\index{Discretization@{Discretization}}
+
+
+Inheritance diagram for Discretization\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=272pt]{classDiscretization__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for Discretization\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=166pt]{classDiscretization__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classDiscretization_a4fb8cc9823938e7c2dec329b906a462c}\label{classDiscretization_a4fb8cc9823938e7c2dec329b906a462c}} 
+\mbox{\hyperlink{classDiscretization_a4fb8cc9823938e7c2dec329b906a462c}{Discretization}} (std\+::array$<$ int, 2 $>$ \mbox{\hyperlink{classStaggeredGrid_af37816ccb2c46e4a514dedac261897bf}{n\+Cells}}, std\+::array$<$ double, 2 $>$ \mbox{\hyperlink{classStaggeredGrid_a330856d4efe952771daf0753ef84068e}{mesh\+Width}})
+\begin{DoxyCompactList}\small\item\em construct the object with given number of cells in x and y direction \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classDiscretization_acca6bf193e0e91f645d292527299254b}\label{classDiscretization_acca6bf193e0e91f645d292527299254b}} 
+virtual double \mbox{\hyperlink{classDiscretization_acca6bf193e0e91f645d292527299254b}{compute\+Du2\+Dx}} (int i, int j) const =0
+\begin{DoxyCompactList}\small\item\em compute the 1st derivative ∂ u$^\wedge$2 / ∂x \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classDiscretization_a69ba136ab7f8c09d805afca159cab428}\label{classDiscretization_a69ba136ab7f8c09d805afca159cab428}} 
+virtual double \mbox{\hyperlink{classDiscretization_a69ba136ab7f8c09d805afca159cab428}{compute\+Dv2\+Dy}} (int i, int j) const =0
+\begin{DoxyCompactList}\small\item\em compute the 1st derivative ∂ v$^\wedge$2 / ∂x \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classDiscretization_ab1c2aa237e13e7c4c9edd429de656795}\label{classDiscretization_ab1c2aa237e13e7c4c9edd429de656795}} 
+virtual double \mbox{\hyperlink{classDiscretization_ab1c2aa237e13e7c4c9edd429de656795}{compute\+Duv\+Dx}} (int i, int j) const =0
+\begin{DoxyCompactList}\small\item\em compute the 1st derivative ∂ (uv) / ∂x \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classDiscretization_a0bab86aef10a72e01b4f8102a3c91f84}\label{classDiscretization_a0bab86aef10a72e01b4f8102a3c91f84}} 
+virtual double \mbox{\hyperlink{classDiscretization_a0bab86aef10a72e01b4f8102a3c91f84}{compute\+Duv\+Dy}} (int i, int j) const =0
+\begin{DoxyCompactList}\small\item\em compute the 1st derivative ∂ (uv) / ∂y \end{DoxyCompactList}\item 
+virtual double \mbox{\hyperlink{classDiscretization_a6986501b0b5c96699ff3ac843c1a6ca2}{compute\+D2u\+Dx2}} (int i, int j) const
+\begin{DoxyCompactList}\small\item\em compute the 1st derivative ∂$^\wedge$2 u / ∂x$^\wedge$2 \end{DoxyCompactList}\item 
+virtual double \mbox{\hyperlink{classDiscretization_a446aabc55a9fb4b5cb2f476babc532f9}{compute\+D2u\+Dy2}} (int i, int j) const
+\begin{DoxyCompactList}\small\item\em compute the 1st derivative ∂$^\wedge$2 u / ∂y$^\wedge$2 \end{DoxyCompactList}\item 
+virtual double \mbox{\hyperlink{classDiscretization_a5119047788a34eadf37480e913bdc8ea}{compute\+D2v\+Dx2}} (int i, int j) const
+\begin{DoxyCompactList}\small\item\em compute the 1st derivative ∂$^\wedge$2 v / ∂x$^\wedge$2 \end{DoxyCompactList}\item 
+virtual double \mbox{\hyperlink{classDiscretization_a56678582a049b1b141621e41afff1438}{compute\+D2v\+Dy2}} (int i, int j) const
+\begin{DoxyCompactList}\small\item\em compute the 1st derivative ∂$^\wedge$2 v / ∂y$^\wedge$2 \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classDiscretization_aed3ad75ad6e647d14f118a12652c01b2}\label{classDiscretization_aed3ad75ad6e647d14f118a12652c01b2}} 
+virtual double \mbox{\hyperlink{classDiscretization_aed3ad75ad6e647d14f118a12652c01b2}{compute\+Dp\+Dx}} (int i, int j) const
+\begin{DoxyCompactList}\small\item\em compute the 1st derivative ∂p / ∂x \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classDiscretization_a859f4dc33f0ea91f5e6537be09ce4999}\label{classDiscretization_a859f4dc33f0ea91f5e6537be09ce4999}} 
+virtual double \mbox{\hyperlink{classDiscretization_a859f4dc33f0ea91f5e6537be09ce4999}{compute\+Dp\+Dy}} (int i, int j) const
+\begin{DoxyCompactList}\small\item\em compute the 1st derivative ∂p / ∂y \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Additional Inherited Members}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classDiscretization_a6986501b0b5c96699ff3ac843c1a6ca2}\label{classDiscretization_a6986501b0b5c96699ff3ac843c1a6ca2}} 
+\index{Discretization@{Discretization}!computeD2uDx2@{computeD2uDx2}}
+\index{computeD2uDx2@{computeD2uDx2}!Discretization@{Discretization}}
+\doxysubsubsection{\texorpdfstring{computeD2uDx2()}{computeD2uDx2()}}
+{\footnotesize\ttfamily double Discretization\+::compute\+D2u\+Dx2 (\begin{DoxyParamCaption}\item[{int}]{i,  }\item[{int}]{j }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+compute the 1st derivative ∂$^\wedge$2 u / ∂x$^\wedge$2 
+
+compute the 2nd derivative ∂$^\wedge$2 u / ∂x$^\wedge$2 at right edge \mbox{\Hypertarget{classDiscretization_a446aabc55a9fb4b5cb2f476babc532f9}\label{classDiscretization_a446aabc55a9fb4b5cb2f476babc532f9}} 
+\index{Discretization@{Discretization}!computeD2uDy2@{computeD2uDy2}}
+\index{computeD2uDy2@{computeD2uDy2}!Discretization@{Discretization}}
+\doxysubsubsection{\texorpdfstring{computeD2uDy2()}{computeD2uDy2()}}
+{\footnotesize\ttfamily double Discretization\+::compute\+D2u\+Dy2 (\begin{DoxyParamCaption}\item[{int}]{i,  }\item[{int}]{j }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+compute the 1st derivative ∂$^\wedge$2 u / ∂y$^\wedge$2 
+
+compute the 2nd derivative ∂$^\wedge$2 u / ∂y$^\wedge$2 \mbox{\Hypertarget{classDiscretization_a5119047788a34eadf37480e913bdc8ea}\label{classDiscretization_a5119047788a34eadf37480e913bdc8ea}} 
+\index{Discretization@{Discretization}!computeD2vDx2@{computeD2vDx2}}
+\index{computeD2vDx2@{computeD2vDx2}!Discretization@{Discretization}}
+\doxysubsubsection{\texorpdfstring{computeD2vDx2()}{computeD2vDx2()}}
+{\footnotesize\ttfamily double Discretization\+::compute\+D2v\+Dx2 (\begin{DoxyParamCaption}\item[{int}]{i,  }\item[{int}]{j }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+compute the 1st derivative ∂$^\wedge$2 v / ∂x$^\wedge$2 
+
+compute the 2nd derivative ∂$^\wedge$2 v / ∂x$^\wedge$2 \mbox{\Hypertarget{classDiscretization_a56678582a049b1b141621e41afff1438}\label{classDiscretization_a56678582a049b1b141621e41afff1438}} 
+\index{Discretization@{Discretization}!computeD2vDy2@{computeD2vDy2}}
+\index{computeD2vDy2@{computeD2vDy2}!Discretization@{Discretization}}
+\doxysubsubsection{\texorpdfstring{computeD2vDy2()}{computeD2vDy2()}}
+{\footnotesize\ttfamily double Discretization\+::compute\+D2v\+Dy2 (\begin{DoxyParamCaption}\item[{int}]{i,  }\item[{int}]{j }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+compute the 1st derivative ∂$^\wedge$2 v / ∂y$^\wedge$2 
+
+compute the 2nd derivative ∂$^\wedge$2 v / ∂y$^\wedge$2 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/home/work/\+Dokumente/\+Studium/\+Sim\+Tech\+\_\+\+M\+Sc/13. Semester/\+Numerische Simulation/\+Num\+Sim/src/discretization/1\+\_\+discretization.\+h\item 
+/home/work/\+Dokumente/\+Studium/\+Sim\+Tech\+\_\+\+M\+Sc/13. Semester/\+Numerische Simulation/\+Num\+Sim/src/discretization/1\+\_\+discretization.\+cpp\end{DoxyCompactItemize}

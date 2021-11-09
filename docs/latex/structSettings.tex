@@ -1,0 +1,78 @@
+\hypertarget{structSettings}{}\doxysection{Settings Struct Reference}
+\label{structSettings}\index{Settings@{Settings}}
+
+
+{\ttfamily \#include $<$settings.\+h$>$}
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{structSettings_a55f95e3b6e7379bef4f8399a2cd670cc}\label{structSettings_a55f95e3b6e7379bef4f8399a2cd670cc}} 
+void \mbox{\hyperlink{structSettings_a55f95e3b6e7379bef4f8399a2cd670cc}{load\+From\+File}} (std\+::string filename)
+\begin{DoxyCompactList}\small\item\em parse a text file with settings, each line contains \char`\"{}$<$parameter\+Name$>$ = $<$value$>$\char`\"{} \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structSettings_a68ce38117dcef2cbdd3bd17f127b3078}\label{structSettings_a68ce38117dcef2cbdd3bd17f127b3078}} 
+void \mbox{\hyperlink{structSettings_a68ce38117dcef2cbdd3bd17f127b3078}{print\+Settings}} ()
+\begin{DoxyCompactList}\small\item\em output all settings to console \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{structSettings_a4758cccc4277acb850c64b97fc9c5e97}\label{structSettings_a4758cccc4277acb850c64b97fc9c5e97}} 
+std\+::array$<$ int, 2 $>$ {\bfseries n\+Cells}
+\item 
+\mbox{\Hypertarget{structSettings_ac6ba8347bc6ebc1c31559fab302f6be6}\label{structSettings_ac6ba8347bc6ebc1c31559fab302f6be6}} 
+std\+::array$<$ double, 2 $>$ {\bfseries physical\+Size}
+\item 
+\mbox{\Hypertarget{structSettings_a8b8330dfa04fe849291d68eacbc8dfec}\label{structSettings_a8b8330dfa04fe849291d68eacbc8dfec}} 
+double {\bfseries re} = 1000
+\item 
+\mbox{\Hypertarget{structSettings_a73cd9110793ede99e9ebe409e5e115fd}\label{structSettings_a73cd9110793ede99e9ebe409e5e115fd}} 
+double {\bfseries end\+Time} = 10.\+0
+\item 
+\mbox{\Hypertarget{structSettings_adaa611dc8c075474d40d7149afd310d1}\label{structSettings_adaa611dc8c075474d40d7149afd310d1}} 
+double {\bfseries tau} = 0.\+5
+\item 
+\mbox{\Hypertarget{structSettings_a988b93fdeb6c91932043b3f746b45e86}\label{structSettings_a988b93fdeb6c91932043b3f746b45e86}} 
+double {\bfseries maximum\+Dt} = 0.\+1
+\item 
+\mbox{\Hypertarget{structSettings_aa3ecc3e8a93f20c0398120bdcf0f4760}\label{structSettings_aa3ecc3e8a93f20c0398120bdcf0f4760}} 
+std\+::array$<$ double, 2 $>$ {\bfseries g} \{0., 0.\}
+\item 
+\mbox{\Hypertarget{structSettings_a05bd5ffa1e1b48f5dc99878538596db3}\label{structSettings_a05bd5ffa1e1b48f5dc99878538596db3}} 
+bool {\bfseries use\+Donor\+Cell} = false
+\item 
+\mbox{\Hypertarget{structSettings_a8b3721d24a5417caa0f2ad6f5eb85782}\label{structSettings_a8b3721d24a5417caa0f2ad6f5eb85782}} 
+double {\bfseries alpha} = 0.\+5
+\item 
+\mbox{\Hypertarget{structSettings_a93041b5ffde15a14d8cd5243b7f3a24c}\label{structSettings_a93041b5ffde15a14d8cd5243b7f3a24c}} 
+std\+::array$<$ double, 2 $>$ {\bfseries dirichlet\+Bc\+Bottom}
+\item 
+\mbox{\Hypertarget{structSettings_a797bc1fe39ab2c43883a956e61c7dcd9}\label{structSettings_a797bc1fe39ab2c43883a956e61c7dcd9}} 
+std\+::array$<$ double, 2 $>$ {\bfseries dirichlet\+Bc\+Top}
+\item 
+\mbox{\Hypertarget{structSettings_ab5c8b7f97c58a42c0f69d53467b3d335}\label{structSettings_ab5c8b7f97c58a42c0f69d53467b3d335}} 
+std\+::array$<$ double, 2 $>$ {\bfseries dirichlet\+Bc\+Left}
+\item 
+\mbox{\Hypertarget{structSettings_a291fa4445ff43baaf66542a5744a7204}\label{structSettings_a291fa4445ff43baaf66542a5744a7204}} 
+std\+::array$<$ double, 2 $>$ {\bfseries dirichlet\+Bc\+Right}
+\item 
+\mbox{\Hypertarget{structSettings_a888e2fca33db512d4e200b49f1f618f7}\label{structSettings_a888e2fca33db512d4e200b49f1f618f7}} 
+std\+::string {\bfseries pressure\+Solver} = \char`\"{}S\+OR\char`\"{}
+\item 
+\mbox{\Hypertarget{structSettings_af5ac13128e8c442ba45eedfab06ba14c}\label{structSettings_af5ac13128e8c442ba45eedfab06ba14c}} 
+double {\bfseries omega} = 1.\+0
+\item 
+\mbox{\Hypertarget{structSettings_aa02bd91d026d9ded9e36004b41b068b1}\label{structSettings_aa02bd91d026d9ded9e36004b41b068b1}} 
+double {\bfseries epsilon} = 1e-\/5
+\item 
+\mbox{\Hypertarget{structSettings_ac118e1c6052e35fb0ee38547a85d84ba}\label{structSettings_ac118e1c6052e35fb0ee38547a85d84ba}} 
+int {\bfseries maximum\+Number\+Of\+Iterations} = 1e5
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+All settings that parametrize a simulation run. 
+
+The documentation for this struct was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/home/work/\+Dokumente/\+Studium/\+Sim\+Tech\+\_\+\+M\+Sc/13. Semester/\+Numerische Simulation/\+Num\+Sim/src/settings.\+h\item 
+/home/work/\+Dokumente/\+Studium/\+Sim\+Tech\+\_\+\+M\+Sc/13. Semester/\+Numerische Simulation/\+Num\+Sim/src/settings.\+cpp\end{DoxyCompactItemize}

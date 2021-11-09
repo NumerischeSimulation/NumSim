@@ -1,0 +1,56 @@
+\hypertarget{classOutputWriterParaview}{}\doxysection{Output\+Writer\+Paraview Class Reference}
+\label{classOutputWriterParaview}\index{OutputWriterParaview@{OutputWriterParaview}}
+
+
+{\ttfamily \#include $<$output\+\_\+writer\+\_\+paraview.\+h$>$}
+
+
+
+Inheritance diagram for Output\+Writer\+Paraview\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=205pt]{classOutputWriterParaview__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for Output\+Writer\+Paraview\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=205pt]{classOutputWriterParaview__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classOutputWriterParaview_a2d6ca95be656cceed115a4cfbb95b13a}{Output\+Writer\+Paraview}} (std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{classDiscretization}{Discretization}} $>$ discretization)
+\item 
+\mbox{\Hypertarget{classOutputWriterParaview_a9e203b63d0e2f26ad53d18ee1821c6bb}\label{classOutputWriterParaview_a9e203b63d0e2f26ad53d18ee1821c6bb}} 
+void \mbox{\hyperlink{classOutputWriterParaview_a9e203b63d0e2f26ad53d18ee1821c6bb}{write\+File}} (double current\+Time)
+\begin{DoxyCompactList}\small\item\em write current velocities to file, filename is output\+\_\+$<$count$>$.\+vti \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Additional Inherited Members}
+
+
+\doxysubsection{Detailed Description}
+Write $\ast$.vti files that can be viewed with Para\+View. The mesh that can be visualized in Para\+View corresponds to the mesh of the computational domain. All values are given for the nodes of the mesh, i.\+e., the corners of each cell. This means, values will be interpolated because the values are stored at positions given by the staggered grid. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classOutputWriterParaview_a2d6ca95be656cceed115a4cfbb95b13a}\label{classOutputWriterParaview_a2d6ca95be656cceed115a4cfbb95b13a}} 
+\index{OutputWriterParaview@{OutputWriterParaview}!OutputWriterParaview@{OutputWriterParaview}}
+\index{OutputWriterParaview@{OutputWriterParaview}!OutputWriterParaview@{OutputWriterParaview}}
+\doxysubsubsection{\texorpdfstring{OutputWriterParaview()}{OutputWriterParaview()}}
+{\footnotesize\ttfamily Output\+Writer\+Paraview\+::\+Output\+Writer\+Paraview (\begin{DoxyParamCaption}\item[{std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{classDiscretization}{Discretization}} $>$}]{discretization }\end{DoxyParamCaption})}
+
+constructor 
+\begin{DoxyParams}{Parameters}
+{\em discretization} & shared pointer to the discretization object that will contain all the data to be written to the file \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/home/work/\+Dokumente/\+Studium/\+Sim\+Tech\+\_\+\+M\+Sc/13. Semester/\+Numerische Simulation/\+Num\+Sim/src/output\+\_\+writer/output\+\_\+writer\+\_\+paraview.\+h\item 
+/home/work/\+Dokumente/\+Studium/\+Sim\+Tech\+\_\+\+M\+Sc/13. Semester/\+Numerische Simulation/\+Num\+Sim/src/output\+\_\+writer/output\+\_\+writer\+\_\+paraview.\+cpp\end{DoxyCompactItemize}

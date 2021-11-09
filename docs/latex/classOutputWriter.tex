@@ -1,0 +1,55 @@
+\hypertarget{classOutputWriter}{}\doxysection{Output\+Writer Class Reference}
+\label{classOutputWriter}\index{OutputWriter@{OutputWriter}}
+
+
+{\ttfamily \#include $<$output\+\_\+writer.\+h$>$}
+
+
+
+Inheritance diagram for Output\+Writer\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=324pt]{classOutputWriter__inherit__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classOutputWriter_a4f3180552b8102c27e087357b9cdd1f7}{Output\+Writer}} (std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{classDiscretization}{Discretization}} $>$ discretization)
+\item 
+\mbox{\Hypertarget{classOutputWriter_ac625c204affdc05919388a3549c2e945}\label{classOutputWriter_ac625c204affdc05919388a3549c2e945}} 
+virtual void \mbox{\hyperlink{classOutputWriter_ac625c204affdc05919388a3549c2e945}{write\+File}} (double current\+Time)=0
+\begin{DoxyCompactList}\small\item\em write current velocities to file, filename is output\+\_\+$<$count$>$.\+vti \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classOutputWriter_a0587b2dc160a9b1393411433dfc23b68}\label{classOutputWriter_a0587b2dc160a9b1393411433dfc23b68}} 
+std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{classDiscretization}{Discretization}} $>$ {\bfseries discretization\+\_\+}
+\item 
+\mbox{\Hypertarget{classOutputWriter_a69d167e2526407602dce26ca7a2b9248}\label{classOutputWriter_a69d167e2526407602dce26ca7a2b9248}} 
+int {\bfseries file\+No\+\_\+}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Inteface class for writing simulation data output. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classOutputWriter_a4f3180552b8102c27e087357b9cdd1f7}\label{classOutputWriter_a4f3180552b8102c27e087357b9cdd1f7}} 
+\index{OutputWriter@{OutputWriter}!OutputWriter@{OutputWriter}}
+\index{OutputWriter@{OutputWriter}!OutputWriter@{OutputWriter}}
+\doxysubsubsection{\texorpdfstring{OutputWriter()}{OutputWriter()}}
+{\footnotesize\ttfamily Output\+Writer\+::\+Output\+Writer (\begin{DoxyParamCaption}\item[{std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{classDiscretization}{Discretization}} $>$}]{discretization }\end{DoxyParamCaption})}
+
+constructor 
+\begin{DoxyParams}{Parameters}
+{\em discretization} & shared pointer to the discretization object that will contain all the data to be written to the file \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/home/work/\+Dokumente/\+Studium/\+Sim\+Tech\+\_\+\+M\+Sc/13. Semester/\+Numerische Simulation/\+Num\+Sim/src/output\+\_\+writer/output\+\_\+writer.\+h\item 
+/home/work/\+Dokumente/\+Studium/\+Sim\+Tech\+\_\+\+M\+Sc/13. Semester/\+Numerische Simulation/\+Num\+Sim/src/output\+\_\+writer/output\+\_\+writer.\+cpp\end{DoxyCompactItemize}

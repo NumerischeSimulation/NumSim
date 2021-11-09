@@ -1,0 +1,143 @@
+\hypertarget{classStaggeredGrid}{}\doxysection{Staggered\+Grid Class Reference}
+\label{classStaggeredGrid}\index{StaggeredGrid@{StaggeredGrid}}
+
+
+Inheritance diagram for Staggered\+Grid\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=272pt]{classStaggeredGrid__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for Staggered\+Grid\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=166pt]{classStaggeredGrid__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classStaggeredGrid_aec0990b64c559b1690f21b48fb2d13b1}\label{classStaggeredGrid_aec0990b64c559b1690f21b48fb2d13b1}} 
+\mbox{\hyperlink{classStaggeredGrid_aec0990b64c559b1690f21b48fb2d13b1}{Staggered\+Grid}} (std\+::array$<$ int, 2 $>$ \mbox{\hyperlink{classStaggeredGrid_af37816ccb2c46e4a514dedac261897bf}{n\+Cells}}, std\+::array$<$ double, 2 $>$ \mbox{\hyperlink{classStaggeredGrid_a330856d4efe952771daf0753ef84068e}{mesh\+Width}})
+\begin{DoxyCompactList}\small\item\em construct staggered grid \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classStaggeredGrid_a330856d4efe952771daf0753ef84068e}\label{classStaggeredGrid_a330856d4efe952771daf0753ef84068e}} 
+const std\+::array$<$ double, 2 $>$ \mbox{\hyperlink{classStaggeredGrid_a330856d4efe952771daf0753ef84068e}{mesh\+Width}} () const
+\begin{DoxyCompactList}\small\item\em get the mesh width, i.\+e. the length of a single cell in x and y direction \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classStaggeredGrid_af37816ccb2c46e4a514dedac261897bf}\label{classStaggeredGrid_af37816ccb2c46e4a514dedac261897bf}} 
+const std\+::array$<$ int, 2 $>$ \mbox{\hyperlink{classStaggeredGrid_af37816ccb2c46e4a514dedac261897bf}{n\+Cells}} () const
+\begin{DoxyCompactList}\small\item\em get number of cells in each coordinate direction \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classStaggeredGrid_a87cee12621c641ab143a8b1a61b2ef7e}\label{classStaggeredGrid_a87cee12621c641ab143a8b1a61b2ef7e}} 
+const \mbox{\hyperlink{classFieldVariable}{Field\+Variable}} \& \mbox{\hyperlink{classStaggeredGrid_a87cee12621c641ab143a8b1a61b2ef7e}{u}} () const
+\begin{DoxyCompactList}\small\item\em get a reference to field variable u \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classStaggeredGrid_a983abe184448c45166130c02e6b6c908}\label{classStaggeredGrid_a983abe184448c45166130c02e6b6c908}} 
+const \mbox{\hyperlink{classFieldVariable}{Field\+Variable}} \& \mbox{\hyperlink{classStaggeredGrid_a983abe184448c45166130c02e6b6c908}{v}} () const
+\begin{DoxyCompactList}\small\item\em get a reference to field variable u \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classStaggeredGrid_a38e5570f7beb0217f719c8b31c7ca36e}\label{classStaggeredGrid_a38e5570f7beb0217f719c8b31c7ca36e}} 
+const \mbox{\hyperlink{classFieldVariable}{Field\+Variable}} \& \mbox{\hyperlink{classStaggeredGrid_a38e5570f7beb0217f719c8b31c7ca36e}{p}} () const
+\begin{DoxyCompactList}\small\item\em get a reference to field variable u \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classStaggeredGrid_a0324ce4d1fe2343d8aa9514e460cc556}\label{classStaggeredGrid_a0324ce4d1fe2343d8aa9514e460cc556}} 
+double \mbox{\hyperlink{classStaggeredGrid_a0324ce4d1fe2343d8aa9514e460cc556}{u}} (int i, int j) const
+\begin{DoxyCompactList}\small\item\em access value of u in element (i,j) \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classStaggeredGrid_a0ed62d6752b6b2b3ead5f654b515cd12}\label{classStaggeredGrid_a0ed62d6752b6b2b3ead5f654b515cd12}} 
+double \& \mbox{\hyperlink{classStaggeredGrid_a0ed62d6752b6b2b3ead5f654b515cd12}{u}} (int i, int j)
+\begin{DoxyCompactList}\small\item\em access value of u in element (x,y) \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classStaggeredGrid_ac052d8803ff950aee04b86ac026c516b}\label{classStaggeredGrid_ac052d8803ff950aee04b86ac026c516b}} 
+double \mbox{\hyperlink{classStaggeredGrid_ac052d8803ff950aee04b86ac026c516b}{v}} (int i, int j) const
+\begin{DoxyCompactList}\small\item\em access value of v in element (i,j), get const value of v in element (x,y) \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classStaggeredGrid_a7746f703f32c2f20a4c77246eebac697}\label{classStaggeredGrid_a7746f703f32c2f20a4c77246eebac697}} 
+double \& \mbox{\hyperlink{classStaggeredGrid_a7746f703f32c2f20a4c77246eebac697}{v}} (int i, int j)
+\begin{DoxyCompactList}\small\item\em access value of v in element (x,y) \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classStaggeredGrid_aa6a5d99d9b4fbd9bd9cfa6ec071918f9}\label{classStaggeredGrid_aa6a5d99d9b4fbd9bd9cfa6ec071918f9}} 
+double \mbox{\hyperlink{classStaggeredGrid_aa6a5d99d9b4fbd9bd9cfa6ec071918f9}{p}} (int i, int j) const
+\begin{DoxyCompactList}\small\item\em access value of p in element (i,j), get const value of p in element (x,y) \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classStaggeredGrid_aa09a4ca67141589bae153797fbc4f3c5}\label{classStaggeredGrid_aa09a4ca67141589bae153797fbc4f3c5}} 
+double \& \mbox{\hyperlink{classStaggeredGrid_aa09a4ca67141589bae153797fbc4f3c5}{p}} (int i, int j)
+\begin{DoxyCompactList}\small\item\em access value of p in element (x,y) \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classStaggeredGrid_a761ea51f1e8fd1290b3adfe09942b0d3}\label{classStaggeredGrid_a761ea51f1e8fd1290b3adfe09942b0d3}} 
+double \& \mbox{\hyperlink{classStaggeredGrid_a761ea51f1e8fd1290b3adfe09942b0d3}{rhs}} (int i, int j)
+\begin{DoxyCompactList}\small\item\em access value of rhs in element (i,j), access value of p in element (x,y) \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classStaggeredGrid_adb05c59512dc8993367e4beddba05785}\label{classStaggeredGrid_adb05c59512dc8993367e4beddba05785}} 
+double \& \mbox{\hyperlink{classStaggeredGrid_adb05c59512dc8993367e4beddba05785}{f}} (int i, int j)
+\begin{DoxyCompactList}\small\item\em access value of rhs in element (i,j), access value of p in element (x,y) \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classStaggeredGrid_aaf849bec40f7fa7c68823038f0877341}\label{classStaggeredGrid_aaf849bec40f7fa7c68823038f0877341}} 
+double \& \mbox{\hyperlink{classStaggeredGrid_aaf849bec40f7fa7c68823038f0877341}{g}} (int i, int j)
+\begin{DoxyCompactList}\small\item\em access value of rhs in element (i,j), access value of p in element (x,y) \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classStaggeredGrid_aec8490affea703cdd73b1febaed68968}\label{classStaggeredGrid_aec8490affea703cdd73b1febaed68968}} 
+double \mbox{\hyperlink{classStaggeredGrid_aec8490affea703cdd73b1febaed68968}{dx}} () const
+\begin{DoxyCompactList}\small\item\em get the mesh width in x-\/direction, δx \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classStaggeredGrid_abde2da10e0c130fb0f206de64c9b4956}\label{classStaggeredGrid_abde2da10e0c130fb0f206de64c9b4956}} 
+double \mbox{\hyperlink{classStaggeredGrid_abde2da10e0c130fb0f206de64c9b4956}{dy}} () const
+\begin{DoxyCompactList}\small\item\em get the mesh width in y-\/direction, δy \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classStaggeredGrid_a31e2d3a0b6e03685380810a7c2f323e1}\label{classStaggeredGrid_a31e2d3a0b6e03685380810a7c2f323e1}} 
+int \mbox{\hyperlink{classStaggeredGrid_a31e2d3a0b6e03685380810a7c2f323e1}{u\+I\+Begin}} () const
+\begin{DoxyCompactList}\small\item\em first valid index for u in x direction \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classStaggeredGrid_a641e473d72e1d02ba3de1c16e9d0d332}\label{classStaggeredGrid_a641e473d72e1d02ba3de1c16e9d0d332}} 
+int \mbox{\hyperlink{classStaggeredGrid_a641e473d72e1d02ba3de1c16e9d0d332}{u\+I\+End}} () const
+\begin{DoxyCompactList}\small\item\em one after last valid index for u in x direction \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classStaggeredGrid_a9b0e97704e1871441a8e713ecaa2cff5}\label{classStaggeredGrid_a9b0e97704e1871441a8e713ecaa2cff5}} 
+int \mbox{\hyperlink{classStaggeredGrid_a9b0e97704e1871441a8e713ecaa2cff5}{u\+J\+Begin}} () const
+\begin{DoxyCompactList}\small\item\em first valid index for u in y direction \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classStaggeredGrid_a3393aa91b17054d2d700de308ae25632}\label{classStaggeredGrid_a3393aa91b17054d2d700de308ae25632}} 
+int \mbox{\hyperlink{classStaggeredGrid_a3393aa91b17054d2d700de308ae25632}{u\+J\+End}} () const
+\begin{DoxyCompactList}\small\item\em one after last valid index for u in y direction \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classStaggeredGrid_ace7bf8cb1d279131739d5d12de302d09}\label{classStaggeredGrid_ace7bf8cb1d279131739d5d12de302d09}} 
+int \mbox{\hyperlink{classStaggeredGrid_ace7bf8cb1d279131739d5d12de302d09}{v\+I\+Begin}} () const
+\begin{DoxyCompactList}\small\item\em first valid index for v in x direction \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classStaggeredGrid_aa5a44aa088b5a7923fa952af1ecb5778}\label{classStaggeredGrid_aa5a44aa088b5a7923fa952af1ecb5778}} 
+int \mbox{\hyperlink{classStaggeredGrid_aa5a44aa088b5a7923fa952af1ecb5778}{v\+I\+End}} () const
+\begin{DoxyCompactList}\small\item\em one after last valid index for v in x direction \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classStaggeredGrid_a7f8468d672411c0e3a5eeb67788fc826}\label{classStaggeredGrid_a7f8468d672411c0e3a5eeb67788fc826}} 
+int \mbox{\hyperlink{classStaggeredGrid_a7f8468d672411c0e3a5eeb67788fc826}{v\+J\+Begin}} () const
+\begin{DoxyCompactList}\small\item\em first valid index for v in y direction \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classStaggeredGrid_ab67e8d9d8d76d34fb02d4d644f0b3795}\label{classStaggeredGrid_ab67e8d9d8d76d34fb02d4d644f0b3795}} 
+int \mbox{\hyperlink{classStaggeredGrid_ab67e8d9d8d76d34fb02d4d644f0b3795}{v\+J\+End}} () const
+\begin{DoxyCompactList}\small\item\em one after last valid index for v in y direction \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classStaggeredGrid_a9922c955707f2a31a4a27d1d696f002e}\label{classStaggeredGrid_a9922c955707f2a31a4a27d1d696f002e}} 
+int \mbox{\hyperlink{classStaggeredGrid_a9922c955707f2a31a4a27d1d696f002e}{p\+I\+Begin}} () const
+\begin{DoxyCompactList}\small\item\em first valid index for p in x direction \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classStaggeredGrid_a34f16fdf87971fe84ffc3c84722bb2c7}\label{classStaggeredGrid_a34f16fdf87971fe84ffc3c84722bb2c7}} 
+int \mbox{\hyperlink{classStaggeredGrid_a34f16fdf87971fe84ffc3c84722bb2c7}{p\+I\+End}} () const
+\begin{DoxyCompactList}\small\item\em one after last palid index for p in x direction \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classStaggeredGrid_ae4c9ba16c5635dc1ffaa264fbcc3e034}\label{classStaggeredGrid_ae4c9ba16c5635dc1ffaa264fbcc3e034}} 
+int \mbox{\hyperlink{classStaggeredGrid_ae4c9ba16c5635dc1ffaa264fbcc3e034}{p\+J\+Begin}} () const
+\begin{DoxyCompactList}\small\item\em first valid index for p in y direction \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classStaggeredGrid_ad9928ee522eedb7d7fd48ca0b92f2795}\label{classStaggeredGrid_ad9928ee522eedb7d7fd48ca0b92f2795}} 
+int \mbox{\hyperlink{classStaggeredGrid_ad9928ee522eedb7d7fd48ca0b92f2795}{p\+J\+End}} () const
+\begin{DoxyCompactList}\small\item\em one after last valid index for p in y direction \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classStaggeredGrid_acacffb5739539d9015c986080bb5ed44}\label{classStaggeredGrid_acacffb5739539d9015c986080bb5ed44}} 
+const std\+::array$<$ int, 2 $>$ {\bfseries n\+Cells\+\_\+}
+\item 
+\mbox{\Hypertarget{classStaggeredGrid_aafa53aafb1cd72ce9583852d8af903fc}\label{classStaggeredGrid_aafa53aafb1cd72ce9583852d8af903fc}} 
+const std\+::array$<$ double, 2 $>$ {\bfseries mesh\+Width\+\_\+}
+\item 
+\mbox{\Hypertarget{classStaggeredGrid_adcef36b4ce8cc6843a2b6f603b62c763}\label{classStaggeredGrid_adcef36b4ce8cc6843a2b6f603b62c763}} 
+\mbox{\hyperlink{classFieldVariable}{Field\+Variable}} {\bfseries u\+\_\+}
+\item 
+\mbox{\Hypertarget{classStaggeredGrid_a20ec43568fe937b194561e21a0b84ad9}\label{classStaggeredGrid_a20ec43568fe937b194561e21a0b84ad9}} 
+\mbox{\hyperlink{classFieldVariable}{Field\+Variable}} {\bfseries v\+\_\+}
+\item 
+\mbox{\Hypertarget{classStaggeredGrid_a2ea3c93dd401ac06461ade9a74e76459}\label{classStaggeredGrid_a2ea3c93dd401ac06461ade9a74e76459}} 
+\mbox{\hyperlink{classFieldVariable}{Field\+Variable}} {\bfseries p\+\_\+}
+\item 
+\mbox{\Hypertarget{classStaggeredGrid_a496206955162452a0629a7742fe92a84}\label{classStaggeredGrid_a496206955162452a0629a7742fe92a84}} 
+\mbox{\hyperlink{classFieldVariable}{Field\+Variable}} {\bfseries rhs\+\_\+}
+\item 
+\mbox{\Hypertarget{classStaggeredGrid_a94933ac0c6e0d2a794f46c7a97d72f75}\label{classStaggeredGrid_a94933ac0c6e0d2a794f46c7a97d72f75}} 
+\mbox{\hyperlink{classFieldVariable}{Field\+Variable}} {\bfseries f\+\_\+}
+\item 
+\mbox{\Hypertarget{classStaggeredGrid_a5f5c88f603d4e503cba4c44ed43de46a}\label{classStaggeredGrid_a5f5c88f603d4e503cba4c44ed43de46a}} 
+\mbox{\hyperlink{classFieldVariable}{Field\+Variable}} {\bfseries g\+\_\+}
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/home/work/\+Dokumente/\+Studium/\+Sim\+Tech\+\_\+\+M\+Sc/13. Semester/\+Numerische Simulation/\+Num\+Sim/src/discretization/0\+\_\+staggered\+\_\+grid.\+h\item 
+/home/work/\+Dokumente/\+Studium/\+Sim\+Tech\+\_\+\+M\+Sc/13. Semester/\+Numerische Simulation/\+Num\+Sim/src/discretization/0\+\_\+staggered\+\_\+grid.\+cpp\end{DoxyCompactItemize}
