@@ -1,4 +1,4 @@
-#pragma once
+pragma once
 
 #include "computation.h"
 #include "pressure_solver/pressure_solver.h"
