@@ -27,6 +27,7 @@ void GaussSeidel::solve()
 
     // iterate through grid 
     
+
      while( iteration < maximumNumberOfIterations_ && res > epsilon_)
     {
         for ( int j = discretization_->pJBegin() +1; j < discretization_->pJEnd() -1; j++)
