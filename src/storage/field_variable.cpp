@@ -18,8 +18,8 @@ double FieldVariable::interpolateAt(double x, double y) const
     const double dy = meshWidth_[1]; // mesh width in y dir. 
 
     // indicies of (cell (i,j) in which the point (x,y) lies
-    const int iLeftEdge  = (int) floor(x - origin_[0] / dx); 
-    const int jLowerEdge = (int) floor(y - origin_[1] / dy); 
+    const int iLeftEdge  = (int) floor((x - origin_[0]) / dx); 
+    const int jLowerEdge = (int) floor((y - origin_[1]) / dy); 
 
     // get values at corner points
     const double f_lowerLeft  = Array2D::operator()(iLeftEdge,     jLowerEdge);
