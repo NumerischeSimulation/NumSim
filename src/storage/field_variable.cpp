@@ -1,6 +1,8 @@
 #pragma once
 
 #include <memory>
+#include <cmath>
+
 #include "storage/field_variable.h"
 #include "storage/array2D.h"
 
@@ -18,8 +20,8 @@ double FieldVariable::interpolateAt(double x, double y) const
     const double dy = meshWidth_[1]; // mesh width in y dir. 
 
     // indicies of (cell (i,j) in which the point (x,y) lies
-    const int iLeftEdge  = (int) floor((x - origin_[0]) / dx); 
-    const int jLowerEdge = (int) floor((y - origin_[1]) / dy); 
+    const int iLeftEdge  = (int) std::floor((x - origin_[0]) / dx); 
+    const int jLowerEdge = (int) std::floor((y - origin_[1]) / dy); 
 
     // get values at corner points
     const double f_lowerLeft  = Array2D::operator()(iLeftEdge,     jLowerEdge);
@@ -31,16 +33,16 @@ double FieldVariable::interpolateAt(double x, double y) const
     // one cell: |<-xr1-> x <-xr2->|
     //           |<--    dx      ->|
 
-    const double xr1 = x % dx;   // relative position of x from left edge
-    const double yr1 = y % dy;   // relative poistion of y from lower edge
+    const double xr1 = x  - (meshWidth_[0]*iLeftEdge + origin_[0]);   // relative position of x from left edge
+    const double yr1 = y  - (meshWidth_[1]*jLowerEdge + origin_[1]);   // relative poistion of y from lower edge
     const double xr2 = dx - xr1; // distance right_edge - x
     const double yr2 = dy - yr1; // distance upper edge - y
 
     // bilinear interpolation
-    f_intp = (f_lowerLeft * xr2 * yr2 
-        + f_lowerRight * xr1 * yr2
-        + f_upperLeft  * xr2 * yr1
-        + f_upperRight * xr1 * xr1) / (dx * dy);
+    const double f_intp = (f_lowerLeft * xr2 * yr2 
+                        + f_lowerRight * xr1 * yr2
+                        + f_upperLeft  * xr2 * yr1
+                        + f_upperRight * xr1 * xr1) / (dx * dy);
 
 return f_intp;
 
