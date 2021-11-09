@@ -8,7 +8,7 @@ project(numsim)
 add_executable(${PROJECT_NAME}
    
    main.cpp
-   #computation.cpp
+   computation.cpp
    settings.cpp
    
    pressure_solver/pressure_solver.cpp
@@ -23,9 +23,10 @@ add_executable(${PROJECT_NAME}
    storage/array2D.cpp
    storage/field_variable.cpp
   
-   # output_writer/output_writer_paraview.cpp
-   # output_writer/output_writer_text.cpp
-   # output_writer/output_writer.cpp
+   output_writer/output_writer_paraview.cpp
+   output_writer/output_writer_text.cpp
+   output_writer/output_writer.cpp
+   output_writer/write_paraview_output.cpp
    
 )
 
