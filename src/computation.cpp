@@ -122,40 +122,41 @@ void Computation::applyBoundaryValues()
     // set u
     for ( int i = discretization_->uIBegin(); i < discretization_->uIEnd(); i++)
     {
-        // bottom
-        discretization_->u(i, discretization_->uJBegin() +1) = 2 * settings_.dirichletBcBottom[0] - discretization_->u(i, discretization_->uJBegin() +2);
+        // bottom  
+        discretization_->u(i, discretization_->uJBegin())   = 2. * settings_.dirichletBcBottom[0] - discretization_->u(i, discretization_->uJBegin() +1);
         
         // top
-        discretization_->u(i, discretization_->uJEnd() -1) = 2 * settings_.dirichletBcTop[0] - discretization_->u(i, discretization_->uJEnd() -2);
+        discretization_->u(i, discretization_->uJEnd() - 1) = 2. * settings_.dirichletBcTop[0] - discretization_->u(i, discretization_->uJEnd() -2);
     }
+    
     // set v
     for ( int i = discretization_->vIBegin(); i < discretization_->vIEnd(); i++)
     {
         // bottom
-        discretization_->u(i, discretization_->uJBegin() +1) = settings_.dirichletBcBottom[1];
+        discretization_->v(i, discretization_->vJBegin())  = settings_.dirichletBcBottom[1];
         
         // top
-        discretization_->u(i, discretization_->uJEnd() -1) = settings_.dirichletBcTop[1];
+        discretization_->v(i, discretization_->vJEnd() - 1) = settings_.dirichletBcTop[1];
     }
 
-    // sides - they take priority then
+    // sides - they take priority then (corners are overwritten)
     // set u
     for ( int j = discretization_->uJBegin(); j < discretization_->uJEnd(); j++)
     {
         // left
-        discretization_->u(discretization_->uIBegin() +1,j) = settings_.dirichletBcLeft[0];
+        discretization_->u(discretization_->uIBegin(),j)   = settings_.dirichletBcLeft[0];
 
-        // top
-        discretization_->u(discretization_->uIEnd() -1,j) = settings_.dirichletBcRight[0];
+        // right
+        discretization_->u(discretization_->uIEnd() -1 ,j) = settings_.dirichletBcRight[0];
     }
     // set v
     for ( int j = discretization_->vJBegin(); j < discretization_->vJEnd(); j++)
     {
         // left
-        discretization_->v(discretization_->vIBegin() +1,j) = 2 * settings_.dirichletBcLeft[1] - discretization_->v(discretization_->vIBegin() +2, j);
+        discretization_->v(discretization_->vIBegin() ,j)  = 2. * settings_.dirichletBcLeft[1] - discretization_->v(discretization_->vIBegin() + 1, j);
 
-        // top
-        discretization_->v(discretization_->vIEnd() -1,j) = 2 * settings_.dirichletBcRight[1] - discretization_->u(discretization_->vIEnd() -2, j);
+        // right
+        discretization_->v(discretization_->vIEnd() - 1,j) = 2. * settings_.dirichletBcRight[1] - discretization_->v(discretization_->vIEnd()  - 2, j);
     }
 
     // set p
