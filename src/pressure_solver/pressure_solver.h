@@ -7,7 +7,6 @@
 class PressureSolver {
 public:
     PressureSolver(std::shared_ptr<Discretization> discretization, double epsilon, int maximumNumberOfIterations );
-    PressureSolver() = default;
     virtual void solve() = 0;
 
 protected:

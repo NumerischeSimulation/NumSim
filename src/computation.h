@@ -10,9 +10,7 @@
 
 class Computation
 {
-public:
-    Computation::Computation();
-    
+public:    
     //! initialize the computation object, parse the settings from file that is given as the only command line argument
     void initialize(int argc, char *argv[]);
 

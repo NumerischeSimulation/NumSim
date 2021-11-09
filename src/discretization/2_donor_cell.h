@@ -21,4 +21,7 @@ public:
   //! compute the 1st derivative ∂ (uv) / ∂y
   virtual double computeDuvDy(int i, int j) const;
 
+private:
+  double alpha_;
+
 };

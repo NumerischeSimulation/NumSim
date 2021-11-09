@@ -3,7 +3,8 @@
 #include "discretization/1_discretization.h"
 
 class CentralDifferences: 
-    public Discretization{
+    public Discretization
+  {
 
   //! use constructor of base class
   using Discretization::Discretization;

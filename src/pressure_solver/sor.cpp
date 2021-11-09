@@ -1,14 +1,14 @@
 #pragma once
 
+#include <cmath>
+
 #include "sor.h"
 #include "pressure_solver.h"
 
-SOR::SOR(std::shared_ptr<Discretization> discretization, double epsilon, int maximumNumberOfIterations, double omega)
+SOR::SOR(std::shared_ptr<Discretization> discretization, double epsilon, int maximumNumberOfIterations, double omega) :
+    PressureSolver(discretization, epsilon, maximumNumberOfIterations),
+    omega_(omega)
 {
-discretization_ = discretization;
-epsilon = epsilon;
-maximumNumberOfIterations_ = maximumNumberOfIterations;
-omega_ = omega;
 }
 
 void SOR::solve()
@@ -60,7 +60,7 @@ void SOR::solve()
 
         //calculate residual
 
-        res = sqrt(ressum)/(nCellsx * nCellsy);
+        res = std::sqrt(ressum)/(nCellsx * nCellsy);
 
         //set new boundary values
         setBoundaryValues();

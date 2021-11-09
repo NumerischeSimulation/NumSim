@@ -2,7 +2,8 @@
 
 #include "pressure_solver/pressure_solver.h"
 
-class SOR: public PressureSolver{
+class SOR: public PressureSolver
+{
 public:
     SOR(std::shared_ptr<Discretization> discretization, double epsilon, int maximumNumberOfIterations, double omega);
 
@@ -10,4 +11,3 @@ public:
 private:
   double omega_;
 };
-

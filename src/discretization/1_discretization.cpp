@@ -1,7 +1,7 @@
 
-#include "0_staggered_grid.h"
+#include "1_discretization.h"
 
-// Contructor
+// Constructor
 Discretization::Discretization(std::array<int,2> nCells, std::array<double,2> meshWidth) :
     StaggeredGrid(nCells, meshWidth)
 {
@@ -44,7 +44,7 @@ double Discretization::computeDpDx(int i, int j) const
 {
 
     // return 1st derivative at right edge of cell 
-    return 1./dx() = (p(i+1,j) - p(i,j));
+    return 1./dx() * (p(i+1,j) - p(i,j));
 }
 
 //! compute the 1st derivative ∂p / ∂y
@@ -52,6 +52,6 @@ double Discretization::computeDpDy(int i, int j) const
 {
 
     // return 1st derivative at top edge of cell i,j
-    return 1./dy() = (p(i,j+1) - p(i,j));
+    return 1./dy() * (p(i,j+1) - p(i,j));
 }
 
