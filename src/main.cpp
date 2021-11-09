@@ -1,7 +1,10 @@
-#include "settings.h"
+#prada once
 
 #include <iostream>
 #include <cstdlib>
+
+#include "settings.h"
+#include "computation.h"
 
 int main(int argc, char *argv[])
 {
@@ -12,18 +15,28 @@ int main(int argc, char *argv[])
 
     return EXIT_FAILURE;
   }
-
-  // read in the first argument
-  std::string filename = argv[1];
-
-  // print message
-  std::cout << "Filename: \"" << filename << "\"" << std::endl;
-
-  Settings settings;
   
-  settings.loadFromFile(filename);
-
-  settings.printSettings();
-
+  // get path of parameter file
+  std::string parameterFile = argv[1];
+  
+  
+  
+  std::cout << std::endl;
+  std::cout << "-------------------------------------------------" << std::endl;
+  std::cout << "Parsing paramter file..." << std::endl;
+  std::cout << std::endl;
+  
+  
+  // construct computation obj: parses parameter file and prints settings
+  Computation computation(parameterFile);
+  
+  std::cout << std::endl;
+  std::cout << "-------------------------------------------------" << std::endl;
+  std::cout << "Starting driven cavitiy simulation simulation ..." << std::endl;
+  std::cout << std::endl;
+  
+  // start simulating
+  computation.runSimulation();
+  
   return EXIT_SUCCESS;
 }
