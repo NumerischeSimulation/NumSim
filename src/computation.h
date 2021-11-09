@@ -11,6 +11,8 @@
 class Computation
 {
 public:
+    Computation::Computation();
+    
     //! initialize the computation object, parse the settings from file that is given as the only command line argument
     void initialize(int argc, char *argv[]);
 
@@ -46,4 +48,4 @@ private:
 
     std::array<double, 2> meshWidth_; //< h_x, h_y
     double dt_; //< time step
-}
+};
