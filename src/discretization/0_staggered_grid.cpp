@@ -9,13 +9,12 @@
 StaggeredGrid::StaggeredGrid(std::array<int,2> nCells, std::array<double,2> meshWidth)
 : meshWidth_(meshWidth),
   nCells_(nCells),
-  u_({nCells[0] + 2, nCells[0] + 2}, {1.0, 1.0}, meshWidth),
-  v_({nCells[0] + 2, nCells[0] + 2}, {1.0, 1.0}, meshWidth),
-  p_({nCells[0] + 2, nCells[0] + 2}, {1.0, 1.0}, meshWidth),
-  f_({nCells[0], nCells[0]}, {0.0, 0.0}, meshWidth),
-  g_({nCells[0], nCells[0]}, {0.0, 0.0}, meshWidth)
+  u_({nCells[0] + 2, nCells[0] + 2}, {meshWidth[0],    meshWidth[1]/2.}, meshWidth),
+  v_({nCells[0] + 2, nCells[0] + 2}, {meshWidth[0]/2., meshWidth[1]},    meshWidth),
+  p_({nCells[0] + 2, nCells[0] + 2}, {meshWidth[0]/2., meshWidth[1]/2.}, meshWidth),
+  f_({nCells[0] + 2, nCells[0] + 2}, {meshWidth[0],    meshWidth[1]/2.}, meshWidth),
+  g_({nCells[0] + 2, nCells[0] + 2}, {meshWidth[0]/2., meshWidth[1]},    meshWidth)
 {
-
 }
 
 // getter for parameters
@@ -125,12 +124,14 @@ int StaggeredGrid::pJEnd() const
 double StaggeredGrid::u(int i, int j) const
 {
     // check the validity of the indicies
-    if (!(i >= uIBegin() && i <= uIEnd())){
+    if (!(i >= uIBegin() && i < uIEnd()))
+    {
         std::cout << "i-Index of u out of bounds error for index " << i << " in range " << uIBegin() << " to " << uIEnd() << std::endl;
         throw;
     }
 
-    if (!(j >= uJBegin() && j <= uJEnd())){
+    if (!(j >= uJBegin() && j < uJEnd()))
+    {
         std::cout << "j-Index of u out of bounds error for index " << j << " in range " << uJBegin() << " to " << uJEnd() << std::endl;
         throw;
     }
@@ -144,12 +145,14 @@ double StaggeredGrid::u(int i, int j) const
 double& StaggeredGrid::u(int i, int j)
 {
     // check the validity of the indicies
-    if (!(i >= uIBegin() && i <= uIEnd())){
+    if (!(i >= uIBegin() && i < uIEnd()))
+    {
         std::cout << "i-Index of u out of bounds error for index " << i << " in range " << uIBegin() << " to " << uIEnd() << std::endl;
         throw;
     }
 
-    if (!(j >= uJBegin() && j <= uJEnd())){
+    if (!(j >= uJBegin() && j < uJEnd()))
+    {
         std::cout << "i-Index of u out of bounds error for index " << j << " in range " << uJBegin() << " to " << uJEnd() << std::endl;
         throw;
     }
@@ -164,12 +167,14 @@ double& StaggeredGrid::u(int i, int j)
 double StaggeredGrid::v(int i, int j) const
 {
     // check the validity of the indicies
-    if (!(i >= vIBegin() && i <= vIEnd())){
+    if (!(i >= vIBegin() && i < vIEnd()))
+    {
         std::cout << "i-Index of v out of bounds error for index " << i << " in range " << vIBegin() << " to " << vIEnd() << std::endl;
         throw;
     }
 
-    if (!(j >= vJBegin() && j <= vJEnd())){
+    if (!(j >= vJBegin() && j < vJEnd()))
+    {
         std::cout << "j-Index of v out of bounds error for index " << j << " in range " << vJBegin() << " to " << vJEnd() << std::endl;
         throw;
     }
@@ -183,12 +188,14 @@ double StaggeredGrid::v(int i, int j) const
 double& StaggeredGrid::v(int i, int j)
 {
     // check the validity of the indicies
-    if (!(i >= vIBegin() && i <= vIEnd())){
+    if (!(i >= vIBegin() && i < vIEnd()))
+    {
         std::cout << "i-Index of v out of bounds error for index " << i << " in range " << vIBegin() << " to " << vIEnd() << std::endl;
         throw;
     }
 
-    if (!(j >= vJBegin() && j <= vJEnd())){
+    if (!(j >= vJBegin() && j < vJEnd()))
+    {
         std::cout << "j-Index of v out of bounds error for index " << j << " in range " << vJBegin() << " to " << vJEnd() << std::endl;
         throw;
     }
@@ -203,12 +210,14 @@ double& StaggeredGrid::v(int i, int j)
 double StaggeredGrid::p(int i, int j) const
 {
     // check the validity of the indicies
-    if (!(i >= pIBegin() && i <= pIEnd())){
+    if (!(i >= pIBegin() && i < pIEnd()))
+    {
         std::cout << "i-Index of p out of bounds error for index " << i << " in range " << pIBegin() << " to " << pIEnd() << std::endl;
         throw;
     }
 
-    if (!(j >= pJBegin() && j <= pJEnd())){
+    if (!(j >= pJBegin() && j < pJEnd()))
+    {
         std::cout << "j-Index of p out of bounds error for index " << j << " in range " << pJBegin() << " to " << pJEnd() << std::endl;
         throw;
     }
@@ -222,12 +231,14 @@ double StaggeredGrid::p(int i, int j) const
 double& StaggeredGrid::p(int i, int j)
 {
     // check the validity of the indicies
-    if (!(i >= pIBegin() && i <= pIEnd())){
+    if (!(i >= pIBegin() && i < pIEnd()))
+    {
         std::cout << "i-Index of p out of bounds error for index " << i << " in range " << pIBegin() << " to " << pIEnd() << std::endl;
         throw;
     }
 
-    if (!(j >= pJBegin() && j <= pJEnd())){
+    if (!(j >= pJBegin() && j < pJEnd()))
+    {
         std::cout << "j-Index of p out of bounds error for index " << j << " in range " << pJBegin() << " to " << pJEnd() << std::endl;
         throw;
     }
@@ -260,13 +271,13 @@ double& StaggeredGrid::rhs(int i, int j)
 double& StaggeredGrid::f(int i, int j)
 {
     // check the validity of the indicies
-    if (!(i >= 0 &&  i <= nCells_[0]))
+    if (!(i >= uIBegin() && i < uIEnd()))
     {
         std::cout << "i-Index of f out of bounds error for index " << i << " in range " << 0 << " to " << nCells_[0] << std::endl;
         throw;  
     }
 
-    if (!(j >= 0 &&  j <= nCells_[0]))
+    if (!(i >= uJBegin() && i < uJEnd()))
     {
         std::cout << "j-Index of f out of bounds error for index " << i << " in range " << 0 << " to " << nCells_[0] << std::endl;
         throw;  
@@ -278,13 +289,13 @@ double& StaggeredGrid::f(int i, int j)
 double& StaggeredGrid::g(int i, int j)
 {
     // check the validity of the indicies
-    if (!(i >= 0 &&  i <= nCells_[0]))
+    if (!(i >= vIBegin() && i < vIEnd()))
     {
         std::cout << "i-Index of g out of bounds error for index " << i << " in range " << 0 << " to " << nCells_[0] << std::endl;
         throw;  
     }
 
-    if (!(j >= 0 &&  j <= nCells_[0]))
+    if (!(i >= vJBegin() && i < vJEnd()))
     {
         std::cout << "j-Index of g out of bounds error for index " << i << " in range " << 0 << " to " << nCells_[0] << std::endl;
         throw;  
