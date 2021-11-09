@@ -18,6 +18,10 @@ add_executable(${PROJECT_NAME}
    settings.cpp
    computation.cpp
 
+   discretization/1_discretization.cpp
+   discretization/2_central_differences.cpp
+   discretization/2_donor_cell.cpp
+
 )
 
 # Add the project directory to include directories, to be able to include all project header files from anywhere
