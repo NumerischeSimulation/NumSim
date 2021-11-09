@@ -6,6 +6,13 @@ calculations/**
 docs/**
 !docs/doxyfile
 
+# macOS
+.DS_Store?
+ehthumbs.db
+Icon?
+Thumbs.db
+*.DS_Store
+
 # Prerequisites
 *.d
 
