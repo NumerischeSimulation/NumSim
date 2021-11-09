@@ -7,7 +7,7 @@ DonorCell::DonorCell(std::array<int,2> nCells, std::array<double,2> meshWidth, d
 }
 
 //! compute the 1st derivative ∂ u^2 / ∂x
-double computeDu2Dx(int i, int j) const 
+double DonorCell::computeDu2Dx(int i, int j) const 
 {   
     // (copied from central differences)
     const double uCenterRight = (u(i+1,j) + u(i,j))   / 2.; // u at the center of the right cell (i+1,j)
@@ -26,7 +26,7 @@ double computeDu2Dx(int i, int j) const
 }
 
 //! compute the 1st derivative ∂ v^2 / ∂x
-double computeDv2Dy(int i, int j) const {
+double DonorCell::computeDv2Dy(int i, int j) const {
 
     // central diff part
     const double vCenterAbove = (v(i,j+1) + v(i,j))   / 2.0; // v at the center of the cell above (i,j+1)
@@ -45,7 +45,7 @@ double computeDv2Dy(int i, int j) const {
 }
 
 //! compute the 1st derivative ∂ (uv) / ∂x
-double computeDuvDx(int i, int j) const {
+double DonorCell::computeDuvDx(int i, int j) const {
     
     // central diff part
     const double uTopRight    = (u(i,j+1)    + u(i,j))    / 2.0; // u at top right corner of cell i,j
@@ -67,7 +67,7 @@ double computeDuvDx(int i, int j) const {
 }
 
 //! compute the 1st derivative ∂ (uv) / ∂y
-double computeDuvDy(int i, int j) const {
+double DonorCell::computeDuvDy(int i, int j) const {
 
     // central diff part
     const double uTopRight    = (u(i,j+1) + u(i,j))     / 2.0; // avg. u at top right corner of cell i,j
