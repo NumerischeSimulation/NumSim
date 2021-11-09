@@ -253,19 +253,22 @@ double& StaggeredGrid::p(int i, int j)
 double& StaggeredGrid::rhs(int i, int j)
 {
     // check the validity of the indicies
-    if (!(i >= 0 &&  i <= nCells_[0]))
+    if ((!(i >= pIBegin() && i < pIEnd()))
     {
         std::cout << "i-Index of rhs out of bounds error for index " << i << " in range " << 0 << " to " << nCells_[0] << std::endl;
         throw;  
     }
 
-    if (!(j >= 0 &&  j <= nCells_[0]))
+    if (!(j >= pJBegin() && j < pJEnd()))
     {
         std::cout << "j-Index of rhs out of bounds error for index " << i << " in range " << 0 << " to " << nCells_[0] << std::endl;
         throw;  
     }
-
-    return rhs_(i,j);
+  
+    // transform to x, y
+    int x = i +1;
+    int y = j +1;
+    return rhs_(x,y);
 }
 
 double& StaggeredGrid::f(int i, int j)
@@ -283,7 +286,10 @@ double& StaggeredGrid::f(int i, int j)
         throw;  
     }
 
-    return f_(i,j);
+    // transform to x, y
+    int x = i +1;
+    int y = j +1;
+    return f_(x,y);
 }
 
 double& StaggeredGrid::g(int i, int j)
@@ -301,5 +307,8 @@ double& StaggeredGrid::g(int i, int j)
         throw;  
     }
 
-    return g_(i,j);
+    // transform to x, y
+    int x = i +1;
+    int y = j +1;
+    return g_(x,y);
 }
