@@ -28,7 +28,8 @@ int main(int argc, char *argv[])
   
   
   // construct computation obj: parses parameter file and prints settings
-  Computation computation(parameterFile);
+  Computation computation = Computation();
+  computation.initialize(argc, *argv);
   
   std::cout << std::endl;
   std::cout << "-------------------------------------------------" << std::endl;
