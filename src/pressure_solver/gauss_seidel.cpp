@@ -27,9 +27,10 @@ void GaussSeidel::solve()
 
     // iterate through grid 
     
-     while( iteration < maximumNumberOfIterations_ && res > dx2 * dy2 * epsilon_)
+
+     while( iteration < maximumNumberOfIterations_ && res > epsilon_)
     {
-        for ( int j = discretization_->pJBegin() +1 ; j < discretization_->pJEnd() -1; j++)
+        for ( int j = discretization_->pJBegin() +1; j < discretization_->pJEnd() -1; j++)
         { 
             for ( int i = discretization_->pIBegin() +1; i < discretization_->pIEnd() -1; i++)
             {
@@ -50,13 +51,11 @@ void GaussSeidel::solve()
 
         //calculate residual
 
-        res = sqrt(dx2* dy2 * ressum )/(nCellsx * nCellsy);
+        res = sqrt(ressum)/(nCellsx * nCellsy);
 
         //set new boundary values
         setBoundaryValues();
     }
        
-
-    return solve();
 }
 
