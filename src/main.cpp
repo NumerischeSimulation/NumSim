@@ -1,7 +1,5 @@
 #include "settings.h"
 
-
-
 #include <iostream>
 #include <cstdlib>
 
