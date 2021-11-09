@@ -7,4 +7,7 @@ public:
     SOR(std::shared_ptr<Discretization> discretization, double epsilon, int maximumNumberOfIterations, double omega);
 
     void solve();
-}
+private:
+  double omega_;
+};
+

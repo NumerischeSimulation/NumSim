@@ -5,4 +5,4 @@
 class GaussSeidel: public PressureSolver{
 public:
     void solve();
-}
+};
