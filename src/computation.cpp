@@ -53,6 +53,7 @@ void Computation::runSimulation()
 {
     double currentTime = 0;
 
+    // the steps correspond to the steps in our algorithm in the overleaf or docs/numsim-algos.tex
     // step 1: set the boundary values
     applyBoundaryValues();
 
@@ -99,7 +100,7 @@ void Computation::computeTimeStepWidth()
     {
         double h2x = meshWidth_[0] * meshWidth_[0];
         double h2y = meshWidth_[1] * meshWidth_[1];
-        double boundary_diffusion = (settings_.re / 2) * (h2x * h2x) * (1/(h2x + h2y));
+        double boundary_diffusion = (settings_.re / 2) * (h2x * h2y) * (1/(h2x + h2y));
     }
 
     // boundary from convection
@@ -181,7 +182,8 @@ void Computation::applyBoundaryValues()
         discretization_->g(i, discretization_->uJEnd() -1) = discretization_->u(i, discretization_->uJEnd() -1);
     }
 
-    // sides - they take priority then
+    // sides
+    // calculating first the top/bottom then the sides gives the sides priority as required by the hint
     // set f
     for ( int j = discretization_->uJBegin(); j < discretization_->uJEnd(); j++)
     {
@@ -210,9 +212,9 @@ void Computation::computePreliminaryVelocities()
     { 
         for ( int i = discretization_->uIBegin() +1; i < discretization_->uIEnd() -1; i++)
         {
-            double left_side = discretization_->computeD2uDx2(i,j) + discretization_->computeD2uDy2(i,j);
-            double right_side = - discretization_->computeDu2Dx(i,j) - discretization_->computeDuvDy(i,j);
-            double sum = left_side + right_side + settings_.g[0];
+            double diffusion = discretization_->computeD2uDx2(i,j) + discretization_->computeD2uDy2(i,j);
+            double convection = - discretization_->computeDu2Dx(i,j) - discretization_->computeDuvDy(i,j);
+            double sum = diffusion + convection + settings_.g[0];
             discretization_->f(i,j) = discretization_->u(i, j) + dt_ * (1 / settings_.re) * sum;
         }
     }
@@ -222,9 +224,9 @@ void Computation::computePreliminaryVelocities()
     { 
         for ( int i = discretization_->vIBegin() +1; i < discretization_->vIEnd() -1; i++)
         {
-            double left_side = discretization_->computeD2vDx2(i,j) + discretization_->computeD2vDy2(i,j);
-            double right_side = - discretization_->computeDuvDx(i,j) - discretization_->computeDv2Dy(i,j);
-            double sum = left_side + right_side + settings_.g[1];
+            double diffusion = discretization_->computeD2vDx2(i,j) + discretization_->computeD2vDy2(i,j);
+            double convection = - discretization_->computeDuvDx(i,j) - discretization_->computeDv2Dy(i,j);
+            double sum = diffusion + convection + settings_.g[1];
             discretization_->g(i,j) = discretization_->v(i, j) + dt_ * (1 / settings_.re) * sum;
         }
     }
@@ -255,8 +257,7 @@ void Computation::computeVelocities()
     { 
         for ( int i = discretization_->uIBegin() +1; i < discretization_->uIEnd() -1; i++)
         {
-            double difference = dt_ * (1/meshWidth_[0]) * (discretization_->p(i+1,j) - discretization_->p(i,j));
-            discretization_->u(i,j) = discretization_->f(i,j) - difference;
+            discretization_->u(i,j) = discretization_->f(i,j) - dt_ * discretization_->computeDpDx(i, j);
         }
     }
 
@@ -265,8 +266,7 @@ void Computation::computeVelocities()
     { 
         for ( int i = discretization_->vIBegin() +1; i < discretization_->vIEnd() -1; i++)
         {
-            double difference = dt_ * (1/meshWidth_[1]) * (discretization_->p(i,j+1) - discretization_->p(i,j));
-            discretization_->v(i,j) = discretization_->g(i,j) - difference;
+            discretization_->v(i,j) = discretization_->g(i,j) - dt_ * discretization_->computeDpDy(i, j);
         }
     }
 }
