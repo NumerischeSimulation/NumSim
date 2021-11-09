@@ -12,6 +12,19 @@ add_executable(${PROJECT_NAME}
    # output_writer/output_writer_paraview.cpp
    # output_writer/output_writer_text.cpp
    # output_writer/output_writer.cpp
+   # pressure_solver/pressure_solver.cpp
+   # pressure_solver/gauss_seidel.cpp
+   # pressure_solver/sor.cpp
+   # storage/array2D.cpp
+   # storage/field_variable.cpp
+   # discretization/0_staggered_grid.cpp
+   # discretization/1_discretization.cpp
+   # discretization/2_centraldifferences.cpp
+   # discretization/2_donor_cell
+   # computation.cpp
+   # settings.cpp
+  
+   
 
    storage/array2D.cpp
    
