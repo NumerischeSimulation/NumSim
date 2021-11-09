@@ -3,7 +3,7 @@
 build/**
 out/**
 calculations/**
-docs/**
+# docs/** # will not be run often
 !docs/doxyfile
 
 # macOS
