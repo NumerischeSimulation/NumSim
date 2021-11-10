@@ -17,13 +17,10 @@ int main(int argc, char *argv[])
   // get path of parameter file
   std::string parameterFile = argv[1];
   
-  
-  
   std::cout << std::endl;
   std::cout << "-------------------------------------------------" << std::endl;
   std::cout << "Parsing paramter file..." << std::endl;
   std::cout << std::endl;
-  
   
   // construct computation obj: parses parameter file and prints settings
   Computation computation = Computation();
@@ -36,6 +33,8 @@ int main(int argc, char *argv[])
   
   // start simulating
   computation.runSimulation();
+
+  std::cout << "-------------------------------------------------" << std::endl;
   
   return EXIT_SUCCESS;
 }
