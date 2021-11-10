@@ -9,6 +9,7 @@ StaggeredGrid::StaggeredGrid(std::array<int,2> nCells, std::array<double,2> mesh
   rhs_({nCells[0] + 2, nCells[1] + 2}, {meshWidth[0]/2., meshWidth[1]/2.}, meshWidth),
   meshWidth_(meshWidth),
   nCells_(nCells)
+
 {
 
 }
