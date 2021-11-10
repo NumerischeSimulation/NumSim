@@ -9,8 +9,10 @@ public:
     PressureSolver(std::shared_ptr<Discretization> discretization, double epsilon, int maximumNumberOfIterations );
     virtual void solve() = 0;
 
-protected:
     void setBoundaryValues();
+
+protected:
+    // set boundary values
 
 protected:
     std::shared_ptr<Discretization> discretization_;

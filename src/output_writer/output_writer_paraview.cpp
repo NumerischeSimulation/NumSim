@@ -1,10 +1,4 @@
-#pragma once
 #include "output_writer/output_writer_paraview.h"
-#include "discretization/1_discretization.h"
-
-#include <vtkImageData.h>
-#include <vtkDoubleArray.h>
-#include <vtkPointData.h>
 
 OutputWriterParaview::OutputWriterParaview(std::shared_ptr<Discretization> discretization) :
    OutputWriter(discretization)

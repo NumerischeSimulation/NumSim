@@ -2,6 +2,8 @@
 
 #include "pressure_solver/pressure_solver.h"
 
+#include <cmath>
+
 class SOR: public PressureSolver
 {
 public:

@@ -1,9 +1,4 @@
-#pragma once
-
-#include <cmath>
-
 #include "sor.h"
-#include "pressure_solver.h"
 
 SOR::SOR(std::shared_ptr<Discretization> discretization, double epsilon, int maximumNumberOfIterations, double omega) :
     PressureSolver(discretization, epsilon, maximumNumberOfIterations),

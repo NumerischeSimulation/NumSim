@@ -1,12 +1,18 @@
 #pragma once
 
 #include "settings.h"
-#include "discretization/1_discretization.h"
-#include "pressure_solver/pressure_solver.h"
+#include "discretization/2_central_differences.h"
+#include "discretization/2_donor_cell.h"
+#include "pressure_solver/sor.h"
+#include "pressure_solver/gauss_seidel.h"
 #include "output_writer/output_writer_paraview.h"
 #include "output_writer/output_writer_text.h"
+#include "storage/field_variable.h"
 
 #include <memory>
+#include <iostream>  // for cout
+#include <cmath>
+#include <algorithm>
 
 class Computation
 {

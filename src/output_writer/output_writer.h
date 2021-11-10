@@ -1,3 +1,5 @@
+#pragma once
+
 #include "discretization/1_discretization.h"
 
 #include <memory>
