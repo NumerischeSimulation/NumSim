@@ -252,13 +252,13 @@ double& StaggeredGrid::rhs(int i, int j)
     // check the validity of the indicies
     if (!(i >= pIBegin() && i < pIEnd()))
     {
-        std::cout << "i-Index of rhs out of bounds error for index " << i << " in range " << 0 << " to " << nCells_[0] << std::endl;
+        std::cout << "i-Index of rhs out of bounds error for index " << i << " in range " << pIBegin() << " to " << pIEnd() << std::endl;
         throw;  
     }
 
     if (!(j >= pJBegin() && j < pJEnd()))
     {
-        std::cout << "j-Index of rhs out of bounds error for index " << i << " in range " << 0 << " to " << nCells_[0] << std::endl;
+        std::cout << "j-Index of rhs out of bounds error for index " << j << " in range " << pJBegin() << " to " << pJEnd() << std::endl;
         throw;  
     }
   
@@ -273,13 +273,13 @@ double& StaggeredGrid::f(int i, int j)
     // check the validity of the indicies
     if (!(i >= uIBegin() && i < uIEnd()))
     {
-        std::cout << "i-Index of f out of bounds error for index " << i << " in range " << 0 << " to " << nCells_[0] << std::endl;
+        std::cout << "i-Index of f out of bounds error for index " << i << " in range " << uIBegin() << " to " << uIEnd() << std::endl;
         throw;  
     }
 
-    if (!(i >= uJBegin() && i < uJEnd()))
+    if (!(j >= uJBegin() && j < uJEnd()))
     {
-        std::cout << "j-Index of f out of bounds error for index " << i << " in range " << 0 << " to " << nCells_[0] << std::endl;
+        std::cout << "j-Index of f out of bounds error for index " << j << " in range " << uJBegin() << " to " << uJEnd() << std::endl;
         throw;  
     }
 
@@ -294,13 +294,13 @@ double& StaggeredGrid::g(int i, int j)
     // check the validity of the indicies
     if (!(i >= vIBegin() && i < vIEnd()))
     {
-        std::cout << "i-Index of g out of bounds error for index " << i << " in range " << 0 << " to " << nCells_[0] << std::endl;
+        std::cout << "i-Index of g out of bounds error for index " << i << " in range " << vIBegin() << " to " << vIEnd() << std::endl;
         throw;  
     }
 
-    if (!(i >= vJBegin() && i < vJEnd()))
+    if (!(j >= vJBegin() && j < vJEnd()))
     {
-        std::cout << "j-Index of g out of bounds error for index " << i << " in range " << 0 << " to " << nCells_[0] << std::endl;
+        std::cout << "j-Index of g out of bounds error for index " << j << " in range " << vJBegin() << " to " << vJEnd() << std::endl;
         throw;  
     }
 

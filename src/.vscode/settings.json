@@ -51,6 +51,7 @@
         "typeinfo": "cpp",
         "bit": "cpp",
         "pressure_solver.h": "c",
-        "output_writer.h": "c"
+        "output_writer.h": "c",
+        "gauss_seidel.h": "c"
     }
 }

@@ -3,15 +3,14 @@
 void Computation::initialize(int argc, char *argv[])
 {
     // parse the parameters
-    Settings settings_;
     settings_.loadFromFile(argv[1]);
     settings_.printSettings();
 
     // calculate
-    std::array<double, 2> meshWidth_;
-    for (int i = 0; i++; i < 2)
+    for (int i = 0; i < 2; i++)
     {
         meshWidth_[i] =  settings_.physicalSize[i] / settings_.nCells[i];
+        std::cout << meshWidth_[i] << settings_.physicalSize[i] << settings_.nCells[i] << std::endl;
     }
 
     // initialize
@@ -44,31 +43,53 @@ void Computation::runSimulation()
 {
     double currentTime = 0;
 
+    std::cout << "+++++++++++++++++++++++" << std::endl;
+    std::cout << "current Time: " << currentTime << std::endl;
+    std::cout << "+++++++++++++++++++++++" << std::endl;
+
     // the steps correspond to the steps in our algorithm in the overleaf or docs/numsim-algos.tex
     // step 1: set the boundary values
     applyBoundaryValues();
 
+    std::cout << "Applied boundary values." << std::endl;
+
     while (currentTime < settings_.endTime)
     {
+        std::cout << "+++++++++++++++++++++++" << std::endl;
+        std::cout << "current Time: " << currentTime << std::endl;
+        std::cout << "+++++++++++++++++++++++" << std::endl;
+
         // step 2: compute time step width
         computeTimeStepWidth();
+
+        std::cout << "Computed time step width: " << dt_ << std::endl;
 
         // step 4: calculate F, G with first setting the boundary conditions of F, G (step 3)
         computePreliminaryVelocities();
 
+        std::cout << "Computed preliminary velocities" << std::endl;
+
         // step 5: compute the right hand side of the pressure equation
         computeRightHandSide();
+
+        std::cout << "Computed right hand side" << std::endl;
 
         // step 6: solve the pressure equation
         computePressure();
 
+        std::cout << "Computed presure" << std::endl;
+
         // step 7: calculate the final velocities
         computeVelocities();
+
+        std::cout << "Computed velocities" << std::endl;
 
         // step 8: reset boundary values
         applyBoundaryValues(); 
         // may be wrong in the reference solution 
         // should then be set at the beginning of the iteration only
+
+        std::cout << "Applied boundary values II." << std::endl;
 
         // step 9: write output
         currentTime += dt_;
@@ -79,16 +100,17 @@ void Computation::runSimulation()
 
 void Computation::computeTimeStepWidth()
 {
-    double boundary_diffusion = 1000;
+    double boundary_diffusion = 0;
     // boundary from diffusion
     if (meshWidth_[0] == meshWidth_[1])
     {
-        double boundary_diffusion = (settings_.re * meshWidth_[0] * meshWidth_[1]) / 4;
+        boundary_diffusion = (settings_.re * meshWidth_[0] * meshWidth_[1]) / 4.;
     } else
     {
         double h2x = meshWidth_[0] * meshWidth_[0];
         double h2y = meshWidth_[1] * meshWidth_[1];
-        double boundary_diffusion = (settings_.re / 2) * (h2x * h2y) * (1/(h2x + h2y));
+        boundary_diffusion = (settings_.re / 2.) * (h2x * h2y) * (1./(h2x + h2y));
+        std::cout << settings_.re << h2x << h2y << std::endl;
     }
 
     // calculate max absolute velocities
@@ -124,6 +146,8 @@ void Computation::computeTimeStepWidth()
 
     // together
     double min_dt = std::min({boundary_diffusion, boundary_convection_u, boundary_convection_v});
+
+    std::cout << "dt boundaries - diffusion: " << boundary_diffusion << " convection_u: " << boundary_convection_u << " convection_v: " << boundary_convection_v << std::endl;
 
     // security factor
     dt_ =  std::min(min_dt * settings_.tau, settings_.maximumDt);
@@ -181,7 +205,7 @@ void Computation::applyBoundaryValues()
     for ( int i = discretization_->uIBegin(); i < discretization_->uIEnd(); i++)
     {
         // bottom
-        discretization_->f(i, discretization_->uJBegin() +1) = discretization_->u(i, discretization_->uJBegin() +1);
+        discretization_->f(i, discretization_->uJBegin()) = discretization_->u(i, discretization_->uJBegin());
         
         // top
         discretization_->f(i, discretization_->uJEnd() -1) = discretization_->u(i, discretization_->uJEnd() -1);
@@ -190,10 +214,10 @@ void Computation::applyBoundaryValues()
     for ( int i = discretization_->vIBegin(); i < discretization_->vIEnd(); i++)
     {
         // bottom
-        discretization_->g(i, discretization_->uJBegin() +1) = discretization_->u(i, discretization_->uJBegin() +1);
+        discretization_->g(i, discretization_->vJBegin()) = discretization_->v(i, discretization_->vJBegin());
         
         // top
-        discretization_->g(i, discretization_->uJEnd() -1) = discretization_->u(i, discretization_->uJEnd() -1);
+        discretization_->g(i, discretization_->vJEnd() -1) = discretization_->v(i, discretization_->vJEnd() -1);
     }
 
     // sides
@@ -202,21 +226,20 @@ void Computation::applyBoundaryValues()
     for ( int j = discretization_->uJBegin(); j < discretization_->uJEnd(); j++)
     {
         // left
-        discretization_->f(discretization_->uIBegin() +1,j) = discretization_->u(discretization_->uIBegin() +1,j);
+        discretization_->f(discretization_->uIBegin(),j) = discretization_->u(discretization_->uIBegin(),j);
 
-        // top
+        // right
         discretization_->f(discretization_->uIEnd() -1,j) = discretization_->u(discretization_->uIEnd() -1,j);
     }
     // set g
     for ( int j = discretization_->vJBegin(); j < discretization_->vJEnd(); j++)
     {
         // left
-        discretization_->g(discretization_->vIBegin() +1,j) = discretization_->v(discretization_->vIBegin() +1,j);
+        discretization_->g(discretization_->vIBegin(),j) = discretization_->v(discretization_->vIBegin(),j);
 
-        // top
+        // right
         discretization_->g(discretization_->vIEnd() -1,j) = discretization_->v(discretization_->vIEnd() -1,j);
     }
-
 }
     
 void Computation::computePreliminaryVelocities()
