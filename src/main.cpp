@@ -13,10 +13,7 @@ int main(int argc, char *argv[])
 
     return EXIT_FAILURE;
   }
-  
-  // get path of parameter file
-  std::string parameterFile = argv[1];
-  
+    
   std::cout << std::endl;
   std::cout << "-------------------------------------------------" << std::endl;
   std::cout << "Parsing paramter file..." << std::endl;
