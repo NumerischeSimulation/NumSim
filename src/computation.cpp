@@ -1,19 +1,10 @@
-pragma once
-
 #include "computation.h"
-#include "pressure_solver/pressure_solver.h"
-#include "discretization/1_discretization.h"
-#include "output_writer/output_writer_paraview.h"
-#include "output_writer/output_writer_text.h"
-
-#include <iostream>  // for cout
-#include <memory>
 
 void Computation::initialize(int argc, char *argv[])
 {
     // parse the parameters
-    settings_= Settings::Settings();
-    settings_.loadFromFile(argv[1])
+    Settings settings_;
+    settings_.loadFromFile(argv[1]);
     settings_.printSettings();
 
     // calculate
@@ -46,7 +37,7 @@ void Computation::initialize(int argc, char *argv[])
     // misc
     double dt_ = settings_.maximumDt;
     outputWriterParaview_ = std::make_unique<OutputWriterParaview>(discretization_);
-    outputWriterText_ = std::make_unique<OutputWriter>(discretization_);
+    outputWriterText_ = std::make_unique<OutputWriterText>(discretization_);
 }
 
 void Computation::runSimulation()
@@ -63,16 +54,16 @@ void Computation::runSimulation()
         computeTimeStepWidth();
 
         // step 4: calculate F, G with first setting the boundary conditions of F, G (step 3)
-        computePreliminaryVelocities()
+        computePreliminaryVelocities();
 
         // step 5: compute the right hand side of the pressure equation
-        computeRightHandSide()
+        computeRightHandSide();
 
         // step 6: solve the pressure equation
-        computePressure()
+        computePressure();
 
         // step 7: calculate the final velocities
-        computeVelocities()
+        computeVelocities();
 
         // step 8: reset boundary values
         applyBoundaryValues(); 
@@ -84,14 +75,11 @@ void Computation::runSimulation()
         outputWriterParaview_->writeFile(currentTime);
         outputWriterText_->writeFile(currentTime);
     }
-
-    // write output
-    outputWriterParaview_->writePressureFile();
-    outputWriterText_->writePressureFile();
 }
 
 void Computation::computeTimeStepWidth()
 {
+    double boundary_diffusion = 1000;
     // boundary from diffusion
     if (meshWidth_[0] == meshWidth_[1])
     {
@@ -103,9 +91,34 @@ void Computation::computeTimeStepWidth()
         double boundary_diffusion = (settings_.re / 2) * (h2x * h2y) * (1/(h2x + h2y));
     }
 
+    // calculate max absolute velocities
+    double v_max = 0;
+    for ( int j = discretization_->vJBegin(); j < discretization_->vJEnd(); j++)
+    { 
+        for ( int i = discretization_->vIBegin(); i < discretization_->vIEnd(); i++)
+        {
+            double value = std::abs(discretization_->v(i,j));
+            if (value > v_max)
+            {
+                v_max = value;
+            }
+        }
+    }
+
+    double u_max = 0;
+    for ( int j = discretization_->uJBegin(); j < discretization_->uJEnd(); j++)
+    { 
+        for ( int i = discretization_->uIBegin(); i < discretization_->uIEnd(); i++)
+        {
+            double value = std::abs(discretization_->u(i,j));
+            if (value > u_max)
+            {
+                u_max = value;
+            }
+        }
+    }
+
     // boundary from convection
-    double u_max = std::max(std::abs(discretization_->u.min()), std::abs(discretization_->u.max()));
-    double v_max = std::max(std::abs(discretization_->v.min()), std::abs(discretization_->v.max()));
     double boundary_convection_u = meshWidth_[0] / u_max;
     double boundary_convection_v = meshWidth_[1] / v_max;
 
@@ -113,7 +126,7 @@ void Computation::computeTimeStepWidth()
     double min_dt = std::min({boundary_diffusion, boundary_convection_u, boundary_convection_v});
 
     // security factor
-    dt_ =  std::min({min_dt * settings_.tau, settings_.maximumDt});
+    dt_ =  std::min(min_dt * settings_.tau, settings_.maximumDt);
 }
     
 void Computation::applyBoundaryValues()
@@ -160,7 +173,7 @@ void Computation::applyBoundaryValues()
     }
 
     // set p
-    pressureSolver_.setBoundaryValues()
+    pressureSolver_->setBoundaryValues();
 
     // set f,g boundary conditions the same as u,v
     // bottom and top
@@ -248,7 +261,7 @@ void Computation::computeRightHandSide()
     
 void Computation::computePressure()
 {
-    pressureSolver_.solve();
+    pressureSolver_->solve();
 }
 
 void Computation::computeVelocities()

@@ -1,20 +1,17 @@
-#pragma once
-
-#include <memory>
-#include <iostream>  // for cout
-
 #include "0_staggered_grid.h"
-#include "storage/field_variable.h"
 
-StaggeredGrid::StaggeredGrid(std::array<int,2> nCells, std::array<double,2> meshWidth)
-: meshWidth_(meshWidth),
-  nCells_(nCells),
-  u_(std::array<int,2>{{nCells[0] + 2, nCells[0] + 2}}, std::array<double,2>{{meshWidth[0],    meshWidth[1]/2.}}, meshWidth),
-  v_(std::array<int,2>{{nCells[0] + 2, nCells[0] + 2}}, std::array<double,2>{{meshWidth[0]/2., meshWidth[1]}},    meshWidth),
-  p_(std::array<int,2>{{nCells[0] + 2, nCells[0] + 2}}, std::array<double,2>{{meshWidth[0]/2., meshWidth[1]/2.}}, meshWidth),
-  f_(std::array<int,2>{{nCells[0] + 2, nCells[0] + 2}}, std::array<double,2>{{meshWidth[0],    meshWidth[1]/2.}}, meshWidth),
-  g_(std::array<int,2>{{nCells[0] + 2, nCells[0] + 2}}, std::array<double,2>{{meshWidth[0]/2., meshWidth[1]}},    meshWidth)
+StaggeredGrid::StaggeredGrid(std::array<int,2> nCells, std::array<double,2> meshWidth) :
+  u_({nCells[0] + 2, nCells[1] + 2}, {meshWidth[0],    meshWidth[1]/2.}, meshWidth),
+  v_({nCells[0] + 2, nCells[1] + 2}, {meshWidth[0]/2., meshWidth[1]},    meshWidth),
+  p_({nCells[0] + 2, nCells[1] + 2}, {meshWidth[0]/2., meshWidth[1]/2.}, meshWidth),
+  f_({nCells[0] + 2, nCells[1] + 2}, {meshWidth[0],    meshWidth[1]/2.}, meshWidth),
+  g_({nCells[0] + 2, nCells[1] + 2}, {meshWidth[0]/2., meshWidth[1]},    meshWidth),
+  rhs_({nCells[0] + 2, nCells[1] + 2}, {meshWidth[0]/2., meshWidth[1]/2.}, meshWidth),
+  meshWidth_(meshWidth),
+  nCells_(nCells)
+
 {
+
 }
 
 // getter for parameters
@@ -34,12 +31,12 @@ const FieldVariable& StaggeredGrid::u() const
     return u_;
 }
 
-const FieldVariable& StaggeredGrid::u() const
+const FieldVariable& StaggeredGrid::v() const
 {
     return v_;
 }
 
-const FieldVariable& StaggeredGrid::u() const
+const FieldVariable& StaggeredGrid::p() const
 {
     return p_;
 }

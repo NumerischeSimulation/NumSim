@@ -1,5 +1,3 @@
-#pragma once
-
 #include "discretization/2_central_differences.h"
 
 //! compute the 1st derivative ∂ u^2 / ∂x
