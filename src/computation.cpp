@@ -57,6 +57,10 @@ void Computation::runSimulation()
 
     while (currentTime < settings_.endTime)
     {
+        std::cout << "+++++++++++++++++++++++" << std::endl;
+        std::cout << "current Time: " << currentTime << std::endl;
+        std::cout << "+++++++++++++++++++++++" << std::endl;
+
         // step 2: compute time step width
         computeTimeStepWidth();
 
@@ -112,6 +116,7 @@ void Computation::runSimulation()
 void Computation::computeTimeStepWidth()
 {
     double boundary_diffusion = 0.;
+
     // boundary from diffusion
     if (meshWidth_[0] == meshWidth_[1])
     {
@@ -121,6 +126,7 @@ void Computation::computeTimeStepWidth()
         double h2x = meshWidth_[0] * meshWidth_[0];
         double h2y = meshWidth_[1] * meshWidth_[1];
         boundary_diffusion = (settings_.re / 2.) * (h2x * h2y) * (1./(h2x + h2y));
+      
         std::cout << settings_.re << " " << h2x << " " << h2y << std::endl;
     }
 
