@@ -10,7 +10,7 @@ void Computation::initialize(int argc, char *argv[])
     for (int i = 0; i < 2; i++)
     {
         meshWidth_[i] =  settings_.physicalSize[i] / settings_.nCells[i];
-        std::cout << meshWidth_[i] << settings_.physicalSize[i] << settings_.nCells[i] << std::endl;
+        std::cout << "computed mesh width " << i << ": " << meshWidth_[i] << " " << settings_.physicalSize[i] << " " << settings_.nCells[i] << std::endl;
     }
 
     // initialize
@@ -34,9 +34,11 @@ void Computation::initialize(int argc, char *argv[])
     }   
 
     // misc
-    double dt_ = settings_.maximumDt;
+    dt_ = 0.;
+
+    // initialize output writer
     outputWriterParaview_ = std::make_unique<OutputWriterParaview>(discretization_);
-    outputWriterText_ = std::make_unique<OutputWriterText>(discretization_);
+    outputWriterText_     = std::make_unique<OutputWriterText>(discretization_);
 }
 
 void Computation::runSimulation()
@@ -53,6 +55,10 @@ void Computation::runSimulation()
 
     std::cout << "Applied boundary values." << std::endl;
 
+    // step 9: write output
+    outputWriterParaview_->writeFile(currentTime);
+    outputWriterText_->writeFile(currentTime);
+
     while (currentTime < settings_.endTime)
     {
         std::cout << "+++++++++++++++++++++++" << std::endl;
@@ -63,6 +69,20 @@ void Computation::runSimulation()
         computeTimeStepWidth();
 
         std::cout << "Computed time step width: " << dt_ << std::endl;
+
+        // set the dt such that the simulation stops exactly on endTime
+        if (currentTime + dt_ > settings_.endTime)
+        {
+            dt_ = settings_.endTime - currentTime;
+
+            std::cout << std::endl;
+            std::cout << "Final time step!" << std::endl;
+        }
+        currentTime += dt_;
+    
+        std::cout << "+++++++++++++++++++++++" << std::endl;
+        std::cout << "current Time: " << currentTime << std::endl;
+        std::cout << "+++++++++++++++++++++++" << std::endl;
 
         // step 4: calculate F, G with first setting the boundary conditions of F, G (step 3)
         computePreliminaryVelocities();
@@ -92,7 +112,6 @@ void Computation::runSimulation()
         std::cout << "Applied boundary values II." << std::endl;
 
         // step 9: write output
-        currentTime += dt_;
         outputWriterParaview_->writeFile(currentTime);
         outputWriterText_->writeFile(currentTime);
     }
@@ -100,7 +119,8 @@ void Computation::runSimulation()
 
 void Computation::computeTimeStepWidth()
 {
-    double boundary_diffusion = 0;
+    double boundary_diffusion = 0.;
+
     // boundary from diffusion
     if (meshWidth_[0] == meshWidth_[1])
     {
@@ -110,24 +130,12 @@ void Computation::computeTimeStepWidth()
         double h2x = meshWidth_[0] * meshWidth_[0];
         double h2y = meshWidth_[1] * meshWidth_[1];
         boundary_diffusion = (settings_.re / 2.) * (h2x * h2y) * (1./(h2x + h2y));
-        std::cout << settings_.re << h2x << h2y << std::endl;
+      
+        std::cout << settings_.re << " " << h2x << " " << h2y << std::endl;
     }
 
     // calculate max absolute velocities
-    double v_max = 0;
-    for ( int j = discretization_->vJBegin(); j < discretization_->vJEnd(); j++)
-    { 
-        for ( int i = discretization_->vIBegin(); i < discretization_->vIEnd(); i++)
-        {
-            double value = std::abs(discretization_->v(i,j));
-            if (value > v_max)
-            {
-                v_max = value;
-            }
-        }
-    }
-
-    double u_max = 0;
+    double u_max = 0.;
     for ( int j = discretization_->uJBegin(); j < discretization_->uJEnd(); j++)
     { 
         for ( int i = discretization_->uIBegin(); i < discretization_->uIEnd(); i++)
@@ -136,6 +144,19 @@ void Computation::computeTimeStepWidth()
             if (value > u_max)
             {
                 u_max = value;
+            }
+        }
+    }
+
+    double v_max = 0.;
+    for ( int j = discretization_->vJBegin(); j < discretization_->vJEnd(); j++)
+    { 
+        for ( int i = discretization_->vIBegin(); i < discretization_->vIEnd(); i++)
+        {
+            double value = std::abs(discretization_->v(i,j));
+            if (value > v_max)
+            {
+                v_max = value;
             }
         }
     }

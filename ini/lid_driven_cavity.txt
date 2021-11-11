@@ -20,8 +20,8 @@ dirichletRightX  = 0
 dirichletRightY  = 0
 
 # Discretization parameters
-nCellsX = 62          # number of cells in x and y direction
-nCellsY = 62
+nCellsX = 20          # number of cells in x and y direction
+nCellsY = 20
 useDonorCell = true   # if donor cell discretization should be used, possible values: true false
 alpha = 0.5           # factor for donor-cell scheme, 0 is equivalent to central differences
 tau = 0.5             # safety factor for time step width
@@ -32,3 +32,4 @@ pressureSolver = SOR  # which pressure solver to use, possible values: GaussSeid
 omega = 1.6           # overrelaxation factor, only for SOR solver
 epsilon = 1e-5        # tolerance for 2-norm of residual
 maximumNumberOfIterations = 1e4    # maximum number of iterations in the solver
+
