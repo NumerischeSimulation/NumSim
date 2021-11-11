@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <cmath>
+#include <cassert>
 
 #include "storage/array2D.h"
 
