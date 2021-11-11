@@ -50,17 +50,12 @@ void Computation::runSimulation()
     std::cout << "+++++++++++++++++++++++" << std::endl;
 
     // the steps correspond to the steps in our algorithm in the overleaf or docs/numsim-algos.tex
-    // step 1: set the boundary values
-    applyBoundaryValues();
-
-    std::cout << "Applied boundary values." << std::endl;
-
-    // step 9: write output
-    outputWriterParaview_->writeFile(currentTime);
-    outputWriterText_->writeFile(currentTime);
-
     while (currentTime < settings_.endTime)
     {
+        // step 1: set the boundary values
+        applyBoundaryValues();
+        std::cout << "Applied boundary values." << std::endl;
+
         std::cout << "+++++++++++++++++++++++" << std::endl;
         std::cout << "current Time: " << currentTime << std::endl;
         std::cout << "+++++++++++++++++++++++" << std::endl;
@@ -103,13 +98,6 @@ void Computation::runSimulation()
         computeVelocities();
 
         std::cout << "Computed velocities" << std::endl;
-
-        // step 8: reset boundary values
-        applyBoundaryValues(); 
-        // may be wrong in the reference solution 
-        // should then be set at the beginning of the iteration only
-
-        std::cout << "Applied boundary values II." << std::endl;
 
         // step 9: write output
         outputWriterParaview_->writeFile(currentTime);
@@ -216,9 +204,6 @@ void Computation::applyBoundaryValues()
         // right
         discretization_->v(discretization_->vIEnd() - 1,j) = 2. * settings_.dirichletBcRight[1] - discretization_->v(discretization_->vIEnd()  - 2, j);
     }
-
-    // set p
-    pressureSolver_->setBoundaryValues();
 
     // set f,g boundary conditions the same as u,v
     // bottom and top
@@ -327,4 +312,89 @@ void Computation::computeVelocities()
             discretization_->v(i,j) = discretization_->g(i,j) - dt_ * discretization_->computeDpDy(i, j);
         }
     }
+}
+
+void Computation::runTest()
+{
+    std::cout << settings_.pressureSolver << " " << settings_.useDonorCell <<std::endl;
+    //test pressure solver
+    //test case 1: rhs = 0, p = const.
+    std::cout << "+++++++++++++++++++++++++++++++++++ TASK 1" << std::endl;
+    int fieldWidth = 9;
+     for (int j = discretization_->pJEnd()-1; j >= discretization_->pJBegin(); j--)
+     {
+       std::cout << std::setw(fieldWidth) << j << "|";
+       for (int i = discretization_->pIBegin(); i < discretization_->pIEnd(); i++)
+       {
+           std::cout<< std::setw(fieldWidth) << std::setprecision(fieldWidth-6) << discretization_->p(i,j);
+       }
+       std::cout << std::endl;
+     }
+     std::cout << std::endl;
+
+     for ( int j = discretization_->pJBegin() +1; j < discretization_->pJEnd() -1; j++)
+    { 
+        for ( int i = discretization_->pIBegin() +1; i < discretization_->pIEnd() -1; i++)
+        {
+            discretization_->rhs(i,j) = 0;
+            discretization_->p(i,j) = 1;
+
+
+        }
+    }    
+    std::cout << "+++++++++++++++++++++++++++++++++++" << std::endl;
+
+    pressureSolver_->solve();
+   for (int j = discretization_->pJEnd()-1; j >= discretization_->pJBegin(); j--)
+     {
+       std::cout << std::setw(fieldWidth) << j << "|";
+       for (int i = discretization_->pIBegin(); i < discretization_->pIEnd(); i++)
+       {
+           std::cout<< std::setw(fieldWidth) << std::setprecision(fieldWidth-6) << discretization_->p(i,j);
+       }
+       std::cout << std::endl;
+     }
+     std::cout << std::endl;
+
+     std::cout << settings_.pressureSolver << " " << settings_.useDonorCell <<std::endl;
+
+
+    //test pressure solver
+    //test case 2: rhs = const., p = 0
+    std::cout << "+++++++++++++++++++++++++++++++++++ TASK 2" << std::endl;
+     for (int j = discretization_->pJEnd()-1; j >= discretization_->pJBegin(); j--)
+     {
+       std::cout << std::setw(fieldWidth) << j << "|";
+       for (int i = discretization_->pIBegin(); i < discretization_->pIEnd(); i++)
+       {
+           std::cout<< std::setw(fieldWidth) << std::setprecision(fieldWidth-6) << discretization_->p(i,j);
+       }
+       std::cout << std::endl;
+     }
+     std::cout << std::endl;
+
+     for ( int j = discretization_->pJBegin() +1; j < discretization_->pJEnd() -1; j++)
+    { 
+        for ( int i = discretization_->pIBegin() +1; i < discretization_->pIEnd() -1; i++)
+        {
+            discretization_->rhs(i,j) = 1;
+            discretization_->p(i,j) = 0;
+        }
+    }    
+     std::cout << "+++++++++++++++++++++++++++++++++++" << std::endl;
+
+    pressureSolver_->solve();
+   for (int j = discretization_->pJEnd()-1; j >= discretization_->pJBegin(); j--)
+     {
+       std::cout << std::setw(fieldWidth) << j << "|";
+       for (int i = discretization_->pIBegin(); i < discretization_->pIEnd(); i++)
+       {
+           std::cout<< std::setw(fieldWidth) << std::setprecision(fieldWidth-6) << discretization_->p(i,j);
+       }
+       std::cout << std::endl;
+     }
+     std::cout << std::endl;
+
+
+     
 }

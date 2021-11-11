@@ -23,7 +23,7 @@ void SOR::solve()
     // iterate through grid 
      while( iteration < maximumNumberOfIterations_ && res > epsilon_)
     {
-        double ressum;
+        double ressum = 0;
         
         for ( int j = discretization_->pJBegin() +1; j < discretization_->pJEnd() -1; j++)
         { 

@@ -13,15 +13,17 @@ double FieldVariable::interpolateAt(double x, double y) const
     const double dy = meshWidth_[1]; // mesh width in y dir. 
 
     // indicies of (cell (i,j) in which the point (x,y) lies
-    const int iLeftEdge  = (int) std::floor((x + origin_[0]) / dx); 
-    const int jLowerEdge = (int) std::floor((y + origin_[1]) / dy); 
+    int iLeftEdge  = (int) std::floor((x - origin_[0]) / dx); 
+    int jLowerEdge = (int) std::floor((y - origin_[1]) / dy); 
 
     // shift right and upper boundaries so that they don't use cells outside of the grid
-    if (iLeftEdge == this->size()[0] - 1) {
-        iLeftEdge = iLeftEdge - 1; // shift it one column to the left
+    if (iLeftEdge <= 0)
+    {
+        iLeftEdge = 0; // shift it one column to the right
     }
-    if (jLowerEdge == this->size()[1] - 1) {
-        jLowerEdge = jLowerEdge - 1; // shift it down
+    if (jLowerEdge <= 0) 
+    {
+        jLowerEdge = 0; // shift it up
     }
     // relative position of x and y in the cell
     // one cell: |<-xr1-> x <-xr2->|
