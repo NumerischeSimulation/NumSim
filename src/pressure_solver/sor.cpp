@@ -60,5 +60,6 @@ void SOR::solve()
         setBoundaryValues();
     }
     
+    std::cout << "SOR: " << iteration << " with a residuum of " << res << " from target " << epsilon_ << std::endl;
        
 }

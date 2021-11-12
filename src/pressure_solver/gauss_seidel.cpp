@@ -51,4 +51,7 @@ void GaussSeidel::solve()
         //set new boundary values
         setBoundaryValues();
     }   
+
+    std::cout << "Gauss-Seidel: " << iteration << " with a residuum of " << res << " from target " << epsilon_ << std::endl;
+
 }

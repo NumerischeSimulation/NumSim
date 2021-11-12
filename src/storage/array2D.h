@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <array>
+#include <iostream>
 
 /** This class represents a 2D array of double values.
  *  Internally they are stored consecutively in memory.

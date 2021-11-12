@@ -15,8 +15,12 @@ std::array<int,2> Array2D::size() const
   return size_;
 }
 
-double &Array2D::operator()(int i, int j)
+double &Array2D::operator()(int x, int y)
 {
+  // std::cout << "x " << x << "y " << y << std::endl;
+  int i = x;
+  int j = y;
+
   const int index = j*size_[0] + i;
 
   // assert that indices are in range
@@ -27,8 +31,12 @@ double &Array2D::operator()(int i, int j)
   return data_[index];
 }
 
-double Array2D::operator()(int i, int j) const
+double Array2D::operator()(int x, int y) const
 {
+  // std::cout << "x " << x << "y " << y << std::endl;
+  int i = x;
+  int j = y;
+
   const int index = j*size_[0] + i;
 
   // assert that indices are in range
