@@ -13,39 +13,34 @@ double FieldVariable::interpolateAt(double x, double y) const // with x, y only 
     const double dy = meshWidth_[1]; // mesh width in y dir. 
 
     // indicies of (cell (i,j) in which the point (x,y) lies
-    int iLeftEdge  = (int) std::floor((x - origin_[0]) / dx); // -1 for  neg idx??
-    int jLowerEdge = (int) std::floor((y - origin_[1]) / dy); 
+    int iLeftEdge  = (int) std::floor((x + origin_[0]) / dx); // -1 for  neg idx??
+    int jLowerEdge = (int) std::floor((y + origin_[1]) / dy); 
 
-    /* // shift right and upper boundaries so that they don't use cells outside of the grid
-    if (iLeftEdge <= 0)
+
+    
+    //  shift right and upper boundaries so that they don't use cells outside of the grid
+    if (iLeftEdge >= (*this).size_[0] -1)
     {
-        iLeftEdge = 0; // shift it one column to the right
+        iLeftEdge = iLeftEdge -1; // shift it one column to the right
     }
-    if (jLowerEdge <= 0) 
+    if (jLowerEdge >= (*this).size_[1] -1) 
     {
-        jLowerEdge = 0; // shift it up
-    } */
+        jLowerEdge = jLowerEdge -1; // shift it down
+    } 
+    
+
+
     // relative position of x and y in the cell
     // one cell: |<-xr1-> x <-xr2->|
     //           |<--    dx      ->|
-    const double xr1 = x  - (meshWidth_[0]*iLeftEdge + origin_[0]);   // relative position of x from left edge
-    const double yr1 = y  - (meshWidth_[1]*jLowerEdge + origin_[1]);   // relative poistion of y from lower edge
+    const double xr1 = x  - (meshWidth_[0]*iLeftEdge);   // relative position of x from left edge
+    const double yr1 = y  - (meshWidth_[1]*jLowerEdge);   // relative poistion of y from lower edge
     const double xr2 = dx - xr1; // distance right_edge - x
     const double yr2 = dy - yr1; // distance upper edge - y
 
     // transform to x, y coordinates when directly accessing the array2D
-    int xLeftEdge = iLeftEdge +1;
-    int yLowerEdge = jLowerEdge +1;
-
-    // when on the boundary, shift
-    if (xLeftEdge == size_[0] - 1)
-    {
-        xLeftEdge -=1;
-    }
-   if (yLowerEdge == size_[1] - 1)
-    {
-        yLowerEdge -=1;
-    }
+    int xLeftEdge = iLeftEdge;
+    int yLowerEdge = jLowerEdge;
 
     // get values at corner points
     const double f_lowerLeft  = (*this)(xLeftEdge,     yLowerEdge);

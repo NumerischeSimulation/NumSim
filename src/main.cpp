@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
   computation.runSimulation();
 
   // test some stuff
-  // computation.runTest();
+  //computation.runTest();
 
   std::cout << "-------------------------------------------------" << std::endl;
   

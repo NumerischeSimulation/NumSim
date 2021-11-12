@@ -20,8 +20,11 @@ void SOR::solve()
     int iteration = 0;
     double res = 10000000.; // random large value
 
+    //set new boundary values
+    setBoundaryValues();
+
     // iterate through grid 
-     while( iteration < maximumNumberOfIterations_ && res > epsilon_)
+     while( iteration < maximumNumberOfIterations_ && res > std::pow(epsilon_,2))
     {
         
         // one solver iteration
@@ -52,7 +55,7 @@ void SOR::solve()
         }
         
         //calculate residual
-        res = std::sqrt(ressum/(nCellsx * nCellsy));
+        res = ressum/(nCellsx * nCellsy);
 
         iteration +=1;
         
@@ -60,6 +63,6 @@ void SOR::solve()
         setBoundaryValues();
     }
     
-    std::cout << "SOR: " << iteration << " with a residuum of " << res << " from target " << epsilon_ << std::endl;
+    std::cout << "SOR: " << iteration << " with a residuum of " << res << " from target " << std::pow(epsilon_,2) << std::endl;
        
 }

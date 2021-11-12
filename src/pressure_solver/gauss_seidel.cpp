@@ -15,6 +15,9 @@ void GaussSeidel::solve()
     int iteration = 0;
     double res = 10000000.; // random large value
 
+    //set new boundary values
+    setBoundaryValues();
+
     // iterate through grid 
     while( iteration < maximumNumberOfIterations_ && res > epsilon_)
     {    
