@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
   
   std::cout << std::endl;
   std::cout << "-------------------------------------------------" << std::endl;
-  std::cout << "Starting driven cavitiy simulation ..." << std::endl;
+  std::cout << "Starting simulation ..."  << std::endl;
   std::cout << std::endl;
   
   // // start simulating

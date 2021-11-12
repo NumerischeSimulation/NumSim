@@ -46,7 +46,7 @@ void Computation::runSimulation()
     double currentTime = 0;
 
     std::cout << "+++++++++++++++++++++++" << std::endl;
-    std::cout << "current Time: " << currentTime << std::endl;
+    std::cout << "Starting at time: " << currentTime << std::endl;
     std::cout << "+++++++++++++++++++++++" << std::endl;
 
     // the steps correspond to the steps in our algorithm in the overleaf or docs/numsim-algos.tex
@@ -54,11 +54,7 @@ void Computation::runSimulation()
     {
         // step 1: set the boundary values
         applyBoundaryValues();
-        std::cout << "Applied boundary values." << std::endl;
-
-        std::cout << "+++++++++++++++++++++++" << std::endl;
-        std::cout << "current Time: " << currentTime << std::endl;
-        std::cout << "+++++++++++++++++++++++" << std::endl;
+        std::cout << "Applied boundary values for u/v and F/G." << std::endl;
 
         // step 2: compute time step width
         computeTimeStepWidth();
@@ -74,7 +70,7 @@ void Computation::runSimulation()
             std::cout << "Final time step!" << std::endl;
         }
         currentTime += dt_;
-    
+
         std::cout << "+++++++++++++++++++++++" << std::endl;
         std::cout << "current Time: " << currentTime << std::endl;
         std::cout << "+++++++++++++++++++++++" << std::endl;
@@ -281,8 +277,8 @@ void Computation::computeRightHandSide()
     { 
         for ( int i = discretization_->pIBegin() +1; i < discretization_->pIEnd() -1; i++)
         {
-            double difference_f = (discretization_->f(i,j) - discretization_->f(i-1,j)) / meshWidth_[0];
-            double difference_g = (discretization_->g(i,j) - discretization_->g(i,j-1)) / meshWidth_[1];
+            double difference_f = (discretization_->f(i,j) - discretization_->f(i-1,j)) / discretization_->dx();
+            double difference_g = (discretization_->g(i,j) - discretization_->g(i,j-1)) / discretization_->dy();
             discretization_->rhs(i,j) = (1 / dt_) * (difference_f + difference_g);
         }
     }
