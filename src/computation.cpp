@@ -253,8 +253,8 @@ void Computation::computePreliminaryVelocities()
         {
             double diffusion = discretization_->computeD2uDx2(i,j) + discretization_->computeD2uDy2(i,j);
             double convection = - discretization_->computeDu2Dx(i,j) - discretization_->computeDuvDy(i,j);
-            double sum = diffusion + convection + settings_.g[0];
-            discretization_->f(i,j) = discretization_->u(i, j) + dt_ * (1 / settings_.re) * sum;
+            double sum =  ((1. / settings_.re) * diffusion) + convection + settings_.g[0];
+            discretization_->f(i,j) = discretization_->u(i, j) + dt_ *  sum;
         }
     }
 
@@ -265,8 +265,8 @@ void Computation::computePreliminaryVelocities()
         {
             double diffusion = discretization_->computeD2vDx2(i,j) + discretization_->computeD2vDy2(i,j);
             double convection = - discretization_->computeDuvDx(i,j) - discretization_->computeDv2Dy(i,j);
-            double sum = diffusion + convection + settings_.g[1];
-            discretization_->g(i,j) = discretization_->v(i, j) + dt_ * (1 / settings_.re) * sum;
+            double sum = ((1. / settings_.re) * diffusion) + convection + settings_.g[1];
+            discretization_->g(i,j) = discretization_->v(i, j) + dt_ * sum;
         }
     }
 }
