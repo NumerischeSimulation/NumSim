@@ -52,7 +52,7 @@ double FieldVariable::interpolateAt(double x, double y) const // with x, y only 
     const double f_intp = (f_lowerLeft * xr2 * yr2 
                         + f_lowerRight * xr1 * yr2
                         + f_upperLeft  * xr2 * yr1
-                        + f_upperRight * xr1 * xr1) / (dx * dy);
+                        + f_upperRight * xr1 * yr1) / (dx * dy);
 
 return f_intp;
 

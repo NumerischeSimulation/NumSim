@@ -27,7 +27,7 @@ void SOR::solve()
    
     
     
-     setBoundaryValues();
+     // setBoundaryValues();
 
 
     // iterate through grid 
