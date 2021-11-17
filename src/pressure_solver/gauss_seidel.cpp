@@ -13,47 +13,33 @@ void GaussSeidel::solve()
     const double dy2 = dy * dy;
 
     int iteration = 0;
-    double res = 10000000.; // random large value
+    double res = calculateResidual(); 
 
-    //set new boundary values
-    setBoundaryValues();
-
-    // iterate through grid 
-    while( iteration < maximumNumberOfIterations_ && res > epsilon_)
-    {    
-        for ( int j = discretization_->pJBegin() +1; j < discretization_->pJEnd() -1; j++)
-        { 
-            for ( int i = discretization_->pIBegin() +1; i < discretization_->pIEnd() -1; i++)
-            {
-            double sum_x = (discretization_->p(i+1, j) + discretization_->p(i-1, j)) / (dx2);
-            double sum_y = (discretization_->p(i, j+1) + discretization_->p(i, j-1)) / (dy2);    
-            discretization_->p(i, j) = (dx2 * dy2) / ( 2 * (dx2 + dy2)) *(sum_x + sum_y - discretization_->rhs(i, j));
-            }
-        }
-
-        // compute local residuals after one complete iteration
-        double ressum = 0.;
+    
+     // iterate through grid 
+     while( iteration < maximumNumberOfIterations_ && res > pow(epsilon_,2))
+    {
         
-        for ( int j = discretization_->pJBegin() +1; j < discretization_->pJEnd() -1; j++)
+        // one solver iteration
+        for ( int i = discretization_->pIBegin() +1; i < discretization_->pIEnd() -1; i++)
         { 
-            for ( int i = discretization_->pIBegin() +1; i < discretization_->pIEnd() -1; i++)
+            for ( int j = discretization_->pJBegin() +1; j < discretization_->pJEnd() -1; j++)
             {
-                // calculate residual
-                double pxx = (discretization_->p(i+1, j) - 2*discretization_->p(i,j) + discretization_->p(i-1, j)) / (dx2);
-                double pyy = (discretization_->p(i, j+1) - 2*discretization_->p(i,j) + discretization_->p(i, j-1)) / (dy2);
-
-                double resij = discretization_->rhs(i, j) - pxx - pyy;   
-                ressum = ressum + resij * resij;  
+               double sum_x = (discretization_->p(i+1, j) + discretization_->p(i-1, j)) / (dx2);
+               double sum_y = (discretization_->p(i, j+1) + discretization_->p(i, j-1)) / (dy2);
+               discretization_->p(i, j) =  (dx2 * dy2) / ( 2 * (dx2 + dy2)) * (sum_x + sum_y - discretization_->rhs(i, j));
             }
         }
-        //calculate global residual
-        res = std::sqrt(ressum/(nCellsx * nCellsy));
+        
+       
 
         iteration +=1;
-
+        
         //set new boundary values
         setBoundaryValues();
-    }   
+
+        res = calculateResidual();
+    }
 
     std::cout << "Gauss-Seidel: " << iteration << " with a residuum of " << res << " from target " << epsilon_ << std::endl;
 

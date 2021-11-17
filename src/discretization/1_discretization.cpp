@@ -12,7 +12,7 @@ Discretization::Discretization(std::array<int,2> nCells, std::array<double,2> me
 double Discretization::computeD2uDx2(int i, int j) const
 {
     // return 2nd derivative ddu/dxx at right edge of cell i,j
-    return 1./(dx()*dx()) * (u(i-1,j) - 2.*u(i,j) + u(i-1,j));
+    return 1./(dx()*dx()) * (u(i+1,j) - 2.*u(i,j) + u(i-1,j));
 
 }
 

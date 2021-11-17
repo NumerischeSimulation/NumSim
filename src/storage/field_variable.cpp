@@ -33,10 +33,10 @@ double FieldVariable::interpolateAt(double x, double y) const // with x, y only 
     // relative position of x and y in the cell
     // one cell: |<-xr1-> x <-xr2->|
     //           |<--    dx      ->|
-    const double xr1 = x  - (meshWidth_[0]*iLeftEdge);   // relative position of x from left edge
-    const double yr1 = y  - (meshWidth_[1]*jLowerEdge);   // relative poistion of y from lower edge
-    const double xr2 = dx - xr1; // distance right_edge - x
-    const double yr2 = dy - yr1; // distance upper edge - y
+    const double xr1 = x  - ((meshWidth_[0]*iLeftEdge) - origin_[0]);   // relative position of x from left edge
+    const double yr1 = y  - ((meshWidth_[1]*jLowerEdge) - origin_[1]);   // relative poistion of y from lower edge
+    const double xr2 = dx - xr1;   // distance right_edge - x
+    const double yr2 = dy - yr1;   // distance upper edge - y
 
     // transform to x, y coordinates when directly accessing the array2D
     int xLeftEdge = iLeftEdge;
