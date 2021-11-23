@@ -1,6 +1,7 @@
 # custom
 .vscode/**
 build/**
+src/build/**
 out/**
 calculations/**
 # docs/** # will not be run often

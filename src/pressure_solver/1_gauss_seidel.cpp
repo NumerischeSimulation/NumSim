@@ -1,4 +1,4 @@
-#include "gauss_seidel.h"
+#include "1_gauss_seidel.h"
 #include <cmath>
 
 void GaussSeidel::solve()

@@ -1,13 +1,19 @@
 #pragma once
 
 #include "settings.h"
+
 #include "discretization/2_central_differences.h"
 #include "discretization/2_donor_cell.h"
-#include "pressure_solver/sor.h"
-#include "pressure_solver/gauss_seidel.h"
+
+#include "pressure_solver/1_sor.h"
+#include "pressure_solver/1_gauss_seidel.h"
+
+#include "storage/field_variable.h"
+
 #include "output_writer/output_writer_paraview.h"
 #include "output_writer/output_writer_text.h"
-#include "storage/field_variable.h"
+#include "output_writer/output_writer_paraview_parallel.h"
+#include "output_writer/output_writer_text_parallel.h"
 
 #include <memory>
 #include <iostream>  // for cout
