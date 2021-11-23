@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.8)
 
 # Define the project name.
-project(numsim)
+project(numsim_parallel)
 
 # Specify the name of the executable (${PROJECT_NAME} which is equal to what was set in the project() command).
 # Also specify the source files.
@@ -23,7 +23,9 @@ add_executable(${PROJECT_NAME}
    storage/array2D.cpp
    storage/field_variable.cpp
   
+   output_writer/output_writer_paraview_parallel.cpp
    output_writer/output_writer_paraview.cpp
+   output_writer/output_writer_text_parallel.cpp
    output_writer/output_writer_text.cpp
    output_writer/output_writer.cpp
    output_writer/write_paraview_output.cpp
@@ -40,6 +42,22 @@ find_package(VTK)
 message("If VTK was found on the system: VTK_FOUND: ${VTK_FOUND}")
 message("The directory of VTK: VTK_DIR: ${VTK_DIR}")
 message("The include directory of VTK: VTK_INCLUDE_DIRS: ${VTK_INCLUDE_DIRS}")
+
+# use external packages for MPI
+find_package(MPI REQUIRED)
+
+include_directories(${MPI_INCLUDE_PATH})
+target_link_libraries(${PROJECT_NAME} ${MPI_LIBRARIES})
+
+if(MPI_COMPILE_FLAGS)
+  set_target_properties(${PROJECT_NAME} PROPERTIES
+    COMPILE_FLAGS "${MPI_COMPILE_FLAGS}")
+endif()
+
+if(MPI_LINK_FLAGS)
+  set_target_properties(${PROJECT_NAME} PROPERTIES
+    LINK_FLAGS "${MPI_LINK_FLAGS}")
+endif()
 
 # If an installation of vtk was found on the system
 if (VTK_FOUND)
