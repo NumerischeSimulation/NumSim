@@ -2,7 +2,7 @@
 #include <cstdlib>
 
 #include "settings.h"
-#include "computation.h"
+#include "computation/0_computation.h"
 
 int main(int argc, char *argv[])
 {

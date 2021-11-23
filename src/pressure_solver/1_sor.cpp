@@ -1,4 +1,4 @@
-#include "sor.h"
+#include "1_sor.h"
 #include <math.h> 
 
 SOR::SOR(std::shared_ptr<Discretization> discretization, double epsilon, int maximumNumberOfIterations, double omega) :
