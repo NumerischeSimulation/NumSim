@@ -2,8 +2,9 @@
 
 #include <memory>
 
-class Partitioning{
-    public: 
+class Partitioning
+{
+public: 
 
     //! construct partitioning
     Partitioning();
@@ -35,8 +36,7 @@ class Partitioning{
     //! return rank number of bottom neighbour, -1 if boundary
     const int ownBottomNeighbour() const;
 
-
-    protected:
+protected:
 
     //! global node offset of lower left cell
     const std::array<int, 2> nodeOffset_;
