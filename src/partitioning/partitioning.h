@@ -1,13 +1,15 @@
 #pragma once
 
 #include <memory>
+#include <cmath>
+#include <mpi.h>
 
 class Partitioning
 {
 public: 
 
     //! construct partitioning
-    Partitioning();
+    Partitioning(int ownRankNo, int nRanks, std:array<int,2> nCells);
 
     //! return the global node offset of lower left corner cell
     const std::array<int,2> nodeOffset() const;
@@ -45,8 +47,13 @@ protected:
     //! number of local cells
     const std::array<int, 2> nCellsLocal_;
 
+    //! own rank
+    const int ownRankNo_;
+    //! global number of ranks
+    const int nRanks_;
+
     //! return rank number of partition neighbours (>0) 
-    //! or -1 if edge lies on domain boundary
+    //! or MPI_PROC_NULL if edge lies on domain boundary
     //! array order <bottom, left, top, right> 
     const std::array<int, 4> partitionNeighbours_;
 };
