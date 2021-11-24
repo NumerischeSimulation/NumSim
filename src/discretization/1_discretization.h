@@ -8,7 +8,7 @@ class Discretization :
 public:
 
   //! construct the object with given number of cells in x and y direction
-  Discretization(std::array<int,2> nCells, std::array<double,2> meshWidth);
+  Discretization(std::array<int,2> nCells, std::array<double,2> meshWidth, std::array<int,4> partitionNeighbours);
 
   //! compute the 1st derivative ∂ u^2 / ∂x
   virtual double computeDu2Dx(int i, int j) const = 0;

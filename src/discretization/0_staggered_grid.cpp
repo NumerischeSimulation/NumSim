@@ -1,14 +1,15 @@
 #include "0_staggered_grid.h"
 
-StaggeredGrid::StaggeredGrid(std::array<int,2> nCells, std::array<double,2> meshWidth) :
-  u_({nCells[0] + 1, nCells[1] + 2},   {0.0,      meshWidth[1]/2.}, meshWidth),
-  v_({nCells[0] + 2, nCells[1] + 1},   {meshWidth[0]/2.,   0.},    meshWidth),
-  p_({nCells[0] + 2, nCells[1] + 2},   {meshWidth[0]/2.,   meshWidth[1]/2.}, meshWidth),
-  f_({nCells[0] + 1, nCells[1] + 2},   {0.,      meshWidth[1]/2.}, meshWidth),
-  g_({nCells[0] + 2, nCells[1] + 1},   {meshWidth[0]/2.,   0.},    meshWidth),
-  rhs_({nCells[0] + 2, nCells[1] + 2}, {meshWidth[0]/2.,   meshWidth[1]/2.}, meshWidth),
+StaggeredGrid::StaggeredGrid(std::array<int,2> nCells, std::array<double,2> meshWidth, std::array<int,4> partitionNeighbours) :
+  u_({nCells[0] + 4, nCells[1] + 4},   {0.0,      meshWidth[1]/2.}, meshWidth),
+  v_({nCells[0] + 4, nCells[1] + 4},   {meshWidth[0]/2.,   0.},    meshWidth),
+  p_({nCells[0] + 4, nCells[1] + 4},   {meshWidth[0]/2.,   meshWidth[1]/2.}, meshWidth),
+  f_({nCells[0] + 4, nCells[1] + 4},   {0.,      meshWidth[1]/2.}, meshWidth),
+  g_({nCells[0] + 4, nCells[1] + 4},   {meshWidth[0]/2.,   0.},    meshWidth),
+  rhs_({nCells[0] + 4, nCells[1] + 4}, {meshWidth[0]/2.,   meshWidth[1]/2.}, meshWidth),
   meshWidth_(meshWidth),
-  nCells_(nCells)
+  nCells_(nCells),
+  partitionNeighbours_(partitionNeighbours)
 {
 
 }
@@ -55,12 +56,20 @@ double StaggeredGrid::dy() const
 // u
 int StaggeredGrid::uIBegin() const
 {
-    return -1;
+    if (partitionNeighbours_[1] == MPI_PROC_NULL) // left
+    {
+        return -1;
+    }
+    return -2;
 }
 
 int StaggeredGrid::uIEnd() const
 {
-    return nCells_[0];
+    if (partitionNeighbours_[3] == MPI_PROC_NULL) // right
+    {
+        return nCells_[0];
+    }
+    return nCells_[0] + 1;
 }
 
 int StaggeredGrid::uJBegin() const
@@ -86,12 +95,20 @@ int StaggeredGrid::vIEnd() const
 
 int StaggeredGrid::vJBegin() const
 {
-    return -1;
+    if (partitionNeighbours_[0] == MPI_PROC_NULL) // bottom
+    {
+        return -1;
+    } 
+    return -2;
 }
 
 int StaggeredGrid::vJEnd() const
 {
-    return nCells_[1];
+    if (partitionNeighbours_[3] == MPI_PROC_NULL) // top
+    {
+        return nCells_[1];
+    }
+    return nCells_[1] + 1;
 }
 
 // p
@@ -133,8 +150,8 @@ double StaggeredGrid::u(int i, int j) const
     }
 
     // transform to x, y
-    int x = i +1;
-    int y = j +1;
+    int x = i +2;
+    int y = j +2;
     return u_(x,y);
 }
 
@@ -154,8 +171,8 @@ double& StaggeredGrid::u(int i, int j)
     }
 
     // transform to x, y
-    int x = i +1;
-    int y = j +1;
+    int x = i +2;
+    int y = j +2;
     return u_(x,y);
 }
 
@@ -176,8 +193,8 @@ double StaggeredGrid::v(int i, int j) const
     }
 
     // transform to x, y
-    int x = i +1;
-    int y = j +1;
+    int x = i +2;
+    int y = j +2;
     return v_(x,y);
 }
 
@@ -197,8 +214,8 @@ double& StaggeredGrid::v(int i, int j)
     }
 
     // transform to x, y
-    int x = i +1;
-    int y = j +1;
+    int x = i +2;
+    int y = j +2;
     return v_(x,y);
 }
 
@@ -219,8 +236,8 @@ double StaggeredGrid::p(int i, int j) const
     }
 
     // transform to x, y
-    int x = i +1;
-    int y = j +1;
+    int x = i +2;
+    int y = j +2;
     return p_(x,y);
 }
 
@@ -240,8 +257,8 @@ double& StaggeredGrid::p(int i, int j)
     }
 
     // transform to x, y
-    int x = i +1;
-    int y = j +1;
+    int x = i +2;
+    int y = j +2;
     return p_(x,y);
 }
 
@@ -262,8 +279,8 @@ double& StaggeredGrid::rhs(int i, int j)
     }
   
     // transform to x, y
-    int x = i +1;
-    int y = j +1;
+    int x = i +2;
+    int y = j +2;
     return rhs_(x,y);
 }
 
@@ -283,8 +300,8 @@ double& StaggeredGrid::f(int i, int j)
     }
 
     // transform to x, y
-    int x = i +1;
-    int y = j +1;
+    int x = i +2;
+    int y = j +2;
     return f_(x,y);
 }
 
@@ -304,7 +321,7 @@ double& StaggeredGrid::g(int i, int j)
     }
 
     // transform to x, y
-    int x = i +1;
-    int y = j +1;
+    int x = i +2;
+    int y = j +2;
     return g_(x,y);
 }
