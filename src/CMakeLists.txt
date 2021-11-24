@@ -8,28 +8,33 @@ project(numsim_parallel)
 add_executable(${PROJECT_NAME}
    
    main.cpp
-   computation.cpp
    settings.cpp
    
-   pressure_solver/pressure_solver.cpp
-   pressure_solver/gauss_seidel.cpp
-   pressure_solver/sor.cpp
+   computation/0_computation.cpp
+   computation/1_computation_parallel.cpp
+   
+   data_transfer/0_data_transfer.cpp
    
    discretization/0_staggered_grid.cpp
    discretization/1_discretization.cpp
    discretization/2_central_differences.cpp
    discretization/2_donor_cell
-  
-   storage/array2D.cpp
-   storage/field_variable.cpp
-  
+   
    output_writer/output_writer_paraview_parallel.cpp
    output_writer/output_writer_paraview.cpp
    output_writer/output_writer_text_parallel.cpp
    output_writer/output_writer_text.cpp
    output_writer/output_writer.cpp
-   output_writer/write_paraview_output.cpp
    
+   partitioning/partitioning.cpp
+   
+   pressure_solver/0_pressure_solver.cpp
+   pressure_solver/1_gauss_seidel.cpp
+   pressure_solver/1_sor.cpp
+   pressure_solver/1_red_black.cpp
+  
+   storage/array2D.cpp
+   storage/field_variable.cpp
 )
 
 # Add the project directory to include directories, to be able to include all project header files from anywhere
