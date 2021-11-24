@@ -180,107 +180,200 @@ void ComputationParallel::computeTimeStepWidth()
     
 void ComputationParallel::applyBoundaryValues()
 {
-    // bottom and top
-    // set u
-    for ( int i = discretization_->uIBegin(); i < discretization_->uIEnd(); i++)
+    // first horizontal pairwise exchange
+    // the even processes: left, then right
+    if ((partitioning.ownRankNo() % 2) == 0)
     {
-        // bottom  
-        discretization_->u(i, discretization_->uJBegin())   = 2. * settings_.dirichletBcBottom[0] - discretization_->u(i, discretization_->uJBegin() +1);
-        
-        // top
-        discretization_->u(i, discretization_->uJEnd() - 1) = 2. * settings_.dirichletBcTop[0] - discretization_->u(i, discretization_->uJEnd() -2);
+        if (partitioning_.ownPartitionContainsLeftBoundary())
+        {
+            applyBoundaryValuesLeft();
+        } else 
+        {
+            // uExchangeVertical
+            // vExchangeVertical
+            // pExchangeVertical
+        }
+        if (partitioning_.ownPartitionContainsRightBoundary())
+        {
+            applyBoundaryValuesRight();
+        } else
+        {
+            // uExchangeVertical
+            // vExchangeVertical
+            // pExchangeVertical
+        }
     }
-    
-    // set v
-    for ( int i = discretization_->vIBegin(); i < discretization_->vIEnd(); i++)
+    // the uneven processes: right, then left
+    if ((partitioning.ownRankNo() % 2) == 1)
     {
-        // bottom
-        discretization_->v(i, discretization_->vJBegin())  = settings_.dirichletBcBottom[1];
-        
-        // top
-        discretization_->v(i, discretization_->vJEnd() - 1) = settings_.dirichletBcTop[1];
+        if (partitioning_.ownPartitionContainsRightBoundary())
+        {
+            applyBoundaryValuesRight();
+        } else
+        {
+            // uExchangeVertical
+            // vExchangeVertical
+            // pExchangeVertical
+        }
+        if (partitioning_.ownPartitionContainsLeftBoundary())
+        {
+            applyBoundaryValuesLeft();
+        } else 
+        {
+            // uExchangeVertical
+            // vExchangeVertical
+            // pExchangeVertical
+        }
     }
 
-    // sides - they take priority then (corners are overwritten)
-    // set u
+    // then vertical pairwise exchange
+    // the even processes: top, then bottom
+    if ((partitioning.ownRankNo() % 2) == 0)
+    {
+        if (partitioning_.ownPartitionContainsTopBoundary())
+        {
+            applyBoundaryValuesTop();
+        } else 
+        {
+            // uExchangeHorizontal
+            // vExchangeHorizontal
+            // pExchangeHorizontal
+        }
+        if (partitioning_.ownPartitionContainsBottomBoundary())
+        {
+            applyBoundaryValuesBottom();
+        } else
+        {
+            // uExchangeHorizontal
+            // vExchangeHorizontal
+            // pExchangeHorizontal
+        }
+    }
+    // the uneven processes: bottom, then top
+    if ((partitioning.ownRankNo() % 2) == 1) 
+    {
+        if (partitioning_.ownPartitionContainsBottomBoundary())
+        {
+            applyBoundaryValuesBottom();
+        } else
+        {
+            // uExchangeHorizontal
+            // vExchangeHorizontal
+            // pExchangeHorizontal
+        }
+        if (partitioning_.ownPartitionContainsTopBoundary())
+        {
+            applyBoundaryValuesTop();
+        } else 
+        {
+            // uExchangeHorizontal
+            // vExchangeHorizontal
+            // pExchangeHorizontal
+        }
+    }
+}
+
+void ComputationParallel::applyBoundaryValuesLeft()
+{
+    // u
     for ( int j = discretization_->uJBegin(); j < discretization_->uJEnd(); j++)
     {
-        // left
         discretization_->u(discretization_->uIBegin(),j)   = settings_.dirichletBcLeft[0];
+        }
+    // v
+    for ( int j = discretization_->vJBegin(); j < discretization_->vJEnd(); j++)
+    {
+        discretization_->v(discretization_->vIBegin() ,j)  = 2. * settings_.dirichletBcLeft[1] - discretization_->v(discretization_->vIBegin() + 1, j);
+    }
+    // f
+    for ( int j = discretization_->uJBegin(); j < discretization_->uJEnd(); j++)
+    {
+        discretization_->f(discretization_->uIBegin(),j) = discretization_->u(discretization_->uIBegin(),j);
+    }
+    // g
+    for ( int j = discretization_->vJBegin(); j < discretization_->vJEnd(); j++)
+    {
+        discretization_->g(discretization_->vIBegin(),j) = discretization_->v(discretization_->vIBegin(),j);
+    }
+}
 
-        // right
+void ComputationParallel::applyBoundaryValuesRight()
+{
+    // u
+    for ( int j = discretization_->uJBegin(); j < discretization_->uJEnd(); j++)
+    {
         discretization_->u(discretization_->uIEnd() -1 ,j) = settings_.dirichletBcRight[0];
     }
-    // set v
+    // v
     for ( int j = discretization_->vJBegin(); j < discretization_->vJEnd(); j++)
     {
-        // left
-        discretization_->v(discretization_->vIBegin() ,j)  = 2. * settings_.dirichletBcLeft[1] - discretization_->v(discretization_->vIBegin() + 1, j);
-
-        // right
         discretization_->v(discretization_->vIEnd() - 1,j) = 2. * settings_.dirichletBcRight[1] - discretization_->v(discretization_->vIEnd()  - 2, j);
     }
-
-    // set f,g boundary conditions the same as u,v
-    // bottom and top
-    // set f
-    for ( int i = discretization_->uIBegin(); i < discretization_->uIEnd(); i++)
-    {
-        // bottom
-        discretization_->f(i, discretization_->uJBegin()) = discretization_->u(i, discretization_->uJBegin());
-        
-        // top
-        discretization_->f(i, discretization_->uJEnd() -1) = discretization_->u(i, discretization_->uJEnd() -1);
-    }
-    // set g
-    for ( int i = discretization_->vIBegin(); i < discretization_->vIEnd(); i++)
-    {
-        // bottom
-        discretization_->g(i, discretization_->vJBegin()) = discretization_->v(i, discretization_->vJBegin());
-        
-        // top
-        discretization_->g(i, discretization_->vJEnd() -1) = discretization_->v(i, discretization_->vJEnd() -1);
-    }
-
-    // sides
-    // calculating first the top/bottom then the sides gives the sides priority as required by the hint
-    // set f
+    // f
     for ( int j = discretization_->uJBegin(); j < discretization_->uJEnd(); j++)
     {
-        // left
-        discretization_->f(discretization_->uIBegin(),j) = discretization_->u(discretization_->uIBegin(),j);
-
-        // right
         discretization_->f(discretization_->uIEnd() -1,j) = discretization_->u(discretization_->uIEnd() -1,j);
     }
-    // set g
+    // g
     for ( int j = discretization_->vJBegin(); j < discretization_->vJEnd(); j++)
     {
-        // left
-        discretization_->g(discretization_->vIBegin(),j) = discretization_->v(discretization_->vIBegin(),j);
-
-        // right
         discretization_->g(discretization_->vIEnd() -1,j) = discretization_->v(discretization_->vIEnd() -1,j);
     }
 }
 
-void ComputationParallel::computeVelocities()
+void ComputationParallel::applyBoundaryValuesBottom()
 {
-    // calculate u
-    for ( int j = discretization_->uJBegin() +1; j < discretization_->uJEnd() -1; j++)
-    { 
-        for ( int i = discretization_->uIBegin() +1; i < discretization_->uIEnd() -1; i++)
-        {
-            discretization_->u(i,j) = discretization_->f(i,j) - dt_ * discretization_->computeDpDx(i, j);
-        }
+    // bottom, set boundaries only in domain as corners belong to size, domain begins at idx 0
+    // u
+    for ( int i = 0; i < discretization_->uIEnd(); i++)
+    {
+        discretization_->u(i, discretization_->uJBegin())   = 2. * settings_.dirichletBcBottom[0] - discretization_->u(i, discretization_->uJBegin() +1);
+    }
+    
+    // v
+    for ( int i = 0; i < discretization_->vIEnd(); i++)
+    {
+        discretization_->v(i, discretization_->vJBegin())  = settings_.dirichletBcBottom[1];
+    }
+    
+    // F
+    for ( int i = 0; i < discretization_->uIEnd(); i++)
+    {
+        discretization_->f(i, discretization_->uJBegin()) = discretization_->u(i, discretization_->uJBegin());
     }
 
-    // calculate v
-    for ( int j = discretization_->vJBegin() +1; j < discretization_->vJEnd() -1; j++)
-    { 
-        for ( int i = discretization_->vIBegin() +1; i < discretization_->vIEnd() -1; i++)
-        {
-            discretization_->v(i,j) = discretization_->g(i,j) - dt_ * discretization_->computeDpDy(i, j);
-        }
+    // set g
+    for ( int i = 0; i < discretization_->vIEnd(); i++)
+    {
+        discretization_->g(i, discretization_->vJBegin()) = discretization_->v(i, discretization_->vJBegin());
+    }
+
+}
+
+void ComputationParallel::applyBoundaryValuesTop()
+{
+    // set boundaries only in domain as corners belong to size, domain begins at idx 0
+    
+    // u
+    for ( int i = 0; i < discretization_->uIEnd()-1; i++)
+    {
+        discretization_->u(i, discretization_->uJEnd() - 1) = 2. * settings_.dirichletBcTop[0] - discretization_->u(i, discretization_->uJEnd() -2);
+    }
+    
+    // set v
+    for ( int i = 0; i < discretization_->vIEnd()-1; i++)
+    {
+        discretization_->v(i, discretization_->vJEnd() - 1) = settings_.dirichletBcTop[1];
+    }
+
+    // set f
+    for ( int i = 0; i < discretization_->uIEnd()-1; i++)
+    {
+        discretization_->f(i, discretization_->uJEnd() -1) = discretization_->u(i, discretization_->uJEnd() -1);
+    }
+    // set g
+    for ( int i = 0; i < discretization_->vIEnd()-1; i++)
+    {
+        discretization_->g(i, discretization_->vJEnd() -1) = discretization_->v(i, discretization_->vJEnd() -1);
     }
 }

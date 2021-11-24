@@ -2,6 +2,7 @@
 
 #include "0_computation.h"
 #include "discretization/1_discretization.h"
+#include "data_transfer/0_data_transfer.h"
 
 #include <memory>
 #include <iostream>  // for cout
@@ -24,9 +25,10 @@ protected:
 
     //!  set boundary values of u and v to correct values
     void applyBoundaryValues();
-
-    //! compute the new velocities, u,v, from the preliminary velocities, F,G and the pressure, p
-    void computeVelocities();
+    void applyBoundaryValuesLeft();
+    void applyBoundaryValuesRight();
+    void applyBoundaryValuesTop();
+    void applyBoundaryValuesBottom();
 
     std::unique_ptr<Partitioning> partitioning_;
 
