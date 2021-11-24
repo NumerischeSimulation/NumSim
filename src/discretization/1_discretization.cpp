@@ -2,8 +2,8 @@
 #include "1_discretization.h"
 
 // Constructor
-Discretization::Discretization(std::array<int,2> nCells, std::array<double,2> meshWidth) :
-    StaggeredGrid(nCells, meshWidth)
+Discretization::Discretization(std::array<int,2> nCells, std::array<double,2> meshWidth, std::array<int,4> partitionNeighbours) :
+    StaggeredGrid(nCells, meshWidth, partitionNeighbours)
 {
 }
 
