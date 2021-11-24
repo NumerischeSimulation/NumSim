@@ -1,11 +1,13 @@
 #pragma once
 
 #include "0_computation.h"
+#include "discretization/1_discretization.h"
 
 #include <memory>
 #include <iostream>  // for cout
 #include <cmath>
 #include <algorithm>
+#include <mpi.h>
 
 class ComputationParallel: public Computation
 {
@@ -22,9 +24,6 @@ protected:
 
     //!  set boundary values of u and v to correct values
     void applyBoundaryValues();
-
-    //! solve the Poisson equation for the pressure 
-    void computePressure();
 
     //! compute the new velocities, u,v, from the preliminary velocities, F,G and the pressure, p
     void computeVelocities();
