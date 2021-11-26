@@ -37,8 +37,8 @@ PressureSolver::PressureSolver(std::shared_ptr<Discretization> discretization, d
 
   double PressureSolver::calculateResidual()
   {
-    int nCellsx = discretization_->nCells()[0] -2; // inner cells
-    int nCellsy = discretization_->nCells()[1] -2; // inner cells
+    int nCellsx = discretization_->nCells()[0]; // inner cells in x direction
+    int nCellsy = discretization_->nCells()[1]; // inner cells in y direction
 
     //sell size
     double dy = discretization_->dy();
