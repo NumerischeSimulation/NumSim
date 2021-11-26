@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
   std::cout << std::endl;
   
   // // start simulating
-  computation.runSimulation()
+  computation.runSimulation();
 
   // test some stuff
   //computation.runTest();
