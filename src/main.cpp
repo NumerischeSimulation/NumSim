@@ -2,7 +2,7 @@
 #include <cstdlib>
 
 #include "settings.h"
-#include "computation/0_computation.h"
+#include "computation/1_computation_parallel.h"
 
 int main(int argc, char *argv[])
 {
@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
   
   std::cout << std::endl;
   std::cout << "-------------------------------------------------" << std::endl;
-  std::cout << "Starting simulation ..."  << std::endl;
+  std::cout << "Starting parallel simulation ..."  << std::endl;
   std::cout << std::endl;
   
   // // start simulating
