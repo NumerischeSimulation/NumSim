@@ -1,6 +1,6 @@
 #include "partitioning.h"
 
-Partitioning::Partitioning(int ownRankNo, int nRanks, std::array<int,2> nCells) :
+Partitioning::Partitioning(int ownRankNo, int nRanks, std:array<int,2> nCells) :
 ownRankNo_(ownRankNo),
 nRanks_(nRanks),
 nCellsGlobal_(nCells)
