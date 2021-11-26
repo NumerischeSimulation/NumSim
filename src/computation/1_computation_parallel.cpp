@@ -47,7 +47,6 @@ void ComputationParallel::initialize(int argc, char *argv[])
 void ComputationParallel::runSimulation()
 {
     double currentTime = 0;
-    int sec = 0;
 
     std::cout << "+++++++++++++++++++++++" << std::endl;
     std::cout << "Starting at time: " << currentTime << std::endl;
@@ -61,28 +60,13 @@ void ComputationParallel::runSimulation()
         std::cout << "Applied boundary values for u/v and F/G." << std::endl;
 
         // step 2: compute time step width
-        computeTimeStepWidth();
-
-        std::cout << "Computed time step width: " << dt_ << std::endl;
-
-        // set the dt such that the simulation stops exactly on endTime
-        if (currentTime + dt_ > settings_.endTime)
-        {
-            dt_ = settings_.endTime - currentTime;
-
-            std::cout << std::endl;
-            std::cout << "Final time step!" << std::endl;
-        } 
-        // set the dt such that the simulation steps exactly over full multiples of 1s (for the output)
-        if (std:floor(currentTime + dt) == sec +1.)
-        {
-            dt_ = (double) sec - currentTime;
-        }
+        computeTimeStepWidthParallel(currentTime);
+        
         currentTime += dt_;
-
+    
         std::cout << "+++++++++++++++++++++++" << std::endl;
         std::cout << "current Time: " << currentTime << std::endl;
-        std::cout << "+++++++++++++++++++++++" << std::endl;
+        std::cout << "+++++++++++++++++++++++" << std::endl;    
 
         // step 4: calculate F, G with first setting the boundary conditions of F, G (step 3)
         computePreliminaryVelocities();
@@ -105,11 +89,10 @@ void ComputationParallel::runSimulation()
         std::cout << "Computed velocities" << std::endl;
 
         // step 9: write output
-        if (std:floor(currentTime + dt) == sec +1.)
+        if (std:floor(currentTime) == currentTime)
         {
             outputWriterParaview_->writeFile(currentTime);
             outputWriterText_->writeFile(currentTime);
-            sec = sec +1;
         }
 
     }
@@ -118,66 +101,30 @@ void ComputationParallel::runSimulation()
     MPI_Finalize()
 }
 
-void ComputationParallel::computeTimeStepWidth()
+void ComputationParallel::computeTimeStepWidthParallel(double currentTime)
 {
-    double boundary_diffusion = 0.;
+    // compute timestep for each subdomain
+    computeTimeStepWidth();
 
-    // boundary from diffusion
-    if (meshWidth_[0] == meshWidth_[1])
-    {
-        boundary_diffusion = (settings_.re * meshWidth_[0] * meshWidth_[1]) / 4.;
-    } else
-    {
-        double h2x = meshWidth_[0] * meshWidth_[0];
-        double h2y = meshWidth_[1] * meshWidth_[1];
-        boundary_diffusion = (settings_.re / 2.) * (h2x * h2y) * (1./(h2x + h2y));
-      
-        std::cout << settings_.re << " " << h2x << " " << h2y << std::endl;
-    }
-
-    // calculate max absolute velocities
-    double u_max = 0.;
-    for ( int j = discretization_->uJBegin(); j < discretization_->uJEnd(); j++)
-    { 
-        for ( int i = discretization_->uIBegin(); i < discretization_->uIEnd(); i++)
-        {
-            double value = std::abs(discretization_->u(i,j));
-            if (value > u_max)
-            {
-                u_max = value;
-            }
-        }
-    }
-
-    double v_max = 0.;
-    for ( int j = discretization_->vJBegin(); j < discretization_->vJEnd(); j++)
-    { 
-        for ( int i = discretization_->vIBegin(); i < discretization_->vIEnd(); i++)
-        {
-            double value = std::abs(discretization_->v(i,j));
-            if (value > v_max)
-            {
-                v_max = value;
-            }
-        }
-    }
-
-    // boundary from convection
-    double boundary_convection_u = meshWidth_[0] / u_max;
-    double boundary_convection_v = meshWidth_[1] / v_max;
-
-    // together
-    double min_dt = std::min({boundary_diffusion, boundary_convection_u, boundary_convection_v});
-
-    std::cout << "dt boundaries - diffusion: " << boundary_diffusion << " convection_u: " << boundary_convection_u << " convection_v: " << boundary_convection_v << std::endl;
-
-    // security factor
-    double dt_local =  std::min(min_dt * settings_.tau, settings_.maximumDt);
-
-    // minimize by communication with the other processes
+    // use the minimum as global timestep
     double dt_global;
     MPI_Allreduce(&dt_local, &dt_global, 1, MPI_DOUBLE, MPI_MIN, MPI_COMM_WORLD);
     
+    // if necessary adapt so that every full second is reached
+    if (std:floor(currentTime + dt) == floor(currentTime) + 1)
+    {
+        dt_global = (double) (floor(currentTime) + 1) - currentTime; // currentTime hits exactly next second
+    }
+
+    // or if necessary set currentTime + dt_ to endTime 
+    if (currentTime + dt_global > settings_.endTime)
+    {
+        dt_global = settings_.endTime - currentTime;
+
+        std::cout << std::endl;
+        std::cout << "Final time step!" << std::endl;
+    }
+
     dt_ = dt_global;
 }
     

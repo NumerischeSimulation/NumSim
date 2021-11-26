@@ -32,8 +32,8 @@ public:
     //! test the simulation, especially the pressure solver
     void runTest();
 
-private:
-    //! compute the time step width dt from maximum velocities 
+protected:
+        //! compute the time step width dt from maximum velocities 
     void computeTimeStepWidth();
 
     //!  set boundary values of u and v to correct values
