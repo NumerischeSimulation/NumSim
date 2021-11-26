@@ -9,7 +9,7 @@ class Partitioning
 public: 
 
     //! construct partitioning
-    Partitioning(int ownRankNo, int nRanks, std:array<int,2> nCells);
+    Partitioning(int ownRankNo, int nRanks, std::array<int,2> nCells);
 
     //! return the global node offset of lower left corner cell
     const std::array<int,2> nodeOffset() const;
