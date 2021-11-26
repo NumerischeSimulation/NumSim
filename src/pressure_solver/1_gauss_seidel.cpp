@@ -3,8 +3,8 @@
 
 void GaussSeidel::solve()
 { 
-    int nCellsx = discretization_->nCells()[0] -2; // inner cells
-    int nCellsy = discretization_->nCells()[1] -2; // inner cells
+    int nCellsx = discretization_->nCells()[0]; // inner cells
+    int nCellsy = discretization_->nCells()[1]; // inner cells
 
     // cell size
     const double dy = discretization_->dy();
