@@ -278,13 +278,13 @@ void ComputationParallel::applyBoundaryValuesBottom()
     for ( int i = 0; i < discretization_->nCells[0]; i++)
     {
         // u 
-        discretization_->u(i, discretization_->uJBegin())  = 2. * settings_.dirichletBcBottom[0] - discretization_->u(i, discretization_->uJBegin() +1);
+        discretization_->u(i, -1)  = 2. * settings_.dirichletBcBottom[0] - discretization_->u(i, 0);
         // v
-        discretization_->v(i, discretization_->vJBegin())  = settings_.dirichletBcBottom[1];
+        discretization_->v(i, -1)  = settings_.dirichletBcBottom[1];
         // f
-        discretization_->f(i, discretization_->uJBegin())  = discretization_->u(i, discretization_->uJBegin());
+        discretization_->f(i, -1)  = discretization_->u(i, 0);
         // g
-        discretization_->g(i, discretization_->vJBegin())  = discretization_->v(i, discretization_->vJBegin());
+        discretization_->g(i, -1)  = discretization_->v(i, 0);
     }
 }
 
@@ -295,12 +295,12 @@ void ComputationParallel::applyBoundaryValuesTop()
     for ( int i = 0; i < discretization_->nCells[0]; i++)
     {
         // u
-        discretization_->u(i, discretization_->uJEnd() - 1) = 2. * settings_.dirichletBcTop[0] - discretization_->u(i, discretization_->uJEnd() -2);
+        discretization_->u(i, discretization_->nCells[1]) = 2. * settings_.dirichletBcTop[0] - discretization_->u(i, discretization_->nCells[1] - 1);
         // v
-        discretization_->v(i, discretization_->vJEnd() - 1) = settings_.dirichletBcTop[1];
+        discretization_->v(i, discretization_->nCells[1]) = settings_.dirichletBcTop[1];
         // f
-        discretization_->f(i, discretization_->uJEnd() - 1) = discretization_->u(i, discretization_->uJEnd() -1);
+        discretization_->f(i, discretization_->nCells[1]) = discretization_->u(i, discretization_->nCells[1] - 1);
         // g
-        discretization_->g(i, discretization_->vJEnd() - 1) = discretization_->v(i, discretization_->vJEnd() -1);
+        discretization_->g(i, discretization_->nCells[1]) = discretization_->v(i, discretization_->nCells[1] - 1);
     }
 }
