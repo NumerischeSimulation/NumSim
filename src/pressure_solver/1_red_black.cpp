@@ -2,10 +2,7 @@
 
 double RedBlack::calculateResidual()
   {
-    int nCellsx = discretization_->nCells()[0] -4; // inner cells
-    int nCellsy = discretization_->nCells()[1] -4; // inner cells
-
-    //sell size
+    // cell size
     double dy = discretization_->dy();
     double dx = discretization_->dx();
     double dx2 = pow(dx,2);
@@ -14,37 +11,31 @@ double RedBlack::calculateResidual()
    
     double res_local = 0.0;
 
-        for ( int i = discretization_->pIBegin() +1; i < discretization_->pIEnd() -1; i++)
-        { 
-            for ( int j= discretization_->pJBegin() +1; j < discretization_->pJEnd() -1; j++)
-            {
-                // calculate residual 
-                double pxx = (discretization_->p(i-1, j) - 2.0 *discretization_->p(i,j) + discretization_->p(i+1, j)) / (dx2);
-                double pyy = (discretization_->p(i, j-1) - 2.0 *discretization_->p(i,j) + discretization_->p(i, j+1)) / (dy2);
+    for ( int i = 0; i < discretization_->nCells()[0]; i++)
+    { 
+        for ( int j = 0; j < discretization_->nCells()[1]; j++)
+        {
+            // calculate residual 
+            double pxx = (discretization_->p(i-1, j) - 2.0 *discretization_->p(i,j) + discretization_->p(i+1, j)) / (dx2);
+            double pyy = (discretization_->p(i, j-1) - 2.0 *discretization_->p(i,j) + discretization_->p(i, j+1)) / (dy2);
 
-                double resij = discretization_->rhs(i, j) - pxx - pyy;   
-                res_local = res_local + (pow(resij,2));
-            }
+            double resij = discretization_->rhs(i, j) - pxx - pyy;   
+            res_local = res_local + (pow(resij,2));
         }
-        
-        //calculate residual
-         res_local = res_local/(nCellsx * nCellsy);
-         double res_global;
-          MPI_Allreduce(&res_local, &res_global, 1, MPI_DOUBLE, MPI_SUM,
-              MPI_COMM_WORLD);
-         return res_global;
+    }
 
+    //calculate residual
+    res_local = res_local/(discretization_->nCells()[0] * discretization_->nCells()[1]);
+    double res_global;
+    MPI_Allreduce(&res_local, &res_global, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+  
+    return res_global;
   }
 
 
 void RedBlack::solve
 {
-    int nCellsx = discretization_->nCells()[0] -4;
-    int nCellsy = discretization_->nCells()[1] -4;
-
-
-
-    //sell size
+    // cell size
     double dy = discretization_->dy();
     double dx = discretization_->dx();
     double dx2 = pow(dx,2);
@@ -57,17 +48,16 @@ void RedBlack::solve
     double res = calculateResidual();
 
     // iterate through grid 
-    
-    
     while( iteration < maximumNumberOfIterations_ && res > pow(epsilon_,2))
     {
         // Black Solver
         // one half solver iteration
-        for ( int j = discretization_->pJBegin() +1; j < discretization_->pJEnd() -1; j++)
+        for ( int j = 0; j < discretization_->nCells()[1]; j++)
         {
+            // if is an even row, we start with the first column, else second
             if( j % 2 == 0)
             {
-                for ( int i = discretization_->pIBegin() +1; i < discretization_->pIEnd() -1; i = i+2)
+                for ( int i = 0; i < discretization_->nCells()[0] -1; i = i+2)
                 {
                     double sum_x = (discretization_->p(i+1, j) + discretization_->p(i-1, j)) / (dx2);
                     double sum_y = (discretization_->p(i, j+1) + discretization_->p(i, j-1)) / (dy2);
@@ -77,7 +67,7 @@ void RedBlack::solve
             }
             else
             {
-                for ( int i = discretization_->pIBegin() +2; i < discretization_->pIEnd() -1; i = i+2)
+                for ( int i = 1; i < discretization_->nCells()[0]; i = i+2)
                 {
                     double sum_x = (discretization_->p(i+1, j) + discretization_->p(i-1, j)) / (dx2);
                     double sum_y = (discretization_->p(i, j+1) + discretization_->p(i, j-1)) / (dy2);
@@ -91,11 +81,11 @@ void RedBlack::solve
         
         // Red Solver
         // one half solver iteration
-        for ( int j = discretization_->pJBegin() +1; j < discretization_->pJEnd() -1; j++)
+        for ( int j = 0; j < discretization_->nCells()[1]; j++)
         {
             if( j % 2 == 0)
             {
-                for ( int i = discretization_->pIBegin() +2; i < discretization_->pIEnd() -1; i = i+2)
+                for ( int i = 1; i < discretization_->nCells()[0]; i = i+2)
                 {
                     double sum_x = (discretization_->p(i+1, j) + discretization_->p(i-1, j)) / (dx2);
                     double sum_y = (discretization_->p(i, j+1) + discretization_->p(i, j-1)) / (dy2);
@@ -105,7 +95,7 @@ void RedBlack::solve
             }
             else
             {
-                for ( int i = discretization_->pIBegin() +1; i < discretization_->pIEnd() -1; i = i+2)
+                for ( int i = 0; i < discretization_->nCells()[0] -1; i = i+2)
                 {
                     double sum_x = (discretization_->p(i+1, j) + discretization_->p(i-1, j)) / (dx2);
                     double sum_y = (discretization_->p(i, j+1) + discretization_->p(i, j-1)) / (dy2);
