@@ -57,7 +57,8 @@ void RedBlack::solve
             // if is an even row, we start with the first column, else second
             if( j % 2 == 0)
             {
-                for ( int i = 0; i < discretization_->nCells()[0] -1; i = i+2)
+               
+                for ( int i = 0; i < discretization_->nCells()[0]; i = i+2)
                 {
                     double sum_x = (discretization_->p(i+1, j) + discretization_->p(i-1, j)) / (dx2);
                     double sum_y = (discretization_->p(i, j+1) + discretization_->p(i, j-1)) / (dy2);
@@ -95,7 +96,7 @@ void RedBlack::solve
             }
             else
             {
-                for ( int i = 0; i < discretization_->nCells()[0] -1; i = i+2)
+                for ( int i = 0; i < discretization_->nCells()[0]; i = i+2)
                 {
                     double sum_x = (discretization_->p(i+1, j) + discretization_->p(i-1, j)) / (dx2);
                     double sum_y = (discretization_->p(i, j+1) + discretization_->p(i, j-1)) / (dy2);
