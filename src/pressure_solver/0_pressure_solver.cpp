@@ -66,8 +66,4 @@ PressureSolver::PressureSolver(std::shared_ptr<Discretization> discretization, d
          res = res/(nCellsx * nCellsy);
          return res;
 
-       
-
-     
-
   }
