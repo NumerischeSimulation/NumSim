@@ -56,7 +56,7 @@ double StaggeredGrid::dy() const
 // u
 int StaggeredGrid::uIBegin() const
 {
-    if (partitionNeighbours_[1] == MPI_PROC_NULL) // left
+    if (partitionNeighbours_[1] == MPI_PROC_NULL) // left neighbour doesn't exist (domain boundary)
     {
         return -1;
     }
@@ -64,8 +64,8 @@ int StaggeredGrid::uIBegin() const
 }
 
 int StaggeredGrid::uIEnd() const
-{
-    if (partitionNeighbours_[3] == MPI_PROC_NULL) // right
+{ 
+    if (partitionNeighbours_[3] == MPI_PROC_NULL) // right domain boundary
     {
         return nCells_[0];
     }
@@ -95,7 +95,7 @@ int StaggeredGrid::vIEnd() const
 
 int StaggeredGrid::vJBegin() const
 {
-    if (partitionNeighbours_[0] == MPI_PROC_NULL) // bottom
+    if (partitionNeighbours_[0] == MPI_PROC_NULL) // bottom domain boundary
     {
         return -1;
     } 
@@ -104,7 +104,7 @@ int StaggeredGrid::vJBegin() const
 
 int StaggeredGrid::vJEnd() const
 {
-    if (partitionNeighbours_[3] == MPI_PROC_NULL) // top
+    if (partitionNeighbours_[3] == MPI_PROC_NULL) // top domain boundary
     {
         return nCells_[1];
     }
