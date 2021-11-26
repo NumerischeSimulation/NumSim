@@ -104,7 +104,7 @@ int StaggeredGrid::vJBegin() const
 
 int StaggeredGrid::vJEnd() const
 {
-    if (partitionNeighbours_[3] == MPI_PROC_NULL) // top domain boundary
+    if (partitionNeighbours_[2] == MPI_PROC_NULL) // top domain boundary
     {
         return nCells_[1];
     }
