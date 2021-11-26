@@ -6,14 +6,9 @@ nRanks_(nRanks),
 nCellsGlobal_(nCells)
 {
     // map ownRank -> subdomain
-
-    // TODO: more than two rows
-    // factorize N
-    // minimize cost for each factorization
-
-    // only for two rows
-    int n_subd = 2; // number of subdomains in i direction or nCells[0]
-    int m_subd = 2; // number of subdomains in j direction or nCells[1]
+    int n_subd = nSubdomains_[0]; // number of subdomains in i direction or nCells[0]
+    int m_subd = nSubdomains_[1]; // number of subdomains in j direction or nCells[1]
+    
     int process_column = ownRankNo_ % n_subd ;
     int process_row = std::floor(ownRankNo_ / n_subd);
 
@@ -53,4 +48,35 @@ nCellsGlobal_(nCells)
 
     nCellsLocal_ = {nCellsGlobal_[0] / n_subd, nCellsGlobal_[1] / m_subd};
     nodeOffset_ = {nCellsLocal_[0] * process_column, nCellsLocal_[1] * process_row}
+}
+
+Partitioning::factorizeSubdomains() {
+
+    // init factorization with maximum cost
+    int cost_opt = nCellsGlobal_[0]*(nCellsGlobal_[1]-1) + (nCellsGlobal_[0]-1)*nCellsGlobal_[1]; // communication cost - number inner edges 
+    
+    // save best combinations here (minimizes commuication costs)
+    int n_opt = 1;         // number of subdomains in i direction
+    int m_opt = nRanks_;   // number of subdomains in j direction
+
+    int m = nRanks_; // temporary factor
+    // iterate over all possible factorizations 
+    for ( int n = 1; n < nRanks_+1; n++)    
+    {
+        if ((nRanks_ % n) == 0) // if nRanks can be devided in n * (nRanks_/n)
+        {
+            m = nRanks_ / n;
+            cost = nCellsGlobal_[0]*(m-1) + nCellsGlobal_[1]*(n-1); // number of innner edges with partition n x m
+            
+            if ( cost < cost_opt) {
+                n_opt = n; 
+                m_opt = m; 
+                cost_opt = cost;
+            }
+        };
+    };
+
+    // save partition
+    nSubdomains_[0] = n_opt;
+    nSubdomains_[1] = m_opt;
 }
