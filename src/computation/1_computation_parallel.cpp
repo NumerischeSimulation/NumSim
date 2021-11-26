@@ -47,7 +47,6 @@ void ComputationParallel::initialize(int argc, char *argv[])
 void ComputationParallel::runSimulation()
 {
     double currentTime = 0;
-    int sec = 0;
 
     std::cout << "+++++++++++++++++++++++" << std::endl;
     std::cout << "Starting at time: " << currentTime << std::endl;
@@ -90,11 +89,10 @@ void ComputationParallel::runSimulation()
         std::cout << "Computed velocities" << std::endl;
 
         // step 9: write output
-        if (std:floor(currentTime + dt) == sec +1.)
+        if (std:floor(currentTime) == currentTime)
         {
             outputWriterParaview_->writeFile(currentTime);
             outputWriterText_->writeFile(currentTime);
-            sec = sec +1;
         }
 
     }
