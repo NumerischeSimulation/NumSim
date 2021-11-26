@@ -40,7 +40,7 @@ PressureSolver::PressureSolver(std::shared_ptr<Discretization> discretization, d
     int nCellsx = discretization_->nCells()[0]; // inner cells in x direction
     int nCellsy = discretization_->nCells()[1]; // inner cells in y direction
 
-    //sell size
+    //cell size
     double dy = discretization_->dy();
     double dx = discretization_->dx();
     double dx2 = pow(dx,2);
