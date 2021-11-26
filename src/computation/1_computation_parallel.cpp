@@ -323,7 +323,7 @@ void ComputationParallel::applyBoundaryValuesRight()
 
 void ComputationParallel::applyBoundaryValuesBottom()
 {
-    // bottom, set boundaries only in domain as corners belong to size, domain begins at idx 0
+    // bottom, set boundaries only in domain as corners belong to sides, computational domain begins at idx 0
     // u
     for ( int i = 0; i < discretization_->uIEnd(); i++)
     {
