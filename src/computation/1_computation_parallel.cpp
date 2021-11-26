@@ -113,6 +113,9 @@ void ComputationParallel::runSimulation()
         }
 
     }
+    
+    // end the MPI-session
+    MPI_Finalize()
 }
 
 void ComputationParallel::computeTimeStepWidth()
