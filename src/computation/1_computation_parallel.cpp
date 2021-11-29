@@ -523,12 +523,12 @@ ComputationParallel::uvExchangeVertical()
             }
             std::array<double, discretization_->nCells()[1]+4> other_ghost_to_u_bottom;
 
-            MPI_Send(&u_to_other_ghost_right, 
+            MPI_Send(&u_to_other_ghost_bottom, 
                      discretization_->nCells()[0]+4,
                      MPI_DOUBLE,
                      partitioning_.ownBottomNeighbour(),
                      )
-            MPI_Recv(&other_ghost_to_u_right, 
+            MPI_Recv(&other_ghost_to_u_bottom, 
                      discretization_->nCells()[0]+4,
                      MPI_DOUBLE,
                      partitioning_.ownBottomNeighbour(),
