@@ -1,8 +1,8 @@
 #include "discretization/2_donor_cell.h"
 
 //! constructor 
-DonorCell::DonorCell(std::array<int,2> nCells, std::array<double,2> meshWidth, double alpha) :
-    Discretization(nCells, meshWidth),
+DonorCell::DonorCell(std::array<int,2> nCells, std::array<double,2> meshWidth, std::array<int,4> partitionNeighbours, double alpha) :
+    Discretization(nCells, meshWidth, partitionNeighbours),
     alpha_(alpha)
 {
     

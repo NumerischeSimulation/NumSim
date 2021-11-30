@@ -13,7 +13,7 @@ add_executable(${PROJECT_NAME}
    computation/0_computation.cpp
    computation/1_computation_parallel.cpp
    
-   data_transfer/0_data_transfer.cpp
+  
    
    discretization/0_staggered_grid.cpp
    discretization/1_discretization.cpp

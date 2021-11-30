@@ -54,19 +54,19 @@ nCellsGlobal_(nCells)
 
     nCellsLocal_ = {nCellsGlobal_[0] / n_subd, nCellsGlobal_[1] / m_subd};
 
-    std::cout << "computed nCellsLocal: " << nCellsLocal_ << std::endl;
+    std::cout << "computed nCellsLocal: " << nCellsLocal_[0] << nCellsLocal_[1]  << std::endl;
     
     // check if nCellsLocal is int, else throw an error
-    if (nCellsLocal_ != floor(nCellsLocal)) 
+    if (nCellsLocal_[0] != std::floor(nCellsLocal_[0]) || nCellsLocal_[1] != std::floor(nCellsLocal_[1])) 
     {
         std::cout << "nCellsLocal is not an array of integers, computed partition not suited for global domain size." << std::endl;
         throw;
     }
     
-    nodeOffset_ = {nCellsLocal_[0] * process_column, nCellsLocal_[1] * process_row}
+    nodeOffset_ = {nCellsLocal_[0] * process_column, nCellsLocal_[1] * process_row};
 }
 
-Partitioning::factorizeSubdomains() {
+void Partitioning::factorizeSubdomains() {
 
     // init factorization with maximum cost
     int cost_opt = nCellsGlobal_[0]*(nCellsGlobal_[1]-1) + (nCellsGlobal_[0]-1)*nCellsGlobal_[1]; // communication cost - number inner edges 
@@ -82,7 +82,7 @@ Partitioning::factorizeSubdomains() {
         if ((nRanks_ % n) == 0) // if nRanks can be devided in n * (nRanks_/n)
         {
             m = nRanks_ / n;
-            cost = nCellsGlobal_[0]*(m-1) + nCellsGlobal_[1]*(n-1); // number of innner edges with partition n x m
+            int cost = nCellsGlobal_[0]*(m-1) + nCellsGlobal_[1]*(n-1); // number of innner edges with partition n x m
             
             if ( cost < cost_opt) {
                 n_opt = n; 
@@ -96,55 +96,55 @@ Partitioning::factorizeSubdomains() {
     nSubdomains_[0] = n_opt;
     nSubdomains_[1] = m_opt;
     
-    std::cout << "Computed optimal partition in subdomains: " << nSubdomains_ << " with costs " >> cost_opt << std::endl;
+    std::cout << "Computed optimal partition in subdomains: " << nSubdomains_[0] << nSubdomains_[1]  << " with costs " << cost_opt << std::endl;
 }
 
-Partitioning::nodeOffset() {
+std::array<int, 2> Partitioning::nodeOffset() {
     return nodeOffset_;
 }
 
-Partitioning::nCellsGlobal() {
+std::array<int, 2> Partitioning::nCellsGlobal() {
     return nCellsGlobal_;
 }
 
-Partitioning::ownRankNo() {
+int Partitioning::ownRankNo() {
     return ownRankNo_;
 }
 
-Partitioning::ownRankCoordinate() {
+std::array<int, 2> Partitioning::ownRankCoordinate() {
     return ownRankCoordinate_;
 }
 
 // returns whether partition contains boundary
-Partitioning::ownPartitionContainsBottomBoundary() {
+bool Partitioning::ownPartitionContainsBottomBoundary() {
     return partitionNeighbours_[0] == MPI_PROC_NULL;
 }
 
-Partitioning::ownPartitionContainsLeftBoundary() {
+bool Partitioning::ownPartitionContainsLeftBoundary() {
     return partitionNeighbours_[1] == MPI_PROC_NULL;
 }
 
-Partitioning::ownPartitionContainsTopBoundary() {
+bool Partitioning::ownPartitionContainsTopBoundary() {
     return partitionNeighbours_[2] == MPI_PROC_NULL;
 }
 
-Partitioning::ownPartitionContainsRightBoundary() {
+bool Partitioning::ownPartitionContainsRightBoundary() {
     return partitionNeighbours_[3] == MPI_PROC_NULL;
 }
 
 // returns the rank numbers
-Partitioning::ownBottomNeighbour() {
+int Partitioning::ownBottomNeighbour() {
     return partitionNeighbours_[0];
 }
 
-Partitioning::ownLeftNeighbour() {
+int Partitioning::ownLeftNeighbour() {
     return partitionNeighbours_[1];
 }
 
-Partitioning::ownTopNeighbour() {
+int Partitioning::ownTopNeighbour() {
     return partitionNeighbours_[2];
 }
 
-Partitioning::ownRightNeighbour() {
+int Partitioning::ownRightNeighbour() {
     return partitionNeighbours_[3];
 }
