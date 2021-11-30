@@ -15,6 +15,9 @@ nCellsGlobal_(nCells)
     int process_column = ownRankNo_ % n_subd ;
     int process_row = std::floor(ownRankNo_ / n_subd);
 
+    // save as rank coordinate
+    ownRankCoordinate_ = {process_column, process_row};
+
     // get neighbors
     // bottom border
     if (process_row == 0)
@@ -105,6 +108,10 @@ Partitioning::nCellsGlobal() {
 
 Partitioning::ownRankNo() {
     return ownRankNo_;
+}
+
+Partitioning::ownRankCoordinate() {
+    return ownRankCoordinate_;
 }
 
 // returns whether partition contains boundary
