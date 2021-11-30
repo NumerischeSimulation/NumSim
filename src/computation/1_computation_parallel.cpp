@@ -587,63 +587,9 @@ ComputationParallel::uvExchangeVertical()
             }
         }
     }
-    // the uneven processes: receive top, send top, receive bottom, send bottom
+    // the uneven processes: receive bottom, send bottom, receive top, send top, 
     if ((partitioning.ownRankNo() % 2) == 1)
     {
-        // top
-        if (partitioning_.ownPartitionContainsTopBoundary())
-        {
-            applyBoundaryValuesTop();
-        } else 
-        {
-            // u
-            std::array<double, discretization_->nCells()[0]+4> u_to_other_ghost_top;
-            for (int i = -2; i < discretization_->nCells()[0] +2; i++)
-            {
-                u_to_other_ghost_top[i+2] = u(i, discretization_->nCells()[0] -1); // u_{n-1}
-            }
-            std::array<double, discretization_->nCells()[0]+4> other_ghost_to_u_top;
-
-            MPI_Recv(&other_ghost_to_u_top, 
-                     discretization_->nCells()[0]+4,
-                     MPI_DOUBLE,
-                     partitioning_.ownTopNeighbour(),
-                     )
-            MPI_Send(&u_to_other_ghost_top, 
-                     discretization_->nCells()[0]+4,
-                     MPI_DOUBLE,
-                     partitioning_.ownTopNeighbour(),
-                     )
-
-            for (int i = -2; i < discretization_->nCells()[0] +2; i++)
-            {
-                discretization_->u(i, discretization_->nCells()[0]) = other_ghost_to_u_top[i+2]; // u_{n}
-            }
-
-            // v
-            std::array<double, discretization_->nCells()[0]+4> v_to_other_ghost_top;
-            for (int i = -2; i < discretization_->nCells()[0] +2; i++)
-            {
-                v_to_other_ghost_top[i+2] = v(i,discretization_->nCells()[0] -2); // v_{n-2}
-            }
-            std::array<double, discretization_->nCells()[1]+4> other_ghost_to_v_top;
-
-            MPI_Recv(&other_ghost_to_v_top, 
-                     discretization_->nCells()[0]+4,
-                     MPI_DOUBLE,
-                     partitioning_.ownTopNeighbour(),
-                     )
-            MPI_Send(&v_to_other_ghost_top, 
-                     discretization_->nCells()[0]+4,
-                     MPI_DOUBLE,
-                     partitioning_.ownTopNeighbour(),
-                     )
-
-            for (int i = -2; i < discretization_->nCells()[0] +2; i++)
-            {
-                discretization_->v(i, discretization_->nCells()[0]) = other_ghost_to_v_top[i+2]; // v_{n}
-            }
-        }
         // bottom
         if (partitioning_.ownPartitionContainsBottomBoundary())
         {
@@ -696,6 +642,60 @@ ComputationParallel::uvExchangeVertical()
             for (int i = -2; i < discretization_->nCells()[0] +2; i++)
             {
                 discretization_->v(i, -2) = other_ghost_to_v_bottom[i+2]; // v_{-2}
+            }
+        }
+        // top
+        if (partitioning_.ownPartitionContainsTopBoundary())
+        {
+            applyBoundaryValuesTop();
+        } else 
+        {
+            // u
+            std::array<double, discretization_->nCells()[0]+4> u_to_other_ghost_top;
+            for (int i = -2; i < discretization_->nCells()[0] +2; i++)
+            {
+                u_to_other_ghost_top[i+2] = u(i, discretization_->nCells()[0] -1); // u_{n-1}
+            }
+            std::array<double, discretization_->nCells()[0]+4> other_ghost_to_u_top;
+
+            MPI_Recv(&other_ghost_to_u_top, 
+                     discretization_->nCells()[0]+4,
+                     MPI_DOUBLE,
+                     partitioning_.ownTopNeighbour(),
+                     )
+            MPI_Send(&u_to_other_ghost_top, 
+                     discretization_->nCells()[0]+4,
+                     MPI_DOUBLE,
+                     partitioning_.ownTopNeighbour(),
+                     )
+
+            for (int i = -2; i < discretization_->nCells()[0] +2; i++)
+            {
+                discretization_->u(i, discretization_->nCells()[0]) = other_ghost_to_u_top[i+2]; // u_{n}
+            }
+
+            // v
+            std::array<double, discretization_->nCells()[0]+4> v_to_other_ghost_top;
+            for (int i = -2; i < discretization_->nCells()[0] +2; i++)
+            {
+                v_to_other_ghost_top[i+2] = v(i,discretization_->nCells()[0] -2); // v_{n-2}
+            }
+            std::array<double, discretization_->nCells()[1]+4> other_ghost_to_v_top;
+
+            MPI_Recv(&other_ghost_to_v_top, 
+                     discretization_->nCells()[0]+4,
+                     MPI_DOUBLE,
+                     partitioning_.ownTopNeighbour(),
+                     )
+            MPI_Send(&v_to_other_ghost_top, 
+                     discretization_->nCells()[0]+4,
+                     MPI_DOUBLE,
+                     partitioning_.ownTopNeighbour(),
+                     )
+
+            for (int i = -2; i < discretization_->nCells()[0] +2; i++)
+            {
+                discretization_->v(i, discretization_->nCells()[0]) = other_ghost_to_v_top[i+2]; // v_{n}
             }
         }
     }
