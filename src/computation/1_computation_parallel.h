@@ -30,6 +30,10 @@ protected:
     void applyBoundaryValuesTop();
     void applyBoundaryValuesBottom();
 
+    //! sets the ghost layers in the discretization correctly
+    void uvExchangeVertical();
+    void uvExchangeHorizontal();
+
     std::unique_ptr<Partitioning> partitioning_;
 
     std::unique_ptr<OutputWriterParaviewParallel> OutputWriterParaviewParallel_;
