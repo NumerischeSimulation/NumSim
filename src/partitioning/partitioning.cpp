@@ -85,8 +85,8 @@ Partitioning::factorizeSubdomains() {
                 m_opt = m; 
                 cost_opt = cost;
             }
-        };
-    };
+        }
+    }
 
     // save partition
     nSubdomains_[0] = n_opt;
