@@ -1,7 +1,7 @@
 #pragma once
 
 #include "pressure_solver/0_pressure_solver.h"
-#include "data_transfer/data_transfer.h"
+#include "partitioning/partitioning.h"
 
 #include <cmath>
 #include <math.h>
@@ -21,5 +21,8 @@ public:
   //! sets the ghost layers in the discretization correctly
   void pExchangeVertical();
   void pExchangeHorizontal();
+
+  protected:
+  std::shared_ptr<Partitioning> partitioning_;
 
 };

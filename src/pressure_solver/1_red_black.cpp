@@ -1,9 +1,7 @@
 #include "1_red_black.h"
 
-RedBlack::RedBlack(std::shared_ptr<Discretization> discretization, double epsilon, int maximumNumberOfIterations, std::shared_ptr<Partitioning> partitioning)
-  discretization_(discretization),
-  epsilon_(epsilon),
-  maximumNumberOfIterations_(maximumNumberOfIterations),
+RedBlack::RedBlack(std::shared_ptr<Discretization> discretization, double epsilon, int maximumNumberOfIterations, std::shared_ptr<Partitioning> partitioning):
+  PressureSolver(discretization, epsilon, maximumNumberOfIterations),
   partitioning_(partitioning)
 {
 }
@@ -41,7 +39,7 @@ double RedBlack::calculateResidual()
 }
 
 
-void RedBlack::solve
+void RedBlack::solve()
 {
     // cell size
     double dy = discretization_->dy();
@@ -132,10 +130,10 @@ void RedBlack::pExchangeHorizontal()
     // the +4 in nCells+4 is from the consistent number of halo-cells in the staggered grid
 
     // the even processes: send left, receive left, send right, receive right
-    if ((partitioning_.ownRankNo() % 2) == 0)
+    if ((partitioning_->ownRankNo() % 2) == 0)
     {
         // left
-        if (partitioning_.ownPartitionContainsLeftBoundary())
+        if (partitioning_->ownPartitionContainsLeftBoundary())
         {
             setBoundaryValuesLeft();
         } else 
@@ -151,12 +149,12 @@ void RedBlack::pExchangeHorizontal()
             MPI_Send(&p_to_other_ghost_left, 
                      discretization_->nCells()[1]+4,
                      MPI_DOUBLE,
-                     partitioning_.ownLeftNeighbour(),
+                     partitioning_->ownLeftNeighbour(),
                      )
             MPI_Recv(&other_ghost_to_p_left, 
                      discretization_->nCells()[1]+4,
                      MPI_DOUBLE,
-                     partitioning_.ownLeftNeighbour(),
+                     partitioning_->ownLeftNeighbour(),
                      )
 
             for (int j = -2; j < discretization_->nCells()[1] +2; j++)
@@ -166,7 +164,7 @@ void RedBlack::pExchangeHorizontal()
         }
 
         // right
-        if (partitioning_.ownPartitionContainsRightBoundary())
+        if (partitioning_->ownPartitionContainsRightBoundary())
         {
             setBoundaryValuesRight();
         } else
@@ -182,12 +180,12 @@ void RedBlack::pExchangeHorizontal()
             MPI_Send(&p_to_other_ghost_right, 
                      discretization_->nCells()[1]+4,
                      MPI_DOUBLE,
-                     partitioning_.ownRightNeighbour(),
+                     partitioning_->ownRightNeighbour(),
                      )
             MPI_Recv(&other_ghost_to_p_right, 
                      discretization_->nCells()[1]+4,
                      MPI_DOUBLE,
-                     partitioning_.ownRightNeighbour(),
+                     partitioning_->ownRightNeighbour(),
                      )
 
             for (int j = -2; j < discretization_->nCells()[1] +2; j++)
@@ -197,9 +195,9 @@ void RedBlack::pExchangeHorizontal()
         }
     }
     // the uneven processes: receive right, send right, receive left, send left
-    if ((partitioning_.ownRankNo() % 2) == 1)
+    if ((partitioning_->ownRankNo() % 2) == 1)
     {
-        if (partitioning_.ownPartitionContainsRightBoundary())
+        if (partitioning_->ownPartitionContainsRightBoundary())
         {
             setBoundaryValuesRight();
         } else
@@ -215,12 +213,12 @@ void RedBlack::pExchangeHorizontal()
             MPI_Recv(&other_ghost_to_p_right, 
                      discretization_->nCells()[1]+4,
                      MPI_DOUBLE,
-                     partitioning_.ownRightNeighbour(),
+                     partitioning_->ownRightNeighbour(),
                      )
             MPI_Send(&p_to_other_ghost_right, 
                      discretization_->nCells()[1]+4,
                      MPI_DOUBLE,
-                     partitioning_.ownRightNeighbour(),
+                     partitioning_->ownRightNeighbour(),
                      )
 
             for (int j = -2; j < discretization_->nCells()[1] +2; j++)
@@ -228,7 +226,7 @@ void RedBlack::pExchangeHorizontal()
                 discretization_->p(discretization_->nCells()[1], j) = other_ghost_to_p_right[j+2]; // p_{n}
             }
         }
-        if (partitioning_.ownPartitionContainsLeftBoundary())
+        if (partitioning_->ownPartitionContainsLeftBoundary())
         {
             setBoundaryValuesLeft();
         } else 
@@ -244,12 +242,12 @@ void RedBlack::pExchangeHorizontal()
             MPI_Recv(&other_ghost_to_p_left, 
                      discretization_->nCells()[1]+4,
                      MPI_DOUBLE,
-                     partitioning_.ownLeftNeighbour(),
+                     partitioning_->ownLeftNeighbour(),
                      )
             MPI_Send(&p_to_other_ghost_left, 
                      discretization_->nCells()[1]+4,
                      MPI_DOUBLE,
-                     partitioning_.ownLeftNeighbour(),
+                     partitioning_->ownLeftNeighbour(),
                      )
 
             for (int j = -2; j < discretization_->nCells()[1] +2; j++)
@@ -265,10 +263,10 @@ void RedBlack::pExchangeVertical()
     // the +4 in nCells+4 is from the consistent number of halo-cells in the staggered grid
 
     // the even row processes: send top, receive top, send bottom, receive bottom
-    if ((partitioning_.ownRankCoordinate()[1] % 2) == 0)
+    if ((partitioning_->ownRankCoordinate()[1] % 2) == 0)
     {
         // top
-        if (partitioning_.ownPartitionContainsTopBoundary())
+        if (partitioning_->ownPartitionContainsTopBoundary())
         {
             setBoundaryValuesTop();
         } else 
@@ -284,12 +282,12 @@ void RedBlack::pExchangeVertical()
             MPI_Send(&p_to_other_ghost_top, 
                      discretization_->nCells()[0]+4,
                      MPI_DOUBLE,
-                     partitioning_.ownTopNeighbour(),
+                     partitioning_->ownTopNeighbour(),
                      )
             MPI_Recv(&other_ghost_to_p_top, 
                      discretization_->nCells()[0]+4,
                      MPI_DOUBLE,
-                     partitioning_.ownTopNeighbour(),
+                     partitioning_->ownTopNeighbour(),
                      )
 
             for (int i = -2; i < discretization_->nCells()[0] +2; i++)
@@ -298,7 +296,7 @@ void RedBlack::pExchangeVertical()
             }
         }
         // bottom
-        if (partitioning_.ownPartitionContainsBottomBoundary())
+        if (partitioning_->ownPartitionContainsBottomBoundary())
         {
             setBoundaryValuesBottom();
         } else
@@ -314,12 +312,12 @@ void RedBlack::pExchangeVertical()
             MPI_Send(&p_to_other_ghost_bottom, 
                      discretization_->nCells()[0]+4,
                      MPI_DOUBLE,
-                     partitioning_.ownBottomNeighbour(),
+                     partitioning_->ownBottomNeighbour(),
                      )
             MPI_Recv(&other_ghost_to_p_bottom, 
                      discretization_->nCells()[0]+4,
                      MPI_DOUBLE,
-                     partitioning_.ownBottomNeighbour(),
+                     partitioning_->ownBottomNeighbour(),
                      )
 
             for (int i = -2; i < discretization_->nCells()[0] +2; i++)
@@ -329,10 +327,10 @@ void RedBlack::pExchangeVertical()
         }
     }
     // the uneven row processes: receive bottom, send bottom, receive top, send top, 
-    if ((partitioning_.ownRankCoordinate()[1] % 2) == 1)
+    if ((partitioning_->ownRankCoordinate()[1] % 2) == 1)
     {
         // bottom
-        if (partitioning_.ownPartitionContainsBottomBoundary())
+        if (partitioning_->ownPartitionContainsBottomBoundary())
         {
             setBoundaryValuesBottom();
         } else
@@ -348,12 +346,12 @@ void RedBlack::pExchangeVertical()
             MPI_Recv(&other_ghost_to_p_bottom, 
                      discretization_->nCells()[0]+4,
                      MPI_DOUBLE,
-                     partitioning_.ownBottomNeighbour(),
+                     partitioning_->ownBottomNeighbour(),
                      )
             MPI_Send(&p_to_other_ghost_bottom, 
                      discretization_->nCells()[0]+4,
                      MPI_DOUBLE,
-                     partitioning_.ownBottomNeighbour(),
+                     partitioning_->ownBottomNeighbour(),
                      )
 
             for (int i = -2; i < discretization_->nCells()[0] +2; i++)
@@ -362,7 +360,7 @@ void RedBlack::pExchangeVertical()
             }
         }
         // top
-        if (partitioning_.ownPartitionContainsTopBoundary())
+        if (partitioning_->ownPartitionContainsTopBoundary())
         {
             setBoundaryValuesTop();
         } else 
@@ -378,12 +376,12 @@ void RedBlack::pExchangeVertical()
             MPI_Recv(&other_ghost_to_p_top, 
                      discretization_->nCells()[0]+4,
                      MPI_DOUBLE,
-                     partitioning_.ownTopNeighbour(),
+                     partitioning_->ownTopNeighbour(),
                      )
             MPI_Send(&p_to_other_ghost_top, 
                      discretization_->nCells()[0]+4,
                      MPI_DOUBLE,
-                     partitioning_.ownTopNeighbour(),
+                     partitioning_->ownTopNeighbour(),
                      )
 
             for (int i = -2; i < discretization_->nCells()[0] +2; i++)

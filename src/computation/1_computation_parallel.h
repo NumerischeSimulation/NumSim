@@ -2,7 +2,11 @@
 
 #include "0_computation.h"
 #include "discretization/1_discretization.h"
-#include "data_transfer/0_data_transfer.h"
+#include "pressure_solver/1_red_black.h"
+#include "partitioning/partitioning.h"
+
+#include "output_writer/output_writer_paraview_parallel.h"
+#include "output_writer/output_writer_text_parallel.h"
 
 #include <memory>
 #include <iostream>  // for cout
@@ -34,9 +38,9 @@ protected:
     void uvExchangeVertical();
     void uvExchangeHorizontal();
 
-    std::unique_ptr<Partitioning> partitioning_;
+    std::shared_ptr<Partitioning> partitioning_;
 
-    std::unique_ptr<OutputWriterParaviewParallel> OutputWriterParaviewParallel_;
-    std::unique_ptr<OutputWriterTextParallel> OutputWriterTextParallel_;
+    std::unique_ptr<OutputWriterParaviewParallel> outputWriterParaviewParallel_;
+    std::unique_ptr<OutputWriterTextParallel> outputWriterTextParallel_;
 
 };
