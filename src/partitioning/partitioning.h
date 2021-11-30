@@ -20,6 +20,9 @@ class Partitioning
         //! return own rank number
         const int ownRankNo() const;
 
+        //! return own 2d rank coordinate on grid of subdomains
+        const std::array<int,2> ownRankCoordinate() const;
+
         //! return true if partition constains right boundary
         const bool ownPartitionContainsRightBoundary() const;
         //! return true if partition contains left boundary
@@ -51,6 +54,9 @@ class Partitioning
         const int ownRankNo_;
         //! global number of ranks
         const int nRanks_;
+
+        //! own rank coordinates on 2D grid of subdomains
+        const int ownRankCoordinate_;
 
         //! return rank number of partition neighbours (>0) 
         //! or MPI_PROC_NULL if edge lies on domain boundary
