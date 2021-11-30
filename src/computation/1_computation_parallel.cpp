@@ -274,56 +274,33 @@ void ComputationParallel::applyBoundaryValuesRight()
 void ComputationParallel::applyBoundaryValuesBottom()
 {
     // bottom, set boundaries only in domain as corners belong to sides, computational domain begins at idx 0
-    // u
-    for ( int i = 0; i < discretization_->uIEnd(); i++)
-    {
-        discretization_->u(i, discretization_->uJBegin())   = 2. * settings_.dirichletBcBottom[0] - discretization_->u(i, discretization_->uJBegin() +1);
-    }
     
-    // v
-    for ( int i = 0; i < discretization_->vIEnd(); i++)
+    for ( int i = 0; i < discretization_->nCells[0]; i++)
     {
-        discretization_->v(i, discretization_->vJBegin())  = settings_.dirichletBcBottom[1];
+        // u 
+        discretization_->u(i, -1)  = 2. * settings_.dirichletBcBottom[0] - discretization_->u(i, 0);
+        // v
+        discretization_->v(i, -1)  = settings_.dirichletBcBottom[1];
+        // f
+        discretization_->f(i, -1)  = discretization_->u(i, 0);
+        // g
+        discretization_->g(i, -1)  = discretization_->v(i, 0);
     }
-    
-    // F
-    for ( int i = 0; i < discretization_->uIEnd(); i++)
-    {
-        discretization_->f(i, discretization_->uJBegin()) = discretization_->u(i, discretization_->uJBegin());
-    }
-
-    // set g
-    for ( int i = 0; i < discretization_->vIEnd(); i++)
-    {
-        discretization_->g(i, discretization_->vJBegin()) = discretization_->v(i, discretization_->vJBegin());
-    }
-
 }
 
 void ComputationParallel::applyBoundaryValuesTop()
 {
     // set boundaries only in domain as corners belong to size, domain begins at idx 0
     
-    // u
-    for ( int i = 0; i < discretization_->uIEnd()-1; i++)
+    for ( int i = 0; i < discretization_->nCells[0]; i++)
     {
-        discretization_->u(i, discretization_->uJEnd() - 1) = 2. * settings_.dirichletBcTop[0] - discretization_->u(i, discretization_->uJEnd() -2);
-    }
-    
-    // set v
-    for ( int i = 0; i < discretization_->vIEnd()-1; i++)
-    {
-        discretization_->v(i, discretization_->vJEnd() - 1) = settings_.dirichletBcTop[1];
-    }
-
-    // set f
-    for ( int i = 0; i < discretization_->uIEnd()-1; i++)
-    {
-        discretization_->f(i, discretization_->uJEnd() -1) = discretization_->u(i, discretization_->uJEnd() -1);
-    }
-    // set g
-    for ( int i = 0; i < discretization_->vIEnd()-1; i++)
-    {
-        discretization_->g(i, discretization_->vJEnd() -1) = discretization_->v(i, discretization_->vJEnd() -1);
+        // u
+        discretization_->u(i, discretization_->nCells[1]) = 2. * settings_.dirichletBcTop[0] - discretization_->u(i, discretization_->nCells[1] - 1);
+        // v
+        discretization_->v(i, discretization_->nCells[1]) = settings_.dirichletBcTop[1];
+        // f
+        discretization_->f(i, discretization_->nCells[1]) = discretization_->u(i, discretization_->nCells[1] - 1);
+        // g
+        discretization_->g(i, discretization_->nCells[1]) = discretization_->v(i, discretization_->nCells[1] - 1);
     }
 }
