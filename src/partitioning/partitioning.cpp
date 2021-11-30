@@ -5,10 +5,13 @@ ownRankNo_(ownRankNo),
 nRanks_(nRanks),
 nCellsGlobal_(nCells)
 {
-    // map ownRank -> subdomain
+    // divide computational domain into subdomains
+    factorizeSubdomains();  // sets nSubdomains
+    
     int n_subd = nSubdomains_[0]; // number of subdomains in i direction or nCells[0]
     int m_subd = nSubdomains_[1]; // number of subdomains in j direction or nCells[1]
     
+    // map ownRank -> subdomain
     int process_column = ownRankNo_ % n_subd ;
     int process_row = std::floor(ownRankNo_ / n_subd);
 
@@ -47,6 +50,15 @@ nCellsGlobal_(nCells)
     }
 
     nCellsLocal_ = {nCellsGlobal_[0] / n_subd, nCellsGlobal_[1] / m_subd};
+    std::cout << "computed nCellsLocal: " << nCellsLocal_ << std::endl;
+    
+    // check if nCellsLocal is int, else throw an error
+    if (nCellsLocal_ != floor(nCellsLocal)) 
+    {
+        std::cout << "nCellsLocal is not an array of integers, computed partition not suited for global domain size." << std::endl;
+        throw;
+    }
+    
     nodeOffset_ = {nCellsLocal_[0] * process_column, nCellsLocal_[1] * process_row}
 }
 
@@ -79,4 +91,6 @@ Partitioning::factorizeSubdomains() {
     // save partition
     nSubdomains_[0] = n_opt;
     nSubdomains_[1] = m_opt;
+    
+    std::cout << "Computed optimal partition in subdomains: " << nSubdomains_ << " with costs " >> cost_opt << std::endl;
 }
