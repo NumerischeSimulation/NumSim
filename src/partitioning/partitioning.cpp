@@ -53,6 +53,7 @@ nCellsGlobal_(nCells)
     }
 
     nCellsLocal_ = {nCellsGlobal_[0] / n_subd, nCellsGlobal_[1] / m_subd};
+<<<<<<< HEAD
     std::cout << "computed nCellsLocal: " << nCellsLocal_ << std::endl;
     
     // check if nCellsLocal is int, else throw an error
@@ -63,6 +64,9 @@ nCellsGlobal_(nCells)
     }
     
     nodeOffset_ = {nCellsLocal_[0] * process_column, nCellsLocal_[1] * process_row}
+=======
+    nodeOffset_ = {nCellsLocal_[0] * process_column, nCellsLocal_[1] * process_row};
+>>>>>>> p ghost layer exchange in red black, even/uneven rows
 }
 
 Partitioning::factorizeSubdomains() {

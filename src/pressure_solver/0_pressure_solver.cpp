@@ -12,27 +12,50 @@ PressureSolver::PressureSolver(std::shared_ptr<Discretization> discretization, d
 
   void PressureSolver::setBoundaryValues()
   {
-     
-      //p_i,-1 = p_i,0. p_i,n+1 = p_i,n.
-      for ( int i = discretization_->pIBegin() +1; i < discretization_->pIEnd() -1; i++)
-      {
-        // bottom
-        discretization_->p(i, discretization_->pJBegin())  = discretization_->p(i, discretization_->pJBegin() +1);
-        // top
-        discretization_->p(i, discretization_->pJEnd() -1) = discretization_->p(i, discretization_->pJEnd() -2);
-      }
+    setBoundaryValuesTop();
+    setBoundaryValuesBottom();
 
-       // prioritise left and right boundaries
-       // p_-1,j = p_0,j. p_n+1,j = p_n,j.
-      for ( int j = discretization_->pJBegin(); j < discretization_->pJEnd(); j++)
-      {
-        // left
-        discretization_->p(discretization_->pIBegin(),j) =  discretization_->p(discretization_->pIBegin()+1,j);
-        // right
-        discretization_->p(discretization_->pIEnd() -1,j) =  discretization_->p(discretization_->pIEnd() -2,j);
-      }
+    // prioritise left and right boundaries
+    setBoundaryValuesLeft();
+    setBoundaryValuesRight();      
+  }
 
-       
+  void PressureSolver::setBoundaryValuesLeft()
+  {
+    // p_-1,j = p_0
+    for ( int j = discretization_->pJBegin(); j < discretization_->pJEnd(); j++)
+    {
+      discretization_->p(-1,j) =  discretization_->p(0,j);
+    }
+  }
+
+  void PressureSolver::setBoundaryValuesRight()
+  {
+    int n = discretization_->nCells()[0]; // number of cells in the computational domain in x-direction
+    // p_n+1,j = p_n,j
+    for ( int j = discretization_->pJBegin(); j < discretization_->pJEnd(); j++)
+    {
+      discretization_->p(n,j) =  discretization_->p(n-1 ,j);
+    }
+  }
+
+  void PressureSolver::setBoundaryValuesTop()
+  {
+    int m = discretization_->nCells()[1]; // number of cells in the computational domain in y-direction
+    // p_-1,j = p_0
+    for ( int i = discretization_->pIBegin() +1; i < discretization_->pIEnd() -1; i++)
+    {
+      discretization_->p(i, m) = discretization_->p(i, m-1);
+    }
+  }
+
+  void PressureSolver::setBoundaryValuesBottom()
+  {
+    // p_-1,j = p_0
+    for ( int i = discretization_->pIBegin() +1; i < discretization_->pIEnd() -1; i++)
+    {
+      discretization_->p(i, -1)  = discretization_->p(i, 0);
+    }
   }
 
   double PressureSolver::calculateResidual()

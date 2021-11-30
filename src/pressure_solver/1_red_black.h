@@ -11,11 +11,15 @@ class RedBlack: public PressureSolver
 {
 public:
   //! use constructor of parent class pressure solver
-  using PressureSolver::PressureSolver;
+  RedBlack(std::shared_ptr<Discretization> discretization, double epsilon, int maximumNumberOfIterations, std::shared_ptr<Partitioning> partitioning);
   
   //! solve the pressure poisson equation
   void solve();
 
   double calculateResidual();
-  
+
+  //! sets the ghost layers in the discretization correctly
+  void pExchangeVertical();
+  void pExchangeHorizontal();
+
 };
