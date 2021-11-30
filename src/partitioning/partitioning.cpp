@@ -94,3 +94,49 @@ Partitioning::factorizeSubdomains() {
     
     std::cout << "Computed optimal partition in subdomains: " << nSubdomains_ << " with costs " >> cost_opt << std::endl;
 }
+
+Partitioning::nodeOffset() {
+    return nodeOffset_;
+}
+
+Partitioning::nCellsGlobal() {
+    return nCellsGlobal_;
+}
+
+Partitioning::ownRankNo() {
+    return ownRankNo_;
+}
+
+// returns whether partition contains boundary
+Partitioning::ownPartitionContainsBottomBoundary() {
+    return partitionNeighbours_[0] == MPI_PROC_NULL;
+}
+
+Partitioning::ownPartitionContainsLeftBoundary() {
+    return partitionNeighbours_[1] == MPI_PROC_NULL;
+}
+
+Partitioning::ownPartitionContainsTopBoundary() {
+    return partitionNeighbours_[2] == MPI_PROC_NULL;
+}
+
+Partitioning::ownPartitionContainsRightBoundary() {
+    return partitionNeighbours_[3] == MPI_PROC_NULL;
+}
+
+// returns the rank numbers
+Partitioning::ownBottomNeighbour() {
+    return partitionNeighbours_[0];
+}
+
+Partitioning::ownLeftNeighbour() {
+    return partitionNeighbours_[1];
+}
+
+Partitioning::ownTopNeighbour() {
+    return partitionNeighbours_[2];
+}
+
+Partitioning::ownRightNeighbour() {
+    return partitionNeighbours_[3];
+}
