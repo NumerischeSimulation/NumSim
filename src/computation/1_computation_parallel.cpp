@@ -111,9 +111,9 @@ void ComputationParallel::computeTimeStepWidthParallel(double currentTime)
     MPI_Allreduce(&dt_local, &dt_global, 1, MPI_DOUBLE, MPI_MIN, MPI_COMM_WORLD);
     
     // if necessary adapt so that every full second is reached
-    if (std:floor(currentTime + dt) == floor(currentTime) + 1)
+    if (std:floor(currentTime + dt) == std::floor(currentTime) + 1)
     {
-        dt_global = (double) (floor(currentTime) + 1) - currentTime; // currentTime hits exactly next second
+        dt_global = (double) (std::floor(currentTime) + 1) - currentTime; // currentTime hits exactly next second
     }
 
     // or if necessary set currentTime + dt_ to endTime 
