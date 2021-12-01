@@ -4,7 +4,7 @@
 #include <vtkDoubleArray.h>
 #include <vtkPointData.h>
 
-OutputWriterParaview::OutputWriterParaview(std::shared_ptr<Discretization> discretization, const Partitioning &partitioning) :
+OutputWriterParaview::OutputWriterParaview(std::shared_ptr<Discretization> discretization, std::shared_ptr<Partitioning> partitioning) :
    OutputWriter(discretization, partitioning)
 {
   // Create a vtkWriter_

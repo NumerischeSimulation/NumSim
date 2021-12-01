@@ -16,9 +16,9 @@ void Computation::initialize(int argc, char *argv[])
     // initialize
     if (settings_.useDonorCell)
     {
-        discretization_ = std::make_shared<DonorCell>(settings_.nCells, meshWidth_, settings_.alpha);
+        // discretization_ = std::make_shared<DonorCell>(settings_.nCells, meshWidth_, settings_.alpha);
     } else {
-        discretization_ = std::make_shared<CentralDifferences>(settings_.nCells, meshWidth_);
+        // discretization_ = std::make_shared<CentralDifferences>(settings_.nCells, meshWidth_);
     }
     
     if (settings_.pressureSolver == "SOR")

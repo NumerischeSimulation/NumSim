@@ -8,10 +8,10 @@
 #include <vtkPointData.h>
 #include <mpi.h>
 
-OutputWriterParaviewParallel::OutputWriterParaviewParallel(std::shared_ptr<Discretization> discretization, const Partitioning &partitioning) :
+OutputWriterParaviewParallel::OutputWriterParaviewParallel(std::shared_ptr<Discretization> discretization, std::shared_ptr <Partitioning> partitioning) :
    OutputWriter(discretization, partitioning),
 
-  nCellsGlobal_(partitioning_.nCellsGlobal()),
+  nCellsGlobal_(partitioning_->nCellsGlobal()),
   nPointsGlobal_ {nCellsGlobal_[0]+1, nCellsGlobal_[1]+1},    // we have one point more than cells in every coordinate direction
   
   // create field variables for resulting values, only for local data as send buffer
@@ -44,14 +44,14 @@ void OutputWriterParaviewParallel::gatherData()
   int iEnd = nCells[0];
 
   // add right-most points at ranks with right boundary
-  if (partitioning_.ownPartitionContainsRightBoundary())
+  if (partitioning_->ownPartitionContainsRightBoundary())
     iEnd += 1;
 
   // add right-most points at ranks with top boundary
-  if (partitioning_.ownPartitionContainsTopBoundary())
+  if (partitioning_->ownPartitionContainsTopBoundary())
     jEnd += 1;
 
-  std::array<int,2> nodeOffset = partitioning_.nodeOffset();
+  std::array<int,2> nodeOffset = partitioning_->nodeOffset();
 
   u_.setToZero();
   v_.setToZero();
@@ -75,9 +75,9 @@ void OutputWriterParaviewParallel::gatherData()
   }
 
   // sum up values from all ranks, not set values are zero
-  MPI_Reduce(u_.data(), uGlobal_.data(), nPointsGlobalTotal, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-  MPI_Reduce(v_.data(), vGlobal_.data(), nPointsGlobalTotal, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-  MPI_Reduce(p_.data(), pGlobal_.data(), nPointsGlobalTotal, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+  MPI_Reduce(u_.data().data(), uGlobal_.data().data(), nPointsGlobalTotal, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+  MPI_Reduce(v_.data().data(), vGlobal_.data().data(), nPointsGlobalTotal, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+  MPI_Reduce(p_.data().data(), pGlobal_.data().data(), nPointsGlobalTotal, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 
 }
 
@@ -87,7 +87,7 @@ void OutputWriterParaviewParallel::writeFile(double currentTime)
   gatherData();
 
   // only continue to write the file on rank 0
-  if (partitioning_.ownRankNo() != 0)
+  if (partitioning_->ownRankNo() != 0)
   {
     return;
   }

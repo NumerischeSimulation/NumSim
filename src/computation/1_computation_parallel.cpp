@@ -29,9 +29,9 @@ void ComputationParallel::initialize(int argc, char *argv[])
     // initialize
     if (settings_.useDonorCell)
     {
-        discretization_ = std::make_shared<DonorCell>(settings_.nCells, meshWidth_, settings_.alpha);
+        discretization_ = std::make_shared<DonorCell>(settings_.nCells, meshWidth_, partitioning_->ownPartitionNeighbours(), settings_.alpha);
     } else {
-        discretization_ = std::make_shared<CentralDifferences>(settings_.nCells, meshWidth_);
+        discretization_ = std::make_shared<CentralDifferences>(settings_.nCells, meshWidth_, partitioning_->ownPartitionNeighbours());
     }
     
     pressureSolver_ = std::make_unique<RedBlack>(discretization_, settings_.epsilon, settings_.maximumNumberOfIterations, partitioning_); 

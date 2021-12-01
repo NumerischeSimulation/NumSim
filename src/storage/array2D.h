@@ -26,6 +26,9 @@ public:
   //! set all data of 2D array to zero
   void setToZero();
 
+  //! return data vector
+  std::vector<double>  data();
+
 protected:
 
   std::vector<double> data_;  //< storage array values, in row-major order
