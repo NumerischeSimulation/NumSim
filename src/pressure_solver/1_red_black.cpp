@@ -139,28 +139,10 @@ void RedBlack::pExchangeHorizontal()
         } else 
         {
             // p
-            std::array<double, discretization_->nCells()[1]+4> p_to_other_ghost_left;
-            for (int j = -2; j < discretization_->nCells()[1] +2; j++)
-            {
-                p_to_other_ghost_left[j+2] = discretization_->p(0, j); // p_{0}
-            }
-            std::array<double, discretization_->nCells()[1]+4> other_ghost_to_p_left;
-
-            MPI_Send(&p_to_other_ghost_left, 
-                     discretization_->nCells()[1]+4,
-                     MPI_DOUBLE,
-                     partitioning_->ownLeftNeighbour(),
-                     )
-            MPI_Recv(&other_ghost_to_p_left, 
-                     discretization_->nCells()[1]+4,
-                     MPI_DOUBLE,
-                     partitioning_->ownLeftNeighbour(),
-                     )
-
-            for (int j = -2; j < discretization_->nCells()[1] +2; j++)
-            {
-                discretization_->p(-1, j) = other_ghost_to_p_left[j+2]; // p_{-1}
-            }
+            // send p_0, receive p_-1
+            exchange(partitioning_->ownLeftNeighbour(), 
+                     0, -1, 
+                     'x', true);
         }
 
         // right
@@ -170,28 +152,10 @@ void RedBlack::pExchangeHorizontal()
         } else
         {
             // p
-            std::array<double, discretization_->nCells()[1]+4> p_to_other_ghost_right;
-            for (int j = -2; j < discretization_->nCells()[1] +2; j++)
-            {
-                p_to_other_ghost_right[j+2] = discretization_->p(discretization_->nCells()[1] -1, j); // p_{n-1}
-            }
-            std::array<double, discretization_->nCells()[1]+4> other_ghost_to_p_right;
-
-            MPI_Send(&p_to_other_ghost_right, 
-                     discretization_->nCells()[1]+4,
-                     MPI_DOUBLE,
-                     partitioning_->ownRightNeighbour(),
-                     )
-            MPI_Recv(&other_ghost_to_p_right, 
-                     discretization_->nCells()[1]+4,
-                     MPI_DOUBLE,
-                     partitioning_->ownRightNeighbour(),
-                     )
-
-            for (int j = -2; j < discretization_->nCells()[1] +2; j++)
-            {
-                discretization_->p(discretization_->nCells()[1], j) = other_ghost_to_p_right[j+2]; // p_{n}
-            }
+            // send p_n-1, receive p_n
+            exchange(partitioning_->ownRightNeighbour(), 
+                     discretization_->nCells()[1] -1, discretization_->nCells()[1],
+                     'x', true);
         }
     }
     // the uneven processes: receive right, send right, receive left, send left
@@ -203,28 +167,10 @@ void RedBlack::pExchangeHorizontal()
         } else
         {
             // p
-            std::array<double, discretization_->nCells()[1]+4> p_to_other_ghost_right;
-            for (int j = -2; j < discretization_->nCells()[1] +2; j++)
-            {
-                p_to_other_ghost_right[j+2] = p(discretization_->nCells()[1] -1, j); // p_{n-1}
-            }
-            std::array<double, discretization_->nCells()[1]+4> other_ghost_to_p_right;
-
-            MPI_Recv(&other_ghost_to_p_right, 
-                     discretization_->nCells()[1]+4,
-                     MPI_DOUBLE,
-                     partitioning_->ownRightNeighbour(),
-                     )
-            MPI_Send(&p_to_other_ghost_right, 
-                     discretization_->nCells()[1]+4,
-                     MPI_DOUBLE,
-                     partitioning_->ownRightNeighbour(),
-                     )
-
-            for (int j = -2; j < discretization_->nCells()[1] +2; j++)
-            {
-                discretization_->p(discretization_->nCells()[1], j) = other_ghost_to_p_right[j+2]; // p_{n}
-            }
+            // receive p_n-1, send p_n
+            exchange(partitioning_->ownRightNeighbour(), 
+                     discretization_->nCells()[1], discretization_->nCells()[1] -1,
+                     'x', false);
         }
         if (partitioning_->ownPartitionContainsLeftBoundary())
         {
@@ -232,28 +178,10 @@ void RedBlack::pExchangeHorizontal()
         } else 
         {
             // p
-            std::array<double, discretization_->nCells()[1]+4> p_to_other_ghost_left;
-            for (int j = -2; j < discretization_->nCells()[1] +2; j++)
-            {
-                p_to_other_ghost_left[j+2] = discretization_->p(0, j); // p_{0}
-            }
-            std::array<double, discretization_->nCells()[1]+4> other_ghost_to_p_left;
-
-            MPI_Recv(&other_ghost_to_p_left, 
-                     discretization_->nCells()[1]+4,
-                     MPI_DOUBLE,
-                     partitioning_->ownLeftNeighbour(),
-                     )
-            MPI_Send(&p_to_other_ghost_left, 
-                     discretization_->nCells()[1]+4,
-                     MPI_DOUBLE,
-                     partitioning_->ownLeftNeighbour(),
-                     )
-
-            for (int j = -2; j < discretization_->nCells()[1] +2; j++)
-            {
-                discretization_->p(-1, j) = other_ghost_to_p_left[j+2]; // p_{-1}
-            }
+            // receive p_-1, send p_0
+            exchange(partitioning_->ownLeftNeighbour(), 
+                     0, -1,
+                     'x', false);
         }
     }
 }
@@ -272,28 +200,10 @@ void RedBlack::pExchangeVertical()
         } else 
         {
             // p
-            std::array<double, discretization_->nCells()[0]+4> p_to_other_ghost_top;
-            for (int i = -2; i < discretization_->nCells()[0] +2; i++)
-            {
-                p_to_other_ghost_top[i+2] = discretization_->p(i, discretization_->nCells()[0] -1); // p_{n-1}
-            }
-            std::array<double, discretization_->nCells()[0]+4> other_ghost_to_p_top;
-
-            MPI_Send(&p_to_other_ghost_top, 
-                     discretization_->nCells()[0]+4,
-                     MPI_DOUBLE,
-                     partitioning_->ownTopNeighbour(),
-                     )
-            MPI_Recv(&other_ghost_to_p_top, 
-                     discretization_->nCells()[0]+4,
-                     MPI_DOUBLE,
-                     partitioning_->ownTopNeighbour(),
-                     )
-
-            for (int i = -2; i < discretization_->nCells()[0] +2; i++)
-            {
-                discretization_->p(i, discretization_->nCells()[0]) = other_ghost_to_p_top[i+2]; // p_{n}
-            }
+            // send p_n-1, receive p_n
+            exchange(partitioning_->ownTopNeighbour(), 
+                     discretization_->nCells()[0] -1, discretization_->nCells()[0], 
+                     'y', true);
         }
         // bottom
         if (partitioning_->ownPartitionContainsBottomBoundary())
@@ -301,29 +211,11 @@ void RedBlack::pExchangeVertical()
             setBoundaryValuesBottom();
         } else
         {
-            // u
-            std::array<double, discretization_->nCells()[0]+4> p_to_other_ghost_bottom;
-            for (int i = -2; i < discretization_->nCells()[0] +2; i++)
-            {
-                p_to_other_ghost_bottom[i+2] = discretization_->p(i, 0); // p_{0}
-            }
-            std::array<double, discretization_->nCells()[1]+4> other_ghost_to_p_bottom;
-
-            MPI_Send(&p_to_other_ghost_bottom, 
-                     discretization_->nCells()[0]+4,
-                     MPI_DOUBLE,
-                     partitioning_->ownBottomNeighbour(),
-                     )
-            MPI_Recv(&other_ghost_to_p_bottom, 
-                     discretization_->nCells()[0]+4,
-                     MPI_DOUBLE,
-                     partitioning_->ownBottomNeighbour(),
-                     )
-
-            for (int i = -2; i < discretization_->nCells()[0] +2; i++)
-            {
-                discretization_->p(i, -1) = other_ghost_to_p_bottom[j+2]; // p_{-1}
-            }
+            // p
+            // send p_0, receive p_-1
+            exchange(partitioning_->ownBottomNeighbour(), 
+                     0, -1, 
+                     'y', true);
         }
     }
     // the uneven row processes: receive bottom, send bottom, receive top, send top, 
@@ -335,29 +227,11 @@ void RedBlack::pExchangeVertical()
             setBoundaryValuesBottom();
         } else
         {
-            // u
-            std::array<double, discretization_->nCells()[0]+4> p_to_other_ghost_bottom;
-            for (int i = -2; i < discretization_->nCells()[0] +2; i++)
-            {
-                p_to_other_ghost_bottom[i+2] = discretization_->p(i, 0); // p_{0}
-            }
-            std::array<double, discretization_->nCells()[1]+4> other_ghost_to_p_bottom;
-
-            MPI_Recv(&other_ghost_to_p_bottom, 
-                     discretization_->nCells()[0]+4,
-                     MPI_DOUBLE,
-                     partitioning_->ownBottomNeighbour(),
-                     )
-            MPI_Send(&p_to_other_ghost_bottom, 
-                     discretization_->nCells()[0]+4,
-                     MPI_DOUBLE,
-                     partitioning_->ownBottomNeighbour(),
-                     )
-
-            for (int i = -2; i < discretization_->nCells()[0] +2; i++)
-            {
-                discretization_->p(i, -1) = other_ghost_to_p_bottom[j+2]; // p_{-1}
-            }
+            // p
+            // receive p_-1, send p_0
+            exchange(partitioning_->ownBottomNeighbour(), 
+                     0, -1, 
+                     'y', false);
         }
         // top
         if (partitioning_->ownPartitionContainsTopBoundary())
@@ -365,28 +239,106 @@ void RedBlack::pExchangeVertical()
             setBoundaryValuesTop();
         } else 
         {
-            // u
-            std::array<double, discretization_->nCells()[0]+4> p_to_other_ghost_top;
-            for (int i = -2; i < discretization_->nCells()[0] +2; i++)
-            {
-                p_to_other_ghost_top[i+2] = discretization_->p(i, discretization_->nCells()[0] -1); // p_{n-1}
-            }
-            std::array<double, discretization_->nCells()[0]+4> other_ghost_to_p_top;
+            // p
+            // receive p_n, send p_n-1
+            exchange(partitioning_->ownTopNeighbour(), 
+                     discretization_->nCells()[0] -1, discretization_->nCells()[0], 
+                     'y', false);
+        }
+    }
+}
 
-            MPI_Recv(&other_ghost_to_p_top, 
-                     discretization_->nCells()[0]+4,
-                     MPI_DOUBLE,
-                     partitioning_->ownTopNeighbour(),
-                     )
-            MPI_Send(&p_to_other_ghost_top, 
-                     discretization_->nCells()[0]+4,
-                     MPI_DOUBLE,
-                     partitioning_->ownTopNeighbour(),
-                     )
+void RedBlack::exchange(int rankCorrespondent, int indexToSend, int indexFromReceive, char direction, bool ToFrom)
+{
+    // index to or from can be NULL
 
-            for (int i = -2; i < discretization_->nCells()[0] +2; i++)
-            {
-                discretization_->p(i, discretization_->nCells()[0]) = other_ghost_to_p_top[i+2]; // p_{n}
-            }
+    // initialize variables
+    int nValuesCommunication = 0;
+    int offset = 0;
+
+    // get constant variables for each case
+    if (direction == 'x')
+    {
+        nValuesCommunication = discretization_->pJEnd() - discretization_->pJBegin();
+        offset = std::abs(discretization_->pJBegin());
+    } else if (direction == 'y')
+    {
+        nValuesCommunication = discretization_->pIEnd() - discretization_->pIBegin();
+        offset = std::abs(discretization_->pIBegin());
+    }
+
+    // get slice to communicate for each case
+    std::vector<double> toOtherGhost(nValuesCommunication, 0);
+    if (direction == 'x')
+    {
+        for (int j = discretization_->pJBegin(); j < discretization_->pJEnd(); j++)
+        {
+            toOtherGhost[j+offset] = discretization_->p(indexToSend, j);
+        }
+    } else if (direction == 'y')
+    {
+        for (int i = discretization_->pIBegin(); i < discretization_->pIEnd(); i++)
+        {
+            toOtherGhost[i+offset] = discretization_->p(i, indexToSend);
+        }
+    }
+
+    // send-receive or receive-send depending on the direction
+    std::vector<double> otherGhostFrom(nValuesCommunication, 0);
+    if (ToFrom)
+    {
+        // send
+        MPI_Send(toOtherGhost.data(),
+            nValuesCommunication,
+            MPI_DOUBLE,
+            rankCorrespondent,
+            0,
+            MPI_COMM_WORLD
+            );
+
+        // receive
+        MPI_Recv(otherGhostFrom.data(), 
+            nValuesCommunication,
+            MPI_DOUBLE,
+            rankCorrespondent,
+            0,
+            MPI_COMM_WORLD,
+            MPI_STATUS_IGNORE
+            );
+    } else 
+    {
+        // receive
+        MPI_Recv(otherGhostFrom.data(), 
+            nValuesCommunication,
+            MPI_DOUBLE,
+            rankCorrespondent,
+            0,
+            MPI_COMM_WORLD,
+            MPI_STATUS_IGNORE
+            );
+
+        // send
+        MPI_Send(toOtherGhost.data(),
+            nValuesCommunication,
+            MPI_DOUBLE,
+            rankCorrespondent,
+            0,
+            MPI_COMM_WORLD
+            );
+    }
+
+    // write slice to correct index
+    if (direction == 'x')
+    {
+        for (int j = discretization_->pJBegin(); j < discretization_->pJEnd(); j++)
+        {
+            discretization_->p(indexFromReceive, j) = otherGhostFrom[j+offset];
+        }
+    } else if (direction == 'y')
+    {
+        for (int i = discretization_->pIBegin(); i < discretization_->pIEnd(); i++)
+        {
+            discretization_->p(i, indexFromReceive) = otherGhostFrom[i+offset];
+        }
     }
 }
