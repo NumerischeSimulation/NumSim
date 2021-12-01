@@ -42,6 +42,9 @@ class Partitioning
         //! return rank number of bottom neighbour, -1 if boundary
         int ownBottomNeighbour();
 
+        //! returns partition neighbours
+        std::array<int, 4> ownPartitionNeighbours();
+
     protected:
 
         //! global node offset of lower left cell

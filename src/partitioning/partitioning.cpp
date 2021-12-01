@@ -148,3 +148,7 @@ int Partitioning::ownTopNeighbour() {
 int Partitioning::ownRightNeighbour() {
     return partitionNeighbours_[3];
 }
+
+std::array<int, 4> Partitioning::ownPartitionNeighbours() {
+    return partitionNeighbours_;
+}
