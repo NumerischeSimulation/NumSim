@@ -18,6 +18,8 @@ nCellsGlobal_(nCells)
     // save as rank coordinate
     ownRankCoordinate_ = {process_column, process_row};
 
+    std::cout << "ownRankCoordinate: " << ownRankCoordinate_[0] << " " << ownRankCoordinate_[1] << "(" << ownRankNo_ << ")" << std::endl;
+
     // get neighbors
     // bottom border
     if (process_row == 0)
@@ -52,6 +54,10 @@ nCellsGlobal_(nCells)
         partitionNeighbours_[3] = ownRankNo_ +1;
     }
 
+    std::cout << "Process no " << ownRankNo_ << " found the following neighbours: " << std::endl
+              << partitionNeighbours_[0] << " " << partitionNeighbours_[1] << " "  << std::endl
+              << partitionNeighbours_[2] << " " << partitionNeighbours_[3] << " "<< std::endl;
+
     nCellsLocal_ = {nCellsGlobal_[0] / n_subd, nCellsGlobal_[1] / m_subd};
 
     std::cout << "computed nCellsLocal: " << nCellsLocal_[0] << nCellsLocal_[1]  << std::endl;
@@ -64,6 +70,8 @@ nCellsGlobal_(nCells)
     }
     
     nodeOffset_ = {nCellsLocal_[0] * process_column, nCellsLocal_[1] * process_row};
+
+    std::cout << "With a node offset of " << nodeOffset_[0] << " " << nodeOffset_[1] << "(process no:" << ownRankNo_ << ")" << std::endl;
 }
 
 void Partitioning::factorizeSubdomains() {
@@ -96,7 +104,7 @@ void Partitioning::factorizeSubdomains() {
     nSubdomains_[0] = n_opt;
     nSubdomains_[1] = m_opt;
     
-    std::cout << "Computed optimal partition in subdomains: " << nSubdomains_[0] << nSubdomains_[1]  << " with costs " << cost_opt << std::endl;
+    std::cout << "Computed optimal partition in subdomains: " << nSubdomains_[0] << nSubdomains_[1]  << " with costs " << cost_opt << "(" << ownRankNo_ << ")" << std::endl;
 }
 
 std::array<int, 2> Partitioning::nodeOffset() {
