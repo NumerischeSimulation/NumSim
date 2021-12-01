@@ -22,7 +22,14 @@ public:
   void pExchangeVertical();
   void pExchangeHorizontal();
 
-  protected:
-  std::shared_ptr<Partitioning> partitioning_;
+  //! helper that exchanges the ghost layers for p
+  void exchange(int rankCorrespondent, //! rank of the other process with which to exchange 
+                int indexToSend, //! index of the slice to send
+                int indexFromReceive, //! index of the slice where to write the incoming data
+                char direction, //! x or y direction
+                bool ToFrom); //! send and then receive, else receive then send
 
+protected:
+  std::shared_ptr<Partitioning> partitioning_;
+  
 };
