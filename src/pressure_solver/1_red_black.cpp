@@ -8,6 +8,9 @@ RedBlack::RedBlack(std::shared_ptr<Discretization> discretization, double epsilo
 
 double RedBlack::calculateResidual()
 {
+
+    //std::cout << "Calculating Residual " << " (" << partitioning_->ownRankNo() << ")" << std::endl;
+
     // cell size
     double dy = discretization_->dy();
     double dx = discretization_->dx();
@@ -53,9 +56,12 @@ void RedBlack::solve()
     //initial residual
     double res = calculateResidual();
 
+    std::cout << "Starting with RedBlack iterations... " << std::endl;
     // iterate through grid 
     while( iteration < maximumNumberOfIterations_ && res > pow(epsilon_,2))
     {
+
+        //std::cout << "Iter: " << iteration << std::endl;
         // Black Solver
         // one half solver iteration
         for ( int j = 0; j < discretization_->nCells()[1]; j++)
@@ -83,6 +89,7 @@ void RedBlack::solve()
             }
         }
         // apply the horizontal exchange first such that the boundary values are set correctly
+        //std::cout << "Starting exchange... " << std::endl;
         pExchangeHorizontal();
         pExchangeVertical();
         
@@ -122,12 +129,14 @@ void RedBlack::solve()
         setBoundaryValues();
 
         res = calculateResidual();
+
+        //std::cout << "RedBlack: " << iteration << " with a residuum of " << res << " from target " << std::pow(epsilon_,2) << std::endl;
     }
 }
 
 void RedBlack::pExchangeHorizontal()
 {
-    // the +4 in nCells+4 is from the consistent number of halo-cells in the staggered grid
+    //std::cout << "pExchangeHorizontal" << std::endl;
 
     // the even processes: send left, receive left, send right, receive right
     if ((partitioning_->ownRankNo() % 2) == 0)
@@ -188,7 +197,7 @@ void RedBlack::pExchangeHorizontal()
 
 void RedBlack::pExchangeVertical()
 {
-    // the +4 in nCells+4 is from the consistent number of halo-cells in the staggered grid
+    //std::cout << "pExchangeVertical" << std::endl;  
 
     // the even row processes: send top, receive top, send bottom, receive bottom
     if ((partitioning_->ownRankCoordinate()[1] % 2) == 0)

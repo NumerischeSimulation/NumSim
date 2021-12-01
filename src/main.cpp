@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstdlib>
+#include <typeinfo>
 
 #include "settings.h"
 #include "computation/1_computation_parallel.h"
@@ -19,7 +20,9 @@ int main(int argc, char *argv[])
   std::cout << std::endl;
   
   // construct computation obj: parses parameter file and prints settings
-  Computation computation = Computation();
+  ComputationParallel computation = ComputationParallel();
+  std::cout << typeid(computation).name() << std::endl;
+
   computation.initialize(argc, argv);
   
   std::cout << std::endl;

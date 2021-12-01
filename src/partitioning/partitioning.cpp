@@ -40,10 +40,10 @@ nCellsGlobal_(nCells)
     // top border
     if (process_row == (m_subd - 1))
     {
-        partitionNeighbours_[3] = MPI_PROC_NULL;
+        partitionNeighbours_[2] = MPI_PROC_NULL;
     } else
     {
-        partitionNeighbours_[3] = ownRankNo_ + n_subd;
+        partitionNeighbours_[2] = ownRankNo_ + n_subd;
     }
     // right border
     if (process_column == (n_subd - 1))
@@ -57,6 +57,10 @@ nCellsGlobal_(nCells)
     std::cout << "Process no " << ownRankNo_ << " found the following neighbours: " << std::endl
               << partitionNeighbours_[0] << " " << partitionNeighbours_[1] << " "  << std::endl
               << partitionNeighbours_[2] << " " << partitionNeighbours_[3] << " "<< std::endl;
+
+    std::cout << "Process no " << ownRankNo_ << " found the following null process: " << std::endl
+              << ownPartitionContainsBottomBoundary() << " " << ownPartitionContainsLeftBoundary() << " "  << std::endl
+              << ownPartitionContainsTopBoundary() << " " << ownPartitionContainsRightBoundary() << " "<< std::endl;
 
     nCellsLocal_ = {nCellsGlobal_[0] / n_subd, nCellsGlobal_[1] / m_subd};
 

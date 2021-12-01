@@ -35,8 +35,12 @@ void ComputationParallel::initialize(int argc, char *argv[])
     } else {
         discretization_ = std::make_shared<CentralDifferences>(partitioning_->nCellsLocal(), meshWidth_, partitioning_->ownPartitionNeighbours());
     }
+
+    std::cout << "Initialized discretization" << std::endl;
     
     pressureSolver_ = std::make_unique<RedBlack>(discretization_, settings_.epsilon, settings_.maximumNumberOfIterations, partitioning_); 
+
+    std::cout << "Initialized pressure solver" << std::endl;
 
     // misc
     dt_ = 0.;
@@ -44,6 +48,8 @@ void ComputationParallel::initialize(int argc, char *argv[])
     // initialize output writer
     outputWriterParaviewParallel_ = std::make_unique<OutputWriterParaviewParallel>(discretization_, partitioning_);
     outputWriterTextParallel_     = std::make_unique<OutputWriterTextParallel>(discretization_, partitioning_);
+
+    std::cout << "Initialized output writer" << std::endl;
 }
 
 void ComputationParallel::runSimulation()
@@ -60,8 +66,8 @@ void ComputationParallel::runSimulation()
         std::cout << std::endl;
 
         // step 1: set the boundary values / exchange the final velocities at the borders
+        std::cout << "Applying boundary values for u/v and F/G..." << " (" << partitioning_->ownRankNo() << ")" << std::endl;
         applyBoundaryValues();
-        std::cout << "Applied boundary values for u/v and F/G" << " (" << partitioning_->ownRankNo() << ")" << std::endl;
 
         // step 2: compute time step width
         computeTimeStepWidthParallel(currentTime);
@@ -73,31 +79,29 @@ void ComputationParallel::runSimulation()
         std::cout << "+++++++++++++++++++++++" << std::endl;    
 
         // step 4: calculate F, G with first setting the boundary conditions of F, G (step 1)
+        std::cout << "Computing preliminary velocities ..." << " (" << partitioning_->ownRankNo() << ")" << std::endl;
         computePreliminaryVelocities();
 
-        std::cout << "Computed preliminary velocities" << " (" << partitioning_->ownRankNo() << ")" << std::endl;
-
         // step 5: compute the right hand side of the pressure equation
+        std::cout << "Computing right hand side ..." << " (" << partitioning_->ownRankNo() << ")" << std::endl;
         computeRightHandSide();
 
-        std::cout << "Computed right hand side" << " (" << partitioning_->ownRankNo() << ")" << std::endl;
-
         // step 6: solve the pressure equation
+        std::cout << "Computing presure..." << " (" << partitioning_->ownRankNo() << ")" << std::endl;
         computePressure();
 
-        std::cout << "Computed presure" << " from process number " << partitioning_->ownRankNo() << std::endl;
-
         // step 7: calculate the final velocities
+        std::cout << "Computing velocities..." << " (" << partitioning_->ownRankNo() << ")" << std::endl;
         computeVelocities();
 
-        std::cout << "Computed velocities" << " (" << partitioning_->ownRankNo() << ")" << std::endl;
 
         // step 9: write output
-        if (std::floor(currentTime) == currentTime)
-        {
-            outputWriterParaview_->writeFile(currentTime);
-            outputWriterText_->writeFile(currentTime);
-        }
+        // if (std::floor(currentTime) == currentTime) // TODO
+        // {
+        std::cout << "Writing output..." << std::endl;
+        outputWriterParaviewParallel_->writeFile(currentTime);
+        outputWriterTextParallel_->writeFile(currentTime);
+        // }
     }
     
     // end the MPI-session
@@ -121,6 +125,7 @@ void ComputationParallel::computeTimeStepWidthParallel(double currentTime)
     // if necessary adapt so that every full second is reached
     if (std::floor(currentTime + dt_) == std::floor(currentTime) + 1)
     {
+        std::cout << "Adapting time step to reach full second..." << std::endl;
         dt_global = (double) (std::floor(currentTime) + 1) - currentTime; // currentTime hits exactly next second
     }
 
@@ -204,13 +209,13 @@ void ComputationParallel::applyBoundaryValuesBottom()
     for ( int i = 0; i < discretization_->nCells()[0]; i++)
     {
         // u 
-        discretization_->u(i, -1)  = 2. * settings_.dirichletBcBottom[0] - discretization_->u(i, 0);
+        discretization_->u(i, discretization_->uJBegin())  = 2. * settings_.dirichletBcBottom[0] - discretization_->u(i, discretization_->uJBegin() + 1);
         // v
-        discretization_->v(i, -1)  = settings_.dirichletBcBottom[1];
+        discretization_->v(i, discretization_->vJBegin())  = settings_.dirichletBcBottom[1];
         // f
-        discretization_->f(i, -1)  = discretization_->u(i, 0);
+        discretization_->f(i, discretization_->uJBegin())  = discretization_->u(i, discretization_->uJBegin());
         // g
-        discretization_->g(i, -1)  = discretization_->v(i, 0);
+        discretization_->g(i, discretization_->vJBegin())  = discretization_->v(i, discretization_->vJBegin());
     }
 }
 
@@ -222,13 +227,13 @@ void ComputationParallel::applyBoundaryValuesTop()
     for ( int i = 0; i < discretization_->nCells()[0]; i++)
     {
         // u
-        discretization_->u(i, discretization_->nCells()[1]) = 2. * settings_.dirichletBcTop[0] - discretization_->u(i, discretization_->nCells()[1] - 1);
+        discretization_->u(i, discretization_->uJEnd() - 1) = 2. * settings_.dirichletBcTop[0] - discretization_->u(i, discretization_->uJEnd() - 2);
         // v
-        discretization_->v(i, discretization_->nCells()[1]) = settings_.dirichletBcTop[1];
+        discretization_->v(i, discretization_->vJEnd() - 1) = settings_.dirichletBcTop[1];
         // f
-        discretization_->f(i, discretization_->nCells()[1]) = discretization_->u(i, discretization_->nCells()[1] - 1);
+        discretization_->f(i, discretization_->uJEnd() - 1) = discretization_->u(i, discretization_->uJEnd() - 1);
         // g
-        discretization_->g(i, discretization_->nCells()[1]) = discretization_->v(i, discretization_->nCells()[1] - 1);
+        discretization_->g(i, discretization_->vJEnd() - 1) = discretization_->v(i, discretization_->vJEnd() - 1);
     }
 }
 

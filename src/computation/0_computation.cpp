@@ -146,6 +146,9 @@ void Computation::computeTimeStepWidth()
     }
 
     // boundary from convection
+    std::cout << "u_max: " << u_max << std::endl;
+    std::cout << "v_max: " << v_max << std::endl;
+
     double boundary_convection_u = meshWidth_[0] / u_max;
     double boundary_convection_v = meshWidth_[1] / v_max;
 
