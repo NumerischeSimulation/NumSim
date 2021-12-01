@@ -18,6 +18,9 @@ class Partitioning
         //! number of global cells
         std::array<int, 2> nCellsGlobal() ;
 
+        //! number of local cells
+        std::array<int, 2> nCellsLocal() ;
+
         //! return own rank number
         int ownRankNo() ;
 
