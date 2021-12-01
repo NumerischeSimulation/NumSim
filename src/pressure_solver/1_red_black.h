@@ -6,6 +6,7 @@
 #include <cmath>
 #include <math.h>
 #include <mpi.h>
+#include <vector>
 
 class RedBlack: public PressureSolver
 {
