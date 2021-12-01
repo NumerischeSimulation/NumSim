@@ -107,6 +107,11 @@ std::array<int, 2> Partitioning::nCellsGlobal() {
     return nCellsGlobal_;
 }
 
+std::array<int, 2> Partitioning::nCellsLocal() {
+    return nCellsLocal_;
+}
+
+
 int Partitioning::ownRankNo() {
     return ownRankNo_;
 }

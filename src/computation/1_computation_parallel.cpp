@@ -29,9 +29,9 @@ void ComputationParallel::initialize(int argc, char *argv[])
     // initialize
     if (settings_.useDonorCell)
     {
-        discretization_ = std::make_shared<DonorCell>(settings_.nCells, meshWidth_, partitioning_->ownPartitionNeighbours(), settings_.alpha);
+        discretization_ = std::make_shared<DonorCell>(partitioning_->nCellsLocal(), meshWidth_, partitioning_->ownPartitionNeighbours(), settings_.alpha);
     } else {
-        discretization_ = std::make_shared<CentralDifferences>(settings_.nCells, meshWidth_, partitioning_->ownPartitionNeighbours());
+        discretization_ = std::make_shared<CentralDifferences>(partitioning_->nCellsLocal(), meshWidth_, partitioning_->ownPartitionNeighbours());
     }
     
     pressureSolver_ = std::make_unique<RedBlack>(discretization_, settings_.epsilon, settings_.maximumNumberOfIterations, partitioning_); 
@@ -251,13 +251,13 @@ void ComputationParallel::uvExchangeHorizontal()
             // u
             // send u_n-2, receive u_n
             exchange(partitioning_->ownRightNeighbour(),
-                     discretization_->nCells()[1] -2, discretization_->nCells()[1], 
+                     discretization_->nCells()[0] -2, discretization_->nCells()[0], 
                      'x', 'u', true);
 
             // v
             // send v_n-1, receive v_n
             exchange(partitioning_->ownRightNeighbour(),
-                     discretization_->nCells()[1] -1, discretization_->nCells()[1], 
+                     discretization_->nCells()[0] -1, discretization_->nCells()[0], 
                      'x', 'v', true);
         }
     }
@@ -272,13 +272,13 @@ void ComputationParallel::uvExchangeHorizontal()
             // u
             // receive u_n-2, send u_n
             exchange(partitioning_->ownRightNeighbour(),
-                     discretization_->nCells()[1], discretization_->nCells()[1] -2, 
+                     discretization_->nCells()[0], discretization_->nCells()[0] -2, 
                      'x', 'u', false);
 
             // v
             // receive v_n-1, send v_n
             exchange(partitioning_->ownRightNeighbour(),
-                     discretization_->nCells()[1], discretization_->nCells()[1] -1,
+                     discretization_->nCells()[0], discretization_->nCells()[0] -1,
                      'x', 'v', false);
         }
         if (partitioning_->ownPartitionContainsLeftBoundary())
@@ -317,13 +317,13 @@ void ComputationParallel::uvExchangeVertical()
             // u
             // send u_n-1, receive u_n
             exchange(partitioning_->ownTopNeighbour(),
-                     discretization_->nCells()[0] -1, discretization_->nCells()[0], 
+                     discretization_->nCells()[1] -1, discretization_->nCells()[1], 
                      'y', 'u', true);
 
             // v
             // send v_n-2, receive v_n
             exchange(partitioning_->ownTopNeighbour(),
-                     discretization_->nCells()[0] -2, discretization_->nCells()[0], 
+                     discretization_->nCells()[1] -2, discretization_->nCells()[1], 
                      'y', 'v', true);
 
         }
@@ -376,13 +376,13 @@ void ComputationParallel::uvExchangeVertical()
             // u
             // receive u_n-1, send u_n
             exchange(partitioning_->ownTopNeighbour(),
-                     discretization_->nCells()[0], discretization_->nCells()[0] -1, 
+                     discretization_->nCells()[1], discretization_->nCells()[1] -1, 
                      'y', 'u', false);
 
             // v
             // receive v_n-2, send v_n
             exchange(partitioning_->ownTopNeighbour(),
-                     discretization_->nCells()[0], discretization_->nCells()[0] -2, 
+                     discretization_->nCells()[1], discretization_->nCells()[1] -2, 
                      'y', 'v', false);
         }
     }

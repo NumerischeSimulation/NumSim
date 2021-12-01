@@ -154,7 +154,7 @@ void RedBlack::pExchangeHorizontal()
             // p
             // send p_n-1, receive p_n
             exchange(partitioning_->ownRightNeighbour(), 
-                     discretization_->nCells()[1] -1, discretization_->nCells()[1],
+                     discretization_->nCells()[0] -1, discretization_->nCells()[0],
                      'x', true);
         }
     }
@@ -167,9 +167,9 @@ void RedBlack::pExchangeHorizontal()
         } else
         {
             // p
-            // receive p_n-1, send p_n
+            // receive p_n, send p_n-1
             exchange(partitioning_->ownRightNeighbour(), 
-                     discretization_->nCells()[1], discretization_->nCells()[1] -1,
+                     discretization_->nCells()[0] -1, discretization_->nCells()[0],
                      'x', false);
         }
         if (partitioning_->ownPartitionContainsLeftBoundary())
@@ -202,7 +202,7 @@ void RedBlack::pExchangeVertical()
             // p
             // send p_n-1, receive p_n
             exchange(partitioning_->ownTopNeighbour(), 
-                     discretization_->nCells()[0] -1, discretization_->nCells()[0], 
+                     discretization_->nCells()[1] -1, discretization_->nCells()[1], 
                      'y', true);
         }
         // bottom
@@ -242,7 +242,7 @@ void RedBlack::pExchangeVertical()
             // p
             // receive p_n, send p_n-1
             exchange(partitioning_->ownTopNeighbour(), 
-                     discretization_->nCells()[0] -1, discretization_->nCells()[0], 
+                     discretization_->nCells()[1] -1, discretization_->nCells()[1], 
                      'y', false);
         }
     }
