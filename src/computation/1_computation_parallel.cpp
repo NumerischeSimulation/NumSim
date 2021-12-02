@@ -402,15 +402,15 @@ void ComputationParallel::uvExchangeVertical()
         } else
         {
             // u
-            // send u_0, receive u_-1
+            // send u_-1, receive u_0
             exchange(partitioning_->ownBottomNeighbour(),
-                     0, -1, 
+                     -1, 0, 
                      'y', 'u', true);
 
             // v
-            // send v_0, receive v_-2
+            // send v-2, receive v_0
             exchange(partitioning_->ownBottomNeighbour(),
-                     0, -2, 
+                     -2, 0, 
                      'y', 'v', true);
         }
     }
@@ -424,15 +424,15 @@ void ComputationParallel::uvExchangeVertical()
         } else
         {
             // u
-            // receive u_0, send u_-1
+            // receive u_-1, send u_0
             exchange(partitioning_->ownBottomNeighbour(),
-                     -1, 0, 
+                     0, -1, 
                      'y', 'u', false);
 
             // v
-            // receive v_0, send v_-2
+            // receive v_-2, send v_0
             exchange(partitioning_->ownBottomNeighbour(),
-                     -2, 0, 
+                     0, -2, 
                      'y', 'v', false);
         }
         // top
