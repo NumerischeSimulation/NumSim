@@ -17,11 +17,10 @@ void ComputationParallel::initialize(int argc, char *argv[])
     // get own partion depending on where in the domain the process lies
     partitioning_ = std::make_shared<Partitioning>(ownRankNo, nRanks, settings_.nCells);
 
-
     // calculate mesh width
     for (int i = 0; i < 2; i++)
     {
-        meshWidth_[i] =  settings_.physicalSize[i] / settings_.nCells[i];
+        meshWidth_[i] = settings_.physicalSize[i] / settings_.nCells[i];
         std::cout << "computed mesh width " << i << ": " << meshWidth_[i] << " " << settings_.physicalSize[i] << " " << settings_.nCells[i] << std::endl;
     }
 
@@ -29,13 +28,15 @@ void ComputationParallel::initialize(int argc, char *argv[])
     if (settings_.useDonorCell)
     {
         discretization_ = std::make_shared<DonorCell>(partitioning_->nCellsLocal(), meshWidth_, partitioning_->ownPartitionNeighbours(), settings_.alpha);
-    } else {
+    }
+    else
+    {
         discretization_ = std::make_shared<CentralDifferences>(partitioning_->nCellsLocal(), meshWidth_, partitioning_->ownPartitionNeighbours());
     }
 
     std::cout << "Initialized discretization" << std::endl;
-    
-    pressureSolver_ = std::make_unique<RedBlack>(discretization_, settings_.epsilon, settings_.maximumNumberOfIterations, partitioning_); 
+
+    pressureSolver_ = std::make_unique<RedBlack>(discretization_, settings_.epsilon, settings_.maximumNumberOfIterations, partitioning_);
 
     std::cout << "Initialized pressure solver" << std::endl;
 
@@ -44,7 +45,7 @@ void ComputationParallel::initialize(int argc, char *argv[])
 
     // initialize output writer
     outputWriterParaviewParallel_ = std::make_unique<OutputWriterParaviewParallel>(discretization_, partitioning_);
-    outputWriterTextParallel_     = std::make_unique<OutputWriterTextParallel>(discretization_, partitioning_);
+    outputWriterTextParallel_ = std::make_unique<OutputWriterTextParallel>(discretization_, partitioning_);
 
     std::cout << "Initialized output writer" << std::endl;
 }
@@ -68,12 +69,12 @@ void ComputationParallel::runSimulation()
 
         // step 2: compute time step width
         computeTimeStepWidthParallel(currentTime);
-        
+
         currentTime += dt_;
-    
+
         std::cout << "+++++++++++++++++++++++" << std::endl;
         std::cout << "current Time: " << currentTime << " (" << partitioning_->ownRankNo() << ")" << ":" << MPI_Wtime()<< std::endl;
-        std::cout << "+++++++++++++++++++++++" << std::endl;    
+        std::cout << "+++++++++++++++++++++++" << std::endl;
 
         // step 4: calculate F, G with first setting the boundary conditions of F, G (step 1)
         std::cout << "Computing preliminary velocities ..." << " (" << partitioning_->ownRankNo() << ")"<< ":" << MPI_Wtime() << std::endl;
@@ -100,7 +101,7 @@ void ComputationParallel::runSimulation()
         outputWriterTextParallel_->writeFile(currentTime);
         // }
     }
-    
+
     // end the MPI-session
     std::cout << "Finished simulations! Ready to finalize MPI... " << " (" << partitioning_->ownRankNo() << ")" << ":" << MPI_Wtime() << std::endl;
     return;
@@ -117,42 +118,41 @@ void ComputationParallel::runSimulation()
     while (iter < maxIter)
     {
         // set to ownRank + 1 *100
-        for ( int j = discretization_->uJBegin() +1; j < discretization_->uJEnd() -1; j++)
-        { 
-            for ( int i = discretization_->uIBegin() +1; i < discretization_->uIEnd() -1; i++)
+        for (int j = discretization_->uJBegin() + 1; j < discretization_->uJEnd() - 1; j++)
+        {
+            for (int i = discretization_->uIBegin() + 1; i < discretization_->uIEnd() - 1; i++)
             {
-                discretization_->u(i,j) = partitioning_->ownRankNo()+1*100;
+                discretization_->u(i, j) = partitioning_->ownRankNo() + 1 * 100;
             }
         }
 
         // test v
-        for ( int j = discretization_->vJBegin() +1; j < discretization_->vJEnd() -1; j++)
-        { 
-            for ( int i = discretization_->vIBegin() +1; i < discretization_->vIEnd() -1; i++)
+        for (int j = discretization_->vJBegin() + 1; j < discretization_->vJEnd() - 1; j++)
+        {
+            for (int i = discretization_->vIBegin() + 1; i < discretization_->vIEnd() - 1; i++)
             {
-                discretization_->v(i,j) = partitioning_->ownRankNo()+1*100;
+                discretization_->v(i, j) = partitioning_->ownRankNo() + 1 * 100;
             }
         }
         std::cout << "Writing output..." << std::endl;
         outputWriterParaviewParallel_->writeFile(currentTime);
         outputWriterTextParallel_->writeFile(currentTime);
 
-
         // step 1: set the boundary values / exchange the final velocities at the borders
-        std::cout << "Applying boundary values for u/v and F/G..." << " (" << partitioning_->ownRankNo() << ")" << std::endl;
+        std::cout << "Applying boundary values for u/v and F/G..."
+                  << " (" << partitioning_->ownRankNo() << ")" << std::endl;
         applyBoundaryValues();
-        
 
         // step 9: write output
         // if (std::floor(currentTime) == currentTime) // TODO
         // {
         std::cout << "Writing output..." << std::endl;
-        outputWriterParaviewParallel_->writeFile(currentTime+1);
-        outputWriterTextParallel_->writeFile(currentTime+1);
+        outputWriterParaviewParallel_->writeFile(currentTime + 1);
+        outputWriterTextParallel_->writeFile(currentTime + 1);
         // }
-        iter = iter+1;
+        iter = iter + 1;
     }
-    
+
     // end the MPI-session
     std::cout << "Finished simulations! Finalizing MPI... " << std::endl;
     return;
@@ -169,15 +169,15 @@ void ComputationParallel::computeTimeStepWidthParallel(double currentTime)
     double dt_global;
     double dt_local = dt_;
     MPI_Allreduce(&dt_local, &dt_global, 1, MPI_DOUBLE, MPI_MIN, MPI_COMM_WORLD);
-    
+
     // if necessary adapt so that every full second is reached
     if (std::floor(currentTime + dt_) == std::floor(currentTime) + 1)
     {
         std::cout << "Adapting time step to reach full second..." << std::endl;
-        dt_global = (double) (std::floor(currentTime) + 1) - currentTime; // currentTime hits exactly next second
+        dt_global = (double)(std::floor(currentTime) + 1) - currentTime; // currentTime hits exactly next second
     }
 
-    // or if necessary set currentTime + dt_ to endTime 
+    // or if necessary set currentTime + dt_ to endTime
     if (currentTime + dt_global > settings_.endTime)
     {
         dt_global = settings_.endTime - currentTime;
@@ -190,7 +190,7 @@ void ComputationParallel::computeTimeStepWidthParallel(double currentTime)
 
     dt_ = dt_global;
 }
-    
+
 void ComputationParallel::applyBoundaryValues()
 {
     // first exchange horizontal, then vertical for the corner cells
@@ -201,78 +201,82 @@ void ComputationParallel::applyBoundaryValues()
 
 void ComputationParallel::applyBoundaryValuesLeft()
 {
-    std::cout << "Applied boundary values left " << " (" << partitioning_->ownRankNo() << ")" << std::endl;
+    std::cout << "Applied boundary values left "
+              << " (" << partitioning_->ownRankNo() << ")" << std::endl;
     // u
-    for ( int j = discretization_->uJBegin(); j < discretization_->uJEnd(); j++)
+    for (int j = discretization_->uJBegin(); j < discretization_->uJEnd(); j++)
     {
-        discretization_->u(discretization_->uIBegin(),j)   = settings_.dirichletBcLeft[0];
-        }
+        discretization_->u(discretization_->uIBegin(), j) = settings_.dirichletBcLeft[0];
+    }
     // v
-    for ( int j = discretization_->vJBegin(); j < discretization_->vJEnd(); j++)
+    for (int j = discretization_->vJBegin(); j < discretization_->vJEnd(); j++)
     {
-        discretization_->v(discretization_->vIBegin() ,j)  = 2. * settings_.dirichletBcLeft[1] - discretization_->v(discretization_->vIBegin() + 1, j);
+        discretization_->v(discretization_->vIBegin(), j) = 2. * settings_.dirichletBcLeft[1] - discretization_->v(discretization_->vIBegin() + 1, j);
     }
     // f
-    for ( int j = discretization_->uJBegin(); j < discretization_->uJEnd(); j++)
+    for (int j = discretization_->uJBegin(); j < discretization_->uJEnd(); j++)
     {
-        discretization_->f(discretization_->uIBegin(),j) = discretization_->u(discretization_->uIBegin(),j);
+        discretization_->f(discretization_->uIBegin(), j) = discretization_->u(discretization_->uIBegin(), j);
     }
     // g
-    for ( int j = discretization_->vJBegin(); j < discretization_->vJEnd(); j++)
+    for (int j = discretization_->vJBegin(); j < discretization_->vJEnd(); j++)
     {
-        discretization_->g(discretization_->vIBegin(),j) = discretization_->v(discretization_->vIBegin(),j);
+        discretization_->g(discretization_->vIBegin(), j) = discretization_->v(discretization_->vIBegin(), j);
     }
 }
 
 void ComputationParallel::applyBoundaryValuesRight()
 {
-    std::cout << "Applied boundary values right " << " (" << partitioning_->ownRankNo() << ")" << std::endl;
+    std::cout << "Applied boundary values right "
+              << " (" << partitioning_->ownRankNo() << ")" << std::endl;
     // u
-    for ( int j = discretization_->uJBegin(); j < discretization_->uJEnd(); j++)
+    for (int j = discretization_->uJBegin(); j < discretization_->uJEnd(); j++)
     {
-        discretization_->u(discretization_->uIEnd() -1 ,j) = settings_.dirichletBcRight[0];
+        discretization_->u(discretization_->uIEnd() - 1, j) = settings_.dirichletBcRight[0];
     }
     // v
-    for ( int j = discretization_->vJBegin(); j < discretization_->vJEnd(); j++)
+    for (int j = discretization_->vJBegin(); j < discretization_->vJEnd(); j++)
     {
-        discretization_->v(discretization_->vIEnd() - 1,j) = 2. * settings_.dirichletBcRight[1] - discretization_->v(discretization_->vIEnd()  - 2, j);
+        discretization_->v(discretization_->vIEnd() - 1, j) = 2. * settings_.dirichletBcRight[1] - discretization_->v(discretization_->vIEnd() - 2, j);
     }
     // f
-    for ( int j = discretization_->uJBegin(); j < discretization_->uJEnd(); j++)
+    for (int j = discretization_->uJBegin(); j < discretization_->uJEnd(); j++)
     {
-        discretization_->f(discretization_->uIEnd() -1,j) = discretization_->u(discretization_->uIEnd() -1,j);
+        discretization_->f(discretization_->uIEnd() - 1, j) = discretization_->u(discretization_->uIEnd() - 1, j);
     }
     // g
-    for ( int j = discretization_->vJBegin(); j < discretization_->vJEnd(); j++)
+    for (int j = discretization_->vJBegin(); j < discretization_->vJEnd(); j++)
     {
-        discretization_->g(discretization_->vIEnd() -1,j) = discretization_->v(discretization_->vIEnd() -1,j);
+        discretization_->g(discretization_->vIEnd() - 1, j) = discretization_->v(discretization_->vIEnd() - 1, j);
     }
 }
 
 void ComputationParallel::applyBoundaryValuesBottom()
 {
-    std::cout << "Applied boundary values bottom " << " (" << partitioning_->ownRankNo() << ")" << std::endl;
+    std::cout << "Applied boundary values bottom "
+              << " (" << partitioning_->ownRankNo() << ")" << std::endl;
     // bottom, set boundaries only in domain as corners belong to sides, computational domain begins at idx 0
-    
-    for ( int i = 0; i < discretization_->nCells()[0] -1; i++)
+
+    for (int i = 0; i < discretization_->nCells()[0] - 1; i++)
     {
-        // u 
-        discretization_->u(i, discretization_->uJBegin())  = 2. * settings_.dirichletBcBottom[0] - discretization_->u(i, discretization_->uJBegin() + 1);
+        // u
+        discretization_->u(i, discretization_->uJBegin()) = 2. * settings_.dirichletBcBottom[0] - discretization_->u(i, discretization_->uJBegin() + 1);
         // v
-        discretization_->v(i, discretization_->vJBegin())  = settings_.dirichletBcBottom[1];
+        discretization_->v(i, discretization_->vJBegin()) = settings_.dirichletBcBottom[1];
         // f
-        discretization_->f(i, discretization_->uJBegin())  = discretization_->u(i, discretization_->uJBegin());
+        discretization_->f(i, discretization_->uJBegin()) = discretization_->u(i, discretization_->uJBegin());
         // g
-        discretization_->g(i, discretization_->vJBegin())  = discretization_->v(i, discretization_->vJBegin());
+        discretization_->g(i, discretization_->vJBegin()) = discretization_->v(i, discretization_->vJBegin());
     }
 }
 
 void ComputationParallel::applyBoundaryValuesTop()
 {
-    std::cout << "Applied boundary values top " << " (" << partitioning_->ownRankNo() << ")" << std::endl;
+    std::cout << "Applied boundary values top "
+              << " (" << partitioning_->ownRankNo() << ")" << std::endl;
     // set boundaries only in domain as corners belong to size, domain begins at idx 0
-    
-    for ( int i = 0; i < discretization_->nCells()[0]-1; i++)
+
+    for (int i = 0; i < discretization_->nCells()[0] - 1; i++)
     {
         // u
         discretization_->u(i, discretization_->uJEnd() - 1) = 2. * settings_.dirichletBcTop[0] - discretization_->u(i, discretization_->uJEnd() - 2);
@@ -287,7 +291,8 @@ void ComputationParallel::applyBoundaryValuesTop()
 
 void ComputationParallel::uvExchangeHorizontal()
 {
-    std::cout << "Exchange uv horizonal" << " (" << partitioning_->ownRankNo() << ")" << std::endl;
+    std::cout << "Exchange uv horizonal"
+              << " (" << partitioning_->ownRankNo() << ")" << std::endl;
     // the even processes: send left, receive left (u inner, u outer), send right (u inner, u outer), receive right
     if ((partitioning_->ownRankCoordinate()[0] % 2) == 0)
     {
@@ -295,18 +300,19 @@ void ComputationParallel::uvExchangeHorizontal()
         if (partitioning_->ownPartitionContainsLeftBoundary())
         {
             applyBoundaryValuesLeft();
-        } else 
+        }
+        else
         {
             // u
             // send u_0, receive u_-2
             exchange(partitioning_->ownLeftNeighbour(),
-                     0, -2, 
+                     0, -2,
                      'x', 'u', true);
 
             // v
             // send v_0, receive v_-1
             exchange(partitioning_->ownLeftNeighbour(),
-                     0, -1, 
+                     0, -1,
                      'x', 'v', true);
         }
 
@@ -314,18 +320,19 @@ void ComputationParallel::uvExchangeHorizontal()
         if (partitioning_->ownPartitionContainsRightBoundary())
         {
             applyBoundaryValuesRight();
-        } else
+        }
+        else
         {
             // u
             // send u_n-2, receive u_n
             exchange(partitioning_->ownRightNeighbour(),
-                     discretization_->nCells()[0] -2, discretization_->nCells()[0], 
+                     discretization_->nCells()[0] - 2, discretization_->nCells()[0],
                      'x', 'u', true);
 
             // v
             // send v_n-1, receive v_n
             exchange(partitioning_->ownRightNeighbour(),
-                     discretization_->nCells()[0] -1, discretization_->nCells()[0], 
+                     discretization_->nCells()[0] - 1, discretization_->nCells()[0],
                      'x', 'v', true);
         }
     }
@@ -335,29 +342,31 @@ void ComputationParallel::uvExchangeHorizontal()
         if (partitioning_->ownPartitionContainsRightBoundary())
         {
             applyBoundaryValuesRight();
-        } else
+        }
+        else
         {
             // u
             // receive u_n-2, send u_n
             exchange(partitioning_->ownRightNeighbour(),
-                     discretization_->nCells()[0], discretization_->nCells()[0] -2, 
+                     discretization_->nCells()[0], discretization_->nCells()[0] - 2,
                      'x', 'u', false);
 
             // v
             // receive v_n-1, send v_n
             exchange(partitioning_->ownRightNeighbour(),
-                     discretization_->nCells()[0], discretization_->nCells()[0] -1,
+                     discretization_->nCells()[0], discretization_->nCells()[0] - 1,
                      'x', 'v', false);
         }
         if (partitioning_->ownPartitionContainsLeftBoundary())
         {
             applyBoundaryValuesLeft();
-        } else 
+        }
+        else
         {
             // u
             // receive u_0, send u_-2
             exchange(partitioning_->ownLeftNeighbour(),
-                     -2, 0, 
+                     -2, 0,
                      'x', 'u', false);
 
             // v
@@ -365,14 +374,14 @@ void ComputationParallel::uvExchangeHorizontal()
             exchange(partitioning_->ownLeftNeighbour(),
                      -1, 0,
                      'x', 'v', false);
-
         }
     }
 }
 
 void ComputationParallel::uvExchangeVertical()
 {
-    std::cout << "Exchange uv vertical" << " (" << partitioning_->ownRankNo() << ")" << std::endl;
+    std::cout << "Exchange uv vertical"
+              << " (" << partitioning_->ownRankNo() << ")" << std::endl;
     // the even processes: send top, receive top, send bottom, receive bottom
     if ((partitioning_->ownRankCoordinate()[1] % 2) == 0)
     {
@@ -380,26 +389,27 @@ void ComputationParallel::uvExchangeVertical()
         if (partitioning_->ownPartitionContainsTopBoundary())
         {
             applyBoundaryValuesTop();
-        } else 
+        }
+        else
         {
             // u
             // send u_n-1, receive u_n
             exchange(partitioning_->ownTopNeighbour(),
-                     discretization_->nCells()[1] -1, discretization_->nCells()[1], 
+                     discretization_->nCells()[1] - 1, discretization_->nCells()[1],
                      'y', 'u', true);
 
             // v
             // send v_n-2, receive v_n
             exchange(partitioning_->ownTopNeighbour(),
-                     discretization_->nCells()[1] -2, discretization_->nCells()[1], 
+                     discretization_->nCells()[1] - 2, discretization_->nCells()[1],
                      'y', 'v', true);
-
         }
         // bottom
         if (partitioning_->ownPartitionContainsBottomBoundary())
         {
             applyBoundaryValuesBottom();
-        } else
+        }
+        else
         {
             // u
             // send u_-1, receive u_0
@@ -414,14 +424,15 @@ void ComputationParallel::uvExchangeVertical()
                      'y', 'v', true);
         }
     }
-    // the uneven processes: receive bottom, send bottom, receive top, send top, 
+    // the uneven processes: receive bottom, send bottom, receive top, send top,
     if ((partitioning_->ownRankCoordinate()[1] % 2) == 1)
     {
         // bottom
         if (partitioning_->ownPartitionContainsBottomBoundary())
         {
             applyBoundaryValuesBottom();
-        } else
+        }
+        else
         {
             // u
             // receive u_-1, send u_0
@@ -439,18 +450,19 @@ void ComputationParallel::uvExchangeVertical()
         if (partitioning_->ownPartitionContainsTopBoundary())
         {
             applyBoundaryValuesTop();
-        } else 
+        }
+        else
         {
             // u
             // receive u_n-1, send u_n
             exchange(partitioning_->ownTopNeighbour(),
-                     discretization_->nCells()[1], discretization_->nCells()[1] -1, 
+                     discretization_->nCells()[1], discretization_->nCells()[1] - 1,
                      'y', 'u', false);
 
             // v
             // receive v_n-2, send v_n
             exchange(partitioning_->ownTopNeighbour(),
-                     discretization_->nCells()[1], discretization_->nCells()[1] -2, 
+                     discretization_->nCells()[1], discretization_->nCells()[1] - 2,
                      'y', 'v', false);
         }
     }
@@ -460,7 +472,7 @@ void ComputationParallel::exchange(int rankCorrespondent, int indexToSend, int i
 {
     int ownRankNo = 0;
     MPI_Comm_rank(MPI_COMM_WORLD, &ownRankNo);
-    std::cout << "Exchanges " << ownRankNo << " to " <<  rankCorrespondent << " with data slices " << indexToSend << " to " << indexFromReceive << " " << std::endl
+    std::cout << "Exchanges " << ownRankNo << " to " << rankCorrespondent << " with data slices " << indexToSend << " to " << indexFromReceive << " " << std::endl
               << " in " << direction << " with " << variable << " with " << ToFrom << " (" << partitioning_->ownRankNo() << ")" << std::endl;
     // index to or from can be NULL
 
@@ -475,132 +487,124 @@ void ComputationParallel::exchange(int rankCorrespondent, int indexToSend, int i
         {
             nValuesCommunication = discretization_->uJEnd() - discretization_->uJBegin();
             offset = std::abs(discretization_->uJBegin());
-        } else if (variable == 'v')
+        }
+        else if (variable == 'v')
         {
             nValuesCommunication = discretization_->vJEnd() - discretization_->vJBegin();
             offset = std::abs(discretization_->vJBegin());
-        } else 
+        }
+        else
         {
             throw;
         }
-    } else if (direction == 'y')
+    }
+    else if (direction == 'y')
     {
         if (variable == 'u')
         {
             nValuesCommunication = discretization_->uIEnd() - discretization_->uIBegin();
             offset = std::abs(discretization_->uIBegin());
-        } else if (variable == 'v')
+        }
+        else if (variable == 'v')
         {
             nValuesCommunication = discretization_->vIEnd() - discretization_->vIBegin();
             offset = std::abs(discretization_->vIBegin());
-        } else 
+        }
+        else
         {
             throw;
         }
     }
 
     // get slice to communicate for each case
-    std::vector<double> toOtherGhost(nValuesCommunication, 0);
+    std::vector<double> toOtherGhost(nValuesCommunication, 13);
     if (direction == 'x')
     {
         if (variable == 'u')
         {
-            if (indexToSend != NULL){
-                for (int j = discretization_->uJBegin(); j < discretization_->uJEnd(); j++)
-                {
-                    toOtherGhost[j+offset] = discretization_->u(indexToSend, j);
-                }
+
+            for (int j = discretization_->uJBegin(); j < discretization_->uJEnd(); j++)
+            {
+                toOtherGhost[j + offset] = discretization_->u(indexToSend, j);
             }
-        } else if (variable == 'v')
+        }
+        else if (variable == 'v')
         {
-            if (indexToSend != NULL){
-                for (int j = discretization_->vJBegin(); j < discretization_->vJEnd(); j++)
-                {
-                    toOtherGhost[j+offset] = discretization_->v(indexToSend, j);
-                }
+
+            for (int j = discretization_->vJBegin(); j < discretization_->vJEnd(); j++)
+            {
+                toOtherGhost[j + offset] = discretization_->v(indexToSend, j);
             }
-        } else 
+        }
+        else
         {
             throw;
         }
-    } else if (direction == 'y')
+    }
+    else if (direction == 'y')
     {
         if (variable == 'u')
         {
-            if (indexToSend != NULL){
-                for (int i = discretization_->uIBegin(); i < discretization_->uIEnd(); i++)
-                {
-                    toOtherGhost[i+offset] = discretization_->u(i, indexToSend);
-                }
+
+            for (int i = discretization_->uIBegin(); i < discretization_->uIEnd(); i++)
+            {
+                toOtherGhost[i + offset] = discretization_->u(i, indexToSend);
             }
-        } else if (variable == 'v')
+        }
+        else if (variable == 'v')
         {
-            if (indexToSend != NULL){
-                for (int i = discretization_->vIBegin(); i < discretization_->vIEnd(); i++)
-                {
-                    toOtherGhost[i+offset] = discretization_->v(i, indexToSend);
-                }
+            for (int i = discretization_->vIBegin(); i < discretization_->vIEnd(); i++)
+            {
+                toOtherGhost[i + offset] = discretization_->v(i, indexToSend);
             }
-        } else 
+        }
+        else
         {
             throw;
         }
     }
 
     // send-receive or receive-send depending on the direction
-    std::vector<double> otherGhostFrom(nValuesCommunication, 0);
+    std::vector<double> otherGhostFrom(nValuesCommunication, 5 + ownRankNo);
+
     if (ToFrom)
     {
         // send
-        if (indexToSend != NULL)
-        {
-            MPI_Send(toOtherGhost.data(),
-                nValuesCommunication,
-                MPI_DOUBLE,
-                rankCorrespondent,
-                0,
-                MPI_COMM_WORLD
-                );
-        }
+        MPI_Send(toOtherGhost.data(),
+                 nValuesCommunication,
+                 MPI_DOUBLE,
+                 rankCorrespondent,
+                 0,
+                 MPI_COMM_WORLD);
 
         // receive
-        if (indexFromReceive != NULL)
-        {
-            MPI_Recv(otherGhostFrom.data(), 
-                nValuesCommunication,
-                MPI_DOUBLE,
-                rankCorrespondent,
-                0,
-                MPI_COMM_WORLD,
-                MPI_STATUS_IGNORE
-                );
-        }
-    } else 
+
+        MPI_Recv(otherGhostFrom.data(),
+                 nValuesCommunication,
+                 MPI_DOUBLE,
+                 rankCorrespondent,
+                 0,
+                 MPI_COMM_WORLD,
+                 MPI_STATUS_IGNORE);
+    }
+    else
     {
         // receive
-        if (indexFromReceive != NULL)
-        {
-            MPI_Recv(otherGhostFrom.data(), 
-                nValuesCommunication,
-                MPI_DOUBLE,
-                rankCorrespondent,
-                0,
-                MPI_COMM_WORLD,
-                MPI_STATUS_IGNORE
-                );
-        }
+        MPI_Recv(otherGhostFrom.data(),
+                 nValuesCommunication,
+                 MPI_DOUBLE,
+                 rankCorrespondent,
+                 0,
+                 MPI_COMM_WORLD,
+                 MPI_STATUS_IGNORE);
 
         // send
-        if (indexToSend != NULL)
-        {
-            MPI_Send(toOtherGhost.data(),
-                nValuesCommunication,
-                MPI_DOUBLE,
-                rankCorrespondent,
-                0,
-                MPI_COMM_WORLD
-                );
-        }
+        MPI_Send(toOtherGhost.data(),
+                 nValuesCommunication,
+                 MPI_DOUBLE,
+                 rankCorrespondent,
+                 0,
+                 MPI_COMM_WORLD);
     }
 
     // write slice to correct index
@@ -608,43 +612,42 @@ void ComputationParallel::exchange(int rankCorrespondent, int indexToSend, int i
     {
         if (variable == 'u')
         {
-            if (indexToSend != NULL){
-                for (int j = discretization_->uJBegin(); j < discretization_->uJEnd(); j++)
-                {
-                    discretization_->u(indexFromReceive, j) = otherGhostFrom[j+offset];
-                }
+            for (int j = discretization_->uJBegin(); j < discretization_->uJEnd(); j++)
+            {
+                discretization_->u(indexFromReceive, j) = otherGhostFrom[j + offset];
             }
-        } else if (variable == 'v')
+        }
+        else if (variable == 'v')
         {
-            if (indexToSend != NULL){
-                for (int j = discretization_->vJBegin(); j < discretization_->vJEnd(); j++)
-                {
-                    discretization_->v(indexFromReceive, j) = otherGhostFrom[j+offset];
-                }
+
+            for (int j = discretization_->vJBegin(); j < discretization_->vJEnd(); j++)
+            {
+                discretization_->v(indexFromReceive, j) = otherGhostFrom[j + offset];
             }
-        } else 
+        }
+        else
         {
             throw;
         }
-    } else if (direction == 'y')
+    }
+    else if (direction == 'y')
     {
         if (variable == 'u')
         {
-            if (indexToSend != NULL){
-                for (int i = discretization_->uIBegin(); i < discretization_->uIEnd(); i++)
-                {
-                    discretization_->u(i, indexFromReceive) = otherGhostFrom[i+offset];
-                }
+
+            for (int i = discretization_->uIBegin(); i < discretization_->uIEnd(); i++)
+            {
+                discretization_->u(i, indexFromReceive) = otherGhostFrom[i + offset];
             }
-        } else if (variable == 'v')
+        }
+        else if (variable == 'v')
         {
-            if (indexToSend != NULL){
-                for (int i = discretization_->vIBegin(); i < discretization_->vIEnd(); i++)
-                {
-                    discretization_->v(i, indexFromReceive) = otherGhostFrom[i+offset];
-                }
+            for (int i = discretization_->vIBegin(); i < discretization_->vIEnd(); i++)
+            {
+                discretization_->v(i, indexFromReceive) = otherGhostFrom[i + offset];
             }
-        } else 
+        }
+        else
         {
             throw;
         }
