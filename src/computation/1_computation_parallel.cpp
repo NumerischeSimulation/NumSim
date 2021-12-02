@@ -49,7 +49,7 @@ void ComputationParallel::initialize(int argc, char *argv[])
 
     std::cout << "Initialized output writer" << std::endl;
 }
-/*
+
 void ComputationParallel::runSimulation()
 {
     double currentTime = 0;
@@ -106,9 +106,9 @@ void ComputationParallel::runSimulation()
     std::cout << "Finished simulations! Ready to finalize MPI... " << " (" << partitioning_->ownRankNo() << ")" << ":" << MPI_Wtime() << std::endl;
     return;
 }
-*/
 
-// for testing
+
+/*// for testing
 void ComputationParallel::runSimulation()
 {
     double currentTime = 0;
@@ -158,7 +158,7 @@ void ComputationParallel::runSimulation()
     // end the MPI-session
     std::cout << "Finished simulations! Finalizing MPI... " << std::endl;
     return;
-} 
+}  */
 
 void ComputationParallel::computeTimeStepWidthParallel(double currentTime)
 {
@@ -259,7 +259,7 @@ void ComputationParallel::applyBoundaryValuesBottom()
               << " (" << partitioning_->ownRankNo() << ")" << std::endl;
     // bottom, set boundaries only in domain as corners belong to sides, computational domain begins at idx 0
 
-    for (int i = 0; i < discretization_->nCells()[0] - 1; i++)
+   /* for (int i = 0; i < discretization_->nCells()[0] - 1; i++)
     {
         // u
         discretization_->u(i, discretization_->uJBegin()) = 2. * settings_.dirichletBcBottom[0] - discretization_->u(i, discretization_->uJBegin() + 1);
@@ -267,6 +267,22 @@ void ComputationParallel::applyBoundaryValuesBottom()
         discretization_->v(i, discretization_->vJBegin()) = settings_.dirichletBcBottom[1];
         // f
         discretization_->f(i, discretization_->uJBegin()) = discretization_->u(i, discretization_->uJBegin());
+        // g
+        discretization_->g(i, discretization_->vJBegin()) = discretization_->v(i, discretization_->vJBegin());
+    } */
+
+   
+    for ( int i = discretization_->uIBegin() +1; i < discretization_->uIEnd() -1; i++)
+    {
+       // u
+        discretization_->u(i, discretization_->uJBegin())   = 2. * settings_.dirichletBcBottom[0] - discretization_->u(i, discretization_->uJBegin() +1);
+        // f
+        discretization_->f(i, discretization_->uJBegin()) = discretization_->u(i, discretization_->uJBegin());
+    }    
+    for ( int i = discretization_->vIBegin() +1; i < discretization_->vIEnd() -1; i++)
+    {
+        // v
+        discretization_->v(i, discretization_->vJBegin()) = settings_.dirichletBcBottom[1];
         // g
         discretization_->g(i, discretization_->vJBegin()) = discretization_->v(i, discretization_->vJBegin());
     }
@@ -278,7 +294,7 @@ void ComputationParallel::applyBoundaryValuesTop()
               << " (" << partitioning_->ownRankNo() << ")" << std::endl;
     // set boundaries only in domain as corners belong to size, domain begins at idx 0
 
-    for (int i = 0; i < discretization_->nCells()[0] - 1; i++)
+    /*for (int i = 0; i < discretization_->nCells()[0] - 1; i++)
     {
         // u
         discretization_->u(i, discretization_->uJEnd() - 1) = 2. * settings_.dirichletBcTop[0] - discretization_->u(i, discretization_->uJEnd() - 2);
@@ -287,6 +303,22 @@ void ComputationParallel::applyBoundaryValuesTop()
         // f
         discretization_->f(i, discretization_->uJEnd() - 1) = discretization_->u(i, discretization_->uJEnd() - 1);
         // g
+        discretization_->g(i, discretization_->vJEnd() - 1) = discretization_->v(i, discretization_->vJEnd() - 1);
+    } */
+
+    for ( int i = discretization_->uIBegin() +1; i < discretization_->uIEnd() -1; i++)
+    {
+        // u
+        discretization_->u(i, discretization_->uJEnd() - 1) = 2. * settings_.dirichletBcTop[0] - discretization_->u(i, discretization_->uJEnd() - 2);
+        // f
+        discretization_->f(i, discretization_->uJEnd() - 1) = discretization_->u(i, discretization_->uJEnd() - 1);
+    }    
+   for ( int i = discretization_->vIBegin() +1; i < discretization_->vIEnd() -1; i++)
+    {
+        
+       // v
+        discretization_->v(i, discretization_->vJEnd() - 1) = settings_.dirichletBcTop[1];
+       // g
         discretization_->g(i, discretization_->vJEnd() - 1) = discretization_->v(i, discretization_->vJEnd() - 1);
     }
 }
