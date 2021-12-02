@@ -6,9 +6,6 @@ void ComputationParallel::initialize(int argc, char *argv[])
     settings_.loadFromFile(argv[1]);
     settings_.printSettings();
 
-    // start MPI
-    MPI_Init(&argc, &argv);
-
     // get own rank number and total number of ranks
     int ownRankNo = 0;
     int nRanks = 0;
@@ -51,7 +48,7 @@ void ComputationParallel::initialize(int argc, char *argv[])
 
     std::cout << "Initialized output writer" << std::endl;
 }
-
+/*
 void ComputationParallel::runSimulation()
 {
     double currentTime = 0;
@@ -66,7 +63,7 @@ void ComputationParallel::runSimulation()
         std::cout << std::endl;
 
         // step 1: set the boundary values / exchange the final velocities at the borders
-        std::cout << "Applying boundary values for u/v and F/G..." << " (" << partitioning_->ownRankNo() << ")" << std::endl;
+        std::cout << "Applying boundary values for u/v and F/G..." << " (" << partitioning_->ownRankNo() << ")" << ":" << MPI_Wtime() << std::endl;
         applyBoundaryValues();
 
         // step 2: compute time step width
@@ -75,23 +72,23 @@ void ComputationParallel::runSimulation()
         currentTime += dt_;
     
         std::cout << "+++++++++++++++++++++++" << std::endl;
-        std::cout << "current Time: " << currentTime << " (" << partitioning_->ownRankNo() << ")" << std::endl;
+        std::cout << "current Time: " << currentTime << " (" << partitioning_->ownRankNo() << ")" << ":" << MPI_Wtime()<< std::endl;
         std::cout << "+++++++++++++++++++++++" << std::endl;    
 
         // step 4: calculate F, G with first setting the boundary conditions of F, G (step 1)
-        std::cout << "Computing preliminary velocities ..." << " (" << partitioning_->ownRankNo() << ")" << std::endl;
+        std::cout << "Computing preliminary velocities ..." << " (" << partitioning_->ownRankNo() << ")"<< ":" << MPI_Wtime() << std::endl;
         computePreliminaryVelocities();
 
         // step 5: compute the right hand side of the pressure equation
-        std::cout << "Computing right hand side ..." << " (" << partitioning_->ownRankNo() << ")" << std::endl;
+        std::cout << "Computing right hand side ..." << " (" << partitioning_->ownRankNo() << ")"<< ":" << MPI_Wtime() << std::endl;
         computeRightHandSide();
 
         // step 6: solve the pressure equation
-        std::cout << "Computing presure..." << " (" << partitioning_->ownRankNo() << ")" << std::endl;
+        std::cout << "Computing presure..." << " (" << partitioning_->ownRankNo() << ")"<< ":" << MPI_Wtime() << std::endl;
         computePressure();
 
         // step 7: calculate the final velocities
-        std::cout << "Computing velocities..." << " (" << partitioning_->ownRankNo() << ")" << std::endl;
+        std::cout << "Computing velocities..." << " (" << partitioning_->ownRankNo() << ")"<< ":" << MPI_Wtime() << std::endl;
         computeVelocities();
 
 
@@ -105,10 +102,60 @@ void ComputationParallel::runSimulation()
     }
     
     // end the MPI-session
+    std::cout << "Finished simulations! Ready to finalize MPI... " << " (" << partitioning_->ownRankNo() << ")" << ":" << MPI_Wtime() << std::endl;
+    return;
+}
+*/
+
+// for testing
+void ComputationParallel::runSimulation()
+{
+    double currentTime = 0;
+    int iter = 0;
+    int maxIter = 1;
+    // the steps correspond to the steps in our algorithm in the overleaf or docs/numsim-algos.tex
+    while (iter < maxIter)
+    {
+        // set to ownRank + 1 *100
+        for ( int j = discretization_->uJBegin() +1; j < discretization_->uJEnd() -1; j++)
+        { 
+            for ( int i = discretization_->uIBegin() +1; i < discretization_->uIEnd() -1; i++)
+            {
+                discretization_->u(i,j) = partitioning_->ownRankNo()+1*100;
+            }
+        }
+
+        // test v
+        for ( int j = discretization_->vJBegin() +1; j < discretization_->vJEnd() -1; j++)
+        { 
+            for ( int i = discretization_->vIBegin() +1; i < discretization_->vIEnd() -1; i++)
+            {
+                discretization_->v(i,j) = partitioning_->ownRankNo()+1*100;
+            }
+        }
+        std::cout << "Writing output..." << std::endl;
+        outputWriterParaviewParallel_->writeFile(currentTime);
+        outputWriterTextParallel_->writeFile(currentTime);
+
+
+        // step 1: set the boundary values / exchange the final velocities at the borders
+        std::cout << "Applying boundary values for u/v and F/G..." << " (" << partitioning_->ownRankNo() << ")" << std::endl;
+        applyBoundaryValues();
+        
+
+        // step 9: write output
+        // if (std::floor(currentTime) == currentTime) // TODO
+        // {
+        std::cout << "Writing output..." << std::endl;
+        outputWriterParaviewParallel_->writeFile(currentTime+1);
+        outputWriterTextParallel_->writeFile(currentTime+1);
+        // }
+        iter = iter+1;
+    }
+    
+    // end the MPI-session
     std::cout << "Finished simulations! Finalizing MPI... " << std::endl;
-    MPI_Finalize();
-    std::cout << "-----------------------------" << std::endl;
-    std::cout << "Finalized MPI" << std::endl;
+    return;
 }
 
 void ComputationParallel::computeTimeStepWidthParallel(double currentTime)
@@ -242,7 +289,7 @@ void ComputationParallel::uvExchangeHorizontal()
 {
     std::cout << "Exchange uv horizonal" << " (" << partitioning_->ownRankNo() << ")" << std::endl;
     // the even processes: send left, receive left (u inner, u outer), send right (u inner, u outer), receive right
-    if ((partitioning_->ownRankNo() % 2) == 0)
+    if ((partitioning_->ownRankCoordinate()[0] % 2) == 0)
     {
         // left
         if (partitioning_->ownPartitionContainsLeftBoundary())
@@ -283,7 +330,7 @@ void ComputationParallel::uvExchangeHorizontal()
         }
     }
     // the uneven processes: receive right, send right, receive left (u inner, u outer), send left
-    if ((partitioning_->ownRankNo() % 2) == 1)
+    if ((partitioning_->ownRankCoordinate()[0] % 2) == 1)
     {
         if (partitioning_->ownPartitionContainsRightBoundary())
         {
@@ -326,8 +373,8 @@ void ComputationParallel::uvExchangeHorizontal()
 void ComputationParallel::uvExchangeVertical()
 {
     std::cout << "Exchange uv vertical" << " (" << partitioning_->ownRankNo() << ")" << std::endl;
-    // the even processes: send top, receive top, send bottom (v inner, v outer), receive bottom
-    if ((partitioning_->ownRankNo() % 2) == 0)
+    // the even processes: send top, receive top, send bottom, receive bottom
+    if ((partitioning_->ownRankCoordinate()[1] % 2) == 0)
     {
         // top
         if (partitioning_->ownPartitionContainsTopBoundary())
@@ -367,8 +414,8 @@ void ComputationParallel::uvExchangeVertical()
                      'y', 'v', true);
         }
     }
-    // the uneven processes: receive bottom, send bottom, receive top (v inner, v outer), send top, 
-    if ((partitioning_->ownRankNo() % 2) == 1)
+    // the uneven processes: receive bottom, send bottom, receive top, send top, 
+    if ((partitioning_->ownRankCoordinate()[1] % 2) == 1)
     {
         // bottom
         if (partitioning_->ownPartitionContainsBottomBoundary())
@@ -411,8 +458,10 @@ void ComputationParallel::uvExchangeVertical()
 
 void ComputationParallel::exchange(int rankCorrespondent, int indexToSend, int indexFromReceive, char direction, char variable, bool ToFrom)
 {
-    std::cout << "Exchanges " <<  rankCorrespondent << " " << indexToSend << " " << indexFromReceive << " " << std::endl
-              << direction << " " << variable << " " << ToFrom << " (" << partitioning_->ownRankNo() << ")" << std::endl;
+    int ownRankNo = 0;
+    MPI_Comm_rank(MPI_COMM_WORLD, &ownRankNo);
+    std::cout << "Exchanges " << ownRankNo << " to " <<  rankCorrespondent << " with data slices " << indexToSend << " to " << indexFromReceive << " " << std::endl
+              << " in " << direction << " with " << variable << " with " << ToFrom << " (" << partitioning_->ownRankNo() << ")" << std::endl;
     // index to or from can be NULL
 
     // initialize variables
