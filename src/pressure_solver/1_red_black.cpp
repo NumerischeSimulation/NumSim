@@ -37,6 +37,10 @@ double RedBlack::calculateResidual()
     res_local = res_local/(discretization_->nCells()[0] * discretization_->nCells()[1]);
     double res_global;
     MPI_Allreduce(&res_local, &res_global, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+
+    res_global = res_global/(partitioning_->nCellsGlobal()[0] *partitioning_->nCellsGlobal()[1]);
+
+    std::cout << "The global residual is: " << res_global << " and the local " << res_local << " (" << partitioning_->ownRankNo() << ")" << std::endl;
   
     return res_global;
 }
@@ -60,8 +64,7 @@ void RedBlack::solve()
     // iterate through grid 
     while( iteration < maximumNumberOfIterations_ && res > pow(epsilon_,2))
     {
-
-        //std::cout << "Iter: " << iteration << std::endl;
+        std::cout << "Iter: " << iteration << std::endl;
         // Black Solver
         // one half solver iteration
         for ( int j = 0; j < discretization_->nCells()[1]; j++)
@@ -122,11 +125,7 @@ void RedBlack::solve()
         pExchangeHorizontal();
         pExchangeVertical();
     
-    
         iteration +=1;
-        
-        //set new boundary values
-        setBoundaryValues();
 
         res = calculateResidual();
 
@@ -139,7 +138,7 @@ void RedBlack::pExchangeHorizontal()
     //std::cout << "pExchangeHorizontal" << std::endl;
 
     // the even processes: send left, receive left, send right, receive right
-    if ((partitioning_->ownRankNo() % 2) == 0)
+    if ((partitioning_->ownRankCoordinate()[0] % 2) == 0)
     {
         // left
         if (partitioning_->ownPartitionContainsLeftBoundary())
@@ -168,7 +167,7 @@ void RedBlack::pExchangeHorizontal()
         }
     }
     // the uneven processes: receive right, send right, receive left, send left
-    if ((partitioning_->ownRankNo() % 2) == 1)
+    if ((partitioning_->ownRankCoordinate()[0] % 2) == 1)
     {
         if (partitioning_->ownPartitionContainsRightBoundary())
         {
@@ -259,6 +258,10 @@ void RedBlack::pExchangeVertical()
 
 void RedBlack::exchange(int rankCorrespondent, int indexToSend, int indexFromReceive, char direction, bool ToFrom)
 {
+    int ownRankNo = 0;
+    MPI_Comm_rank(MPI_COMM_WORLD, &ownRankNo);
+    std::cout << "Exchanges " << ownRankNo << " to " <<  rankCorrespondent << " with data slices " << indexToSend << " to " << indexFromReceive << " " << std::endl
+              << " in " << direction << " with " << ToFrom << " (" << partitioning_->ownRankNo() << ")" << std::endl;
     // index to or from can be NULL
 
     // initialize variables

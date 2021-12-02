@@ -54,13 +54,15 @@ nCellsGlobal_(nCells)
         partitionNeighbours_[3] = ownRankNo_ +1;
     }
 
-    std::cout << "Process no " << ownRankNo_ << " found the following neighbours: " << std::endl
-              << partitionNeighbours_[0] << " " << partitionNeighbours_[1] << " "  << std::endl
-              << partitionNeighbours_[2] << " " << partitionNeighbours_[3] << " "<< std::endl;
+    std::cout << "Process no " << ownRankNo_ << "  following neighbours: " << std::endl
+              << partitionNeighbours_[2] << std::endl
+              << partitionNeighbours_[1] << " " << partitionNeighbours_[3] << std::endl
+              << partitionNeighbours_[0] << std::endl;
 
     std::cout << "Process no " << ownRankNo_ << " found the following null process: " << std::endl
-              << ownPartitionContainsBottomBoundary() << " " << ownPartitionContainsLeftBoundary() << " "  << std::endl
-              << ownPartitionContainsTopBoundary() << " " << ownPartitionContainsRightBoundary() << " "<< std::endl;
+              << ownPartitionContainsTopBoundary() << std::endl
+              << ownPartitionContainsLeftBoundary() << " " << ownPartitionContainsRightBoundary() << std::endl
+              << ownPartitionContainsBottomBoundary() << std::endl;
 
     nCellsLocal_ = {nCellsGlobal_[0] / n_subd, nCellsGlobal_[1] / m_subd};
 

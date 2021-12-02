@@ -18,6 +18,9 @@ int main(int argc, char *argv[])
   std::cout << "-------------------------------------------------" << std::endl;
   std::cout << "Parsing paramter file..." << std::endl;
   std::cout << std::endl;
+
+  // start MPI
+  MPI_Init(&argc, &argv);
   
   // construct computation obj: parses parameter file and prints settings
   ComputationParallel computation = ComputationParallel();
@@ -32,6 +35,11 @@ int main(int argc, char *argv[])
   
   // // start simulating
   computation.runSimulation();
+
+  std::cout << "Back to main" << std::endl;
+  MPI_Finalize();
+  std::cout << "-----------------------------" << std::endl;
+  std::cout << "Finalized MPI" << std::endl;
 
   // test some stuff
   //computation.runTest();
