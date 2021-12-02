@@ -105,6 +105,7 @@ void ComputationParallel::runSimulation()
     }
     
     // end the MPI-session
+    std::cout << "Finished simulations! Finalizing MPI... " << std::endl;
     MPI_Finalize();
     std::cout << "-----------------------------" << std::endl;
     std::cout << "Finalized MPI" << std::endl;
@@ -206,7 +207,7 @@ void ComputationParallel::applyBoundaryValuesBottom()
     std::cout << "Applied boundary values bottom " << " (" << partitioning_->ownRankNo() << ")" << std::endl;
     // bottom, set boundaries only in domain as corners belong to sides, computational domain begins at idx 0
     
-    for ( int i = 0; i < discretization_->nCells()[0]; i++)
+    for ( int i = 0; i < discretization_->nCells()[0] -1; i++)
     {
         // u 
         discretization_->u(i, discretization_->uJBegin())  = 2. * settings_.dirichletBcBottom[0] - discretization_->u(i, discretization_->uJBegin() + 1);
@@ -224,7 +225,7 @@ void ComputationParallel::applyBoundaryValuesTop()
     std::cout << "Applied boundary values top " << " (" << partitioning_->ownRankNo() << ")" << std::endl;
     // set boundaries only in domain as corners belong to size, domain begins at idx 0
     
-    for ( int i = 0; i < discretization_->nCells()[0]; i++)
+    for ( int i = 0; i < discretization_->nCells()[0]-1; i++)
     {
         // u
         discretization_->u(i, discretization_->uJEnd() - 1) = 2. * settings_.dirichletBcTop[0] - discretization_->u(i, discretization_->uJEnd() - 2);
