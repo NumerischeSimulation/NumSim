@@ -143,6 +143,8 @@ void ComputationParallel::runSimulation()
                   << " (" << partitioning_->ownRankNo() << ")" << std::endl;
         applyBoundaryValues();
 
+        computePressure();
+
         // step 9: write output
         // if (std::floor(currentTime) == currentTime) // TODO
         // {
@@ -156,7 +158,7 @@ void ComputationParallel::runSimulation()
     // end the MPI-session
     std::cout << "Finished simulations! Finalizing MPI... " << std::endl;
     return;
-}
+} 
 
 void ComputationParallel::computeTimeStepWidthParallel(double currentTime)
 {
@@ -346,15 +348,15 @@ void ComputationParallel::uvExchangeHorizontal()
         else
         {
             // u
-            // receive u_n-2, send u_n
+            // receive u_n, send u_n-2
             exchange(partitioning_->ownRightNeighbour(),
-                     discretization_->nCells()[0], discretization_->nCells()[0] - 2,
+                     discretization_->nCells()[0]-2, discretization_->nCells()[0],
                      'x', 'u', false);
 
             // v
-            // receive v_n-1, send v_n
+            // receive v_n, send v_n-1
             exchange(partitioning_->ownRightNeighbour(),
-                     discretization_->nCells()[0], discretization_->nCells()[0] - 1,
+                     discretization_->nCells()[0]-1, discretization_->nCells()[0],
                      'x', 'v', false);
         }
         if (partitioning_->ownPartitionContainsLeftBoundary())
@@ -364,15 +366,15 @@ void ComputationParallel::uvExchangeHorizontal()
         else
         {
             // u
-            // receive u_0, send u_-2
+            // receive u_-2, send u_0
             exchange(partitioning_->ownLeftNeighbour(),
-                     -2, 0,
+                     0, -2,
                      'x', 'u', false);
 
             // v
-            // receive v_0, send_-1
+            // receive v_-1, send_0
             exchange(partitioning_->ownLeftNeighbour(),
-                     -1, 0,
+                     0, -1,
                      'x', 'v', false);
         }
     }
@@ -517,7 +519,7 @@ void ComputationParallel::exchange(int rankCorrespondent, int indexToSend, int i
     }
 
     // get slice to communicate for each case
-    std::vector<double> toOtherGhost(nValuesCommunication, 13);
+    std::vector<double> toOtherGhost(nValuesCommunication, 13); //TODO 0
     if (direction == 'x')
     {
         if (variable == 'u')
@@ -565,7 +567,7 @@ void ComputationParallel::exchange(int rankCorrespondent, int indexToSend, int i
     }
 
     // send-receive or receive-send depending on the direction
-    std::vector<double> otherGhostFrom(nValuesCommunication, 5 + ownRankNo);
+    std::vector<double> otherGhostFrom(nValuesCommunication, 11); //TODO 0
 
     if (ToFrom)
     {
