@@ -158,6 +158,7 @@ void ComputationParallel::runSimulation()
     // end the MPI-session
     std::cout << "Finished simulations! Finalizing MPI... " << std::endl;
     return;
+
 }  */
 
 void ComputationParallel::computeTimeStepWidthParallel(double currentTime)
