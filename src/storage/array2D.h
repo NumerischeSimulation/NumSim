@@ -27,7 +27,7 @@ public:
   void setToZero();
 
   //! return data vector
-  std::vector<double>  data();
+  void *data();
 
 protected:
 

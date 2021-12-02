@@ -45,7 +45,7 @@ double RedBlack::calculateResidual()
     return res_global;
 }
 
-
+/*
 void RedBlack::solve()
 {
     // cell size
@@ -132,7 +132,38 @@ void RedBlack::solve()
         //std::cout << "RedBlack: " << iteration << " with a residuum of " << res << " from target " << std::pow(epsilon_,2) << std::endl;
     }
 }
+*/
 
+// for testing
+void RedBlack::solve()
+{
+        // Black Solver
+        // one half solver iteration
+        for (int j = 0; j < discretization_->nCells()[1]; j++)
+        {
+            // if is an even row, we start with the first column, else second
+            if (j % 2 == 0)
+            {
+                for (int i = 0; i < discretization_->nCells()[0]; i = i + 2)
+                {
+                    discretization_->p(i, j) = 100 + partitioning_->ownRankNo();
+                }
+            }
+            else
+            {
+                for (int i = 1; i < discretization_->nCells()[0]; i = i + 2)
+                {
+                    discretization_->p(i, j) = 300 + partitioning_->ownRankNo();
+                }
+            }
+        }
+        
+        // apply the horizontal exchange first such that the boundary values are set correctly
+        // std::cout << "Starting exchange... " << std::endl;
+        pExchangeHorizontal();
+        pExchangeVertical();
+    
+}
 void RedBlack::pExchangeHorizontal()
 {
     //std::cout << "pExchangeHorizontal" << std::endl;
@@ -220,9 +251,9 @@ void RedBlack::pExchangeVertical()
         } else
         {
             // p
-            // send p_0, receive p_-1
+            // send p_-1, receive p_0
             exchange(partitioning_->ownBottomNeighbour(), 
-                     0, -1, 
+                     -1, 0, 
                      'y', true);
         }
     }
@@ -248,9 +279,9 @@ void RedBlack::pExchangeVertical()
         } else 
         {
             // p
-            // receive p_n, send p_n-1
+            // receive p_n-1, send p_n
             exchange(partitioning_->ownTopNeighbour(), 
-                     discretization_->nCells()[1] -1, discretization_->nCells()[1], 
+                     discretization_->nCells()[1], discretization_->nCells()[1] -1, 
                      'y', false);
         }
     }
@@ -280,7 +311,7 @@ void RedBlack::exchange(int rankCorrespondent, int indexToSend, int indexFromRec
     }
 
     // get slice to communicate for each case
-    std::vector<double> toOtherGhost(nValuesCommunication, 0);
+    std::vector<double> toOtherGhost(nValuesCommunication, 5);
     if (direction == 'x')
     {
         for (int j = discretization_->pJBegin(); j < discretization_->pJEnd(); j++)

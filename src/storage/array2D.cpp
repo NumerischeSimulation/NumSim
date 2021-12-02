@@ -52,7 +52,7 @@ void Array2D::setToZero()
   data_.resize(size_[0]*size_[1], 0.0); 
 }
 
-std::vector<double>  Array2D::data()
+void *Array2D::data()
 {
-  return data_;
+  return data_.data();
 }
