@@ -1,12 +1,12 @@
 #include "0_staggered_grid.h"
 
 StaggeredGrid::StaggeredGrid(std::array<int,2> nCells, std::array<double,2> meshWidth, std::array<int,4> partitionNeighbours) :
-  u_({nCells[0] + 4, nCells[1] + 4},   {0.0,      meshWidth[1]/2.}, meshWidth),
-  v_({nCells[0] + 4, nCells[1] + 4},   {meshWidth[0]/2.,   0.},    meshWidth),
-  p_({nCells[0] + 4, nCells[1] + 4},   {meshWidth[0]/2.,   meshWidth[1]/2.}, meshWidth),
-  f_({nCells[0] + 4, nCells[1] + 4},   {0.,      meshWidth[1]/2.}, meshWidth),
-  g_({nCells[0] + 4, nCells[1] + 4},   {meshWidth[0]/2.,   0.},    meshWidth),
-  rhs_({nCells[0] + 4, nCells[1] + 4}, {meshWidth[0]/2.,   meshWidth[1]/2.}, meshWidth),
+  u_({nCells[0] + 4, nCells[1] + 4},   {0.0+meshWidth[0],    3*meshWidth[1]/2.}, meshWidth),
+  v_({nCells[0] + 4, nCells[1] + 4},   {3*meshWidth[0]/2.,     meshWidth[1]},    meshWidth),
+  p_({nCells[0] + 4, nCells[1] + 4},   {3*meshWidth[0]/2.,   3*meshWidth[1]/2.}, meshWidth),
+  f_({nCells[0] + 4, nCells[1] + 4},   {meshWidth[0],        3*meshWidth[1]/2.}, meshWidth),
+  g_({nCells[0] + 4, nCells[1] + 4},   {3*meshWidth[0]/2.,     meshWidth[1]},    meshWidth),
+  rhs_({nCells[0] + 4, nCells[1] + 4}, {3*meshWidth[0]/2.,   3*meshWidth[1]/2.}, meshWidth),
   meshWidth_(meshWidth),
   nCells_(nCells),
   partitionNeighbours_(partitionNeighbours)
