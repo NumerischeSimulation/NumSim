@@ -18,6 +18,10 @@ public:
   //! solve the pressure poisson equation
   void solve();
 
+  //! test communications of and red-black pattern of pressure solver
+  void communicationTest();
+
+  //! calculate residual of pressure equation
   double calculateResidual();
 
   //! sets the ghost layers in the discretization correctly
@@ -32,6 +36,6 @@ public:
                 bool ToFrom); //! send and then receive, else receive then send
 
 protected:
-  std::shared_ptr<Partitioning> partitioning_;
+  std::shared_ptr<Partitioning> partitioning_; //! partitioning object as shared pointer
   
 };

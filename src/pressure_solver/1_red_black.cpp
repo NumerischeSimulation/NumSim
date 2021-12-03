@@ -40,12 +40,11 @@ double RedBlack::calculateResidual()
 
     res_global = res_global/(partitioning_->nCellsGlobal()[0] *partitioning_->nCellsGlobal()[1]);
 
-    std::cout << "The global residual is: " << res_global << " and the local " << res_local << " (" << partitioning_->ownRankNo() << ")" << std::endl;
+    // std::cout << "The global residual is: " << res_global << " and the local " << res_local << " (" << partitioning_->ownRankNo() << ")" << std::endl;
   
     return res_global;
 }
 
-/*
 void RedBlack::solve()
 {
     // cell size
@@ -60,11 +59,12 @@ void RedBlack::solve()
     //initial residual
     double res = calculateResidual();
 
-    std::cout << "Starting with RedBlack iterations... " << std::endl;
+    //std::cout << "Starting with RedBlack iterations... " << std::endl;
+    
     // iterate through grid 
     while( iteration < maximumNumberOfIterations_ && res > pow(epsilon_,2))
     {
-        std::cout << "Iter: " << iteration << std::endl;
+        // std::cout << "Iter: " << iteration << std::endl;
         // Black Solver
         // one half solver iteration
         for ( int j = 0; j < discretization_->nCells()[1]; j++)
@@ -132,13 +132,12 @@ void RedBlack::solve()
         //std::cout << "RedBlack: " << iteration << " with a residuum of " << res << " from target " << std::pow(epsilon_,2) << std::endl;
     }
 }
-*/
 
 
 
-/*// for testing
 
-void RedBlack::solve()
+// for testing
+void RedBlack::communicationTest()
 {
         // Black Solver
         // one half solver iteration
@@ -166,8 +165,8 @@ void RedBlack::solve()
         pExchangeHorizontal();
         pExchangeVertical();
     
+} 
 
-} */
 
 void RedBlack::pExchangeHorizontal()
 {
@@ -296,9 +295,10 @@ void RedBlack::exchange(int rankCorrespondent, int indexToSend, int indexFromRec
 {
     int ownRankNo = 0;
     MPI_Comm_rank(MPI_COMM_WORLD, &ownRankNo);
-    std::cout << "Exchanges " << ownRankNo << " to " <<  rankCorrespondent << " with data slices " << indexToSend << " to " << indexFromReceive << " " << std::endl
-              << " in " << direction << " with " << ToFrom << " (" << partitioning_->ownRankNo() << ")" << std::endl;
-    // index to or from can be NULL
+    
+    // std::cout << "Exchanges " << ownRankNo << " to " <<  rankCorrespondent << " with data slices " << indexToSend << " to " << indexFromReceive << " " << std::endl
+    //          << " in " << direction << " with " << ToFrom << " (" << partitioning_->ownRankNo() << ")" << std::endl;
+    // index to or from can be mpi null pointer
 
     // initialize variables
     int nValuesCommunication = 0;
