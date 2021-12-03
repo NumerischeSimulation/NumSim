@@ -115,7 +115,7 @@ void Computation::computeTimeStepWidth()
         double h2y = meshWidth_[1] * meshWidth_[1];
         boundary_diffusion = (settings_.re / 2.) * (h2x * h2y) * (1./(h2x + h2y));
       
-        std::cout << settings_.re << " " << h2x << " " << h2y << std::endl;
+        //std::cout << settings_.re << " " << h2x << " " << h2y << std::endl;
     }
 
     // calculate max absolute velocities
@@ -146,8 +146,8 @@ void Computation::computeTimeStepWidth()
     }
 
     // boundary from convection
-    std::cout << "u_max: " << u_max << std::endl;
-    std::cout << "v_max: " << v_max << std::endl;
+    //std::cout << "u_max: " << u_max << std::endl;
+    //std::cout << "v_max: " << v_max << std::endl;
 
     double boundary_convection_u = meshWidth_[0] / u_max;
     double boundary_convection_v = meshWidth_[1] / v_max;
@@ -155,7 +155,7 @@ void Computation::computeTimeStepWidth()
     // together
     double min_dt = std::min({boundary_diffusion, boundary_convection_u, boundary_convection_v});
 
-    std::cout << "dt boundaries - diffusion: " << boundary_diffusion << " convection_u: " << boundary_convection_u << " convection_v: " << boundary_convection_v << std::endl;
+    //std::cout << "dt boundaries - diffusion: " << boundary_diffusion << " convection_u: " << boundary_convection_u << " convection_v: " << boundary_convection_v << std::endl;
 
     // security factor
     dt_ =  std::min(min_dt * settings_.tau, settings_.maximumDt);

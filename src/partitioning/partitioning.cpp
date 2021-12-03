@@ -18,7 +18,7 @@ nCellsGlobal_(nCells)
     // save as rank coordinate
     ownRankCoordinate_ = {process_column, process_row};
 
-    std::cout << "ownRankCoordinate: " << ownRankCoordinate_[0] << " " << ownRankCoordinate_[1] << "(" << ownRankNo_ << ")" << std::endl;
+    //std::cout << "ownRankCoordinate: " << ownRankCoordinate_[0] << " " << ownRankCoordinate_[1] << "(" << ownRankNo_ << ")" << std::endl;
 
     // get neighbors
     // bottom border
@@ -54,19 +54,19 @@ nCellsGlobal_(nCells)
         partitionNeighbours_[3] = ownRankNo_ +1;
     }
 
-    std::cout << "Process no " << ownRankNo_ << "  following neighbours: " << std::endl
-              << partitionNeighbours_[2] << std::endl
-              << partitionNeighbours_[1] << " " << partitionNeighbours_[3] << std::endl
-              << partitionNeighbours_[0] << std::endl;
+    //std::cout << "Process no " << ownRankNo_ << "  following neighbours: " << std::endl
+    //          << partitionNeighbours_[2] << std::endl
+    //          << partitionNeighbours_[1] << " " << partitionNeighbours_[3] << std::endl
+    //          << partitionNeighbours_[0] << std::endl;
 
-    std::cout << "Process no " << ownRankNo_ << " found the following null process: " << std::endl
-              << ownPartitionContainsTopBoundary() << std::endl
-              << ownPartitionContainsLeftBoundary() << " " << ownPartitionContainsRightBoundary() << std::endl
-              << ownPartitionContainsBottomBoundary() << std::endl;
+    //std::cout << "Process no " << ownRankNo_ << " found the following null process: " << std::endl
+    //          << ownPartitionContainsTopBoundary() << std::endl
+    //          << ownPartitionContainsLeftBoundary() << " " << ownPartitionContainsRightBoundary() << std::endl
+    //          << ownPartitionContainsBottomBoundary() << std::endl;
 
     nCellsLocal_ = {nCellsGlobal_[0] / n_subd, nCellsGlobal_[1] / m_subd};
 
-    std::cout << "computed nCellsLocal: " << nCellsLocal_[0] << nCellsLocal_[1]  << std::endl;
+    //std::cout << "computed nCellsLocal: " << nCellsLocal_[0] << nCellsLocal_[1]  << std::endl;
     
     // check if nCellsLocal is int, else throw an error
     if (nCellsLocal_[0] != std::floor(nCellsLocal_[0]) || nCellsLocal_[1] != std::floor(nCellsLocal_[1])) 
@@ -77,7 +77,7 @@ nCellsGlobal_(nCells)
     
     nodeOffset_ = {nCellsLocal_[0] * process_column, nCellsLocal_[1] * process_row};
 
-    std::cout << "With a node offset of " << nodeOffset_[0] << " " << nodeOffset_[1] << "(process no:" << ownRankNo_ << ")" << std::endl;
+    //std::cout << "With a node offset of " << nodeOffset_[0] << " " << nodeOffset_[1] << "(process no:" << ownRankNo_ << ")" << std::endl;
 }
 
 void Partitioning::factorizeSubdomains() {
@@ -110,7 +110,7 @@ void Partitioning::factorizeSubdomains() {
     nSubdomains_[0] = n_opt;
     nSubdomains_[1] = m_opt;
     
-    std::cout << "Computed optimal partition in subdomains: " << nSubdomains_[0] << nSubdomains_[1]  << " with costs " << cost_opt << "(" << ownRankNo_ << ")" << std::endl;
+    std::cout << "Computed optimal partition in subdomains: " << nSubdomains_[0] << ", " << nSubdomains_[1]  << " with comm. costs " << cost_opt << "(" << ownRankNo_ << ")" << std::endl;
 }
 
 std::array<int, 2> Partitioning::nodeOffset() {

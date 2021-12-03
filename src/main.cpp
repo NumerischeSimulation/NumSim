@@ -36,6 +36,9 @@ int main(int argc, char *argv[])
   // // start simulating
   computation.runSimulation();
 
+  // or test the communications, boundaries ect. 
+  //computation.communicationTest();
+
   std::cout << "Back to main" << std::endl;
   MPI_Finalize();
   std::cout << "-----------------------------" << std::endl;
