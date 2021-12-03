@@ -24,6 +24,10 @@ public:
     //! run the whole simulation until t_end 
     void runSimulation(); // overwrite
 
+    //! test communications of u/v as well as setting of boundary values
+    void communicationTest();
+
+
 protected:
     //! compute the time step width dt from maximum velocities 
     void computeTimeStepWidthParallel(double currentTime);

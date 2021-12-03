@@ -12,7 +12,7 @@ void ComputationParallel::initialize(int argc, char *argv[])
     MPI_Comm_rank(MPI_COMM_WORLD, &ownRankNo);
     MPI_Comm_size(MPI_COMM_WORLD, &nRanks);
 
-    std::cout << "Hi, I'm process " << ownRankNo << std::endl;
+    //std::cout << "Hi, I'm process " << ownRankNo << std::endl;
 
     // get own partion depending on where in the domain the process lies
     partitioning_ = std::make_shared<Partitioning>(ownRankNo, nRanks, settings_.nCells);
@@ -21,7 +21,7 @@ void ComputationParallel::initialize(int argc, char *argv[])
     for (int i = 0; i < 2; i++)
     {
         meshWidth_[i] = settings_.physicalSize[i] / settings_.nCells[i];
-        std::cout << "computed mesh width " << i << ": " << meshWidth_[i] << " " << settings_.physicalSize[i] << " " << settings_.nCells[i] << std::endl;
+        //std::cout << "computed mesh width " << i << ": " << meshWidth_[i] << " " << settings_.physicalSize[i] << " " << settings_.nCells[i] << std::endl;
     }
 
     // initialize discretization and solver
@@ -34,11 +34,11 @@ void ComputationParallel::initialize(int argc, char *argv[])
         discretization_ = std::make_shared<CentralDifferences>(partitioning_->nCellsLocal(), meshWidth_, partitioning_->ownPartitionNeighbours());
     }
 
-    std::cout << "Initialized discretization" << std::endl;
+    //std::cout << "Initialized discretization" << std::endl;
 
     pressureSolver_ = std::make_unique<RedBlack>(discretization_, settings_.epsilon, settings_.maximumNumberOfIterations, partitioning_);
 
-    std::cout << "Initialized pressure solver" << std::endl;
+    //std::cout << "Initialized pressure solver" << std::endl;
 
     // misc
     dt_ = 0.;
@@ -47,7 +47,7 @@ void ComputationParallel::initialize(int argc, char *argv[])
     outputWriterParaviewParallel_ = std::make_unique<OutputWriterParaviewParallel>(discretization_, partitioning_);
     outputWriterTextParallel_ = std::make_unique<OutputWriterTextParallel>(discretization_, partitioning_);
 
-    std::cout << "Initialized output writer" << std::endl;
+    //std::cout << "Initialized output writer" << std::endl;
 }
 
 void ComputationParallel::runSimulation()
@@ -61,10 +61,10 @@ void ComputationParallel::runSimulation()
     // the steps correspond to the steps in our algorithm in the overleaf or docs/numsim-algos.tex
     while (currentTime < settings_.endTime)
     {
-        std::cout << std::endl;
+        //std::cout << std::endl;
 
         // step 1: set the boundary values / exchange the final velocities at the borders
-        std::cout << "Applying boundary values for u/v and F/G..." << " (" << partitioning_->ownRankNo() << ")" << ":" << MPI_Wtime() << std::endl;
+        //std::cout << "Applying boundary values for u/v and F/G..." << " (" << partitioning_->ownRankNo() << ")" << ":" << MPI_Wtime() << std::endl;
         applyBoundaryValues();
 
         // step 2: compute time step width
@@ -72,38 +72,38 @@ void ComputationParallel::runSimulation()
 
         currentTime += dt_;
 
-        std::cout << "+++++++++++++++++++++++" << std::endl;
-        std::cout << "current Time: " << currentTime << " (" << partitioning_->ownRankNo() << ")" << ":" << MPI_Wtime()<< std::endl;
-        std::cout << "+++++++++++++++++++++++" << std::endl;
+        //std::cout << "+++++++++++++++++++++++" << std::endl;
+        //std::cout << "current Time: " << currentTime << " (" << partitioning_->ownRankNo() << ")" << ":" << MPI_Wtime()<< std::endl;
+        //std::cout << "+++++++++++++++++++++++" << std::endl;
 
         // step 4: calculate F, G with first setting the boundary conditions of F, G (step 1)
-        std::cout << "Computing preliminary velocities ..." << " (" << partitioning_->ownRankNo() << ")"<< ":" << MPI_Wtime() << std::endl;
+        //std::cout << "Computing preliminary velocities ..." << " (" << partitioning_->ownRankNo() << ")"<< ":" << MPI_Wtime() << std::endl;
         computePreliminaryVelocities();
 
         // step 5: compute the right hand side of the pressure equation
-        std::cout << "Computing right hand side ..." << " (" << partitioning_->ownRankNo() << ")"<< ":" << MPI_Wtime() << std::endl;
+        //std::cout << "Computing right hand side ..." << " (" << partitioning_->ownRankNo() << ")"<< ":" << MPI_Wtime() << std::endl;
         computeRightHandSide();
 
         // step 6: solve the pressure equation
-        std::cout << "Computing presure..." << " (" << partitioning_->ownRankNo() << ")"<< ":" << MPI_Wtime() << std::endl;
+        //std::cout << "Computing presure..." << " (" << partitioning_->ownRankNo() << ")"<< ":" << MPI_Wtime() << std::endl;
         computePressure();
 
         // step 7: calculate the final velocities
-        std::cout << "Computing velocities..." << " (" << partitioning_->ownRankNo() << ")"<< ":" << MPI_Wtime() << std::endl;
+        //std::cout << "Computing velocities..." << " (" << partitioning_->ownRankNo() << ")"<< ":" << MPI_Wtime() << std::endl;
         computeVelocities();
 
 
         // step 9: write output
-        // if (std::floor(currentTime) == currentTime || currentTime == settings_.endTime) // TODO
-        // {
-        std::cout << "Writing output..." << std::endl;
-        outputWriterParaviewParallel_->writeFile(currentTime);
-        outputWriterTextParallel_->writeFile(currentTime);
-        // }
+        if (std::floor(currentTime) == currentTime || currentTime == settings_.endTime) // TODO
+        {
+        //std::cout << "Writing output..." << std::endl;
+            outputWriterParaviewParallel_->writeFile(currentTime);
+            outputWriterTextParallel_->writeFile(currentTime);
+        }
     }
 
     // end the MPI-session
-    std::cout << "Finished simulations! Ready to finalize MPI... " << " (" << partitioning_->ownRankNo() << ")" << ":" << MPI_Wtime() << std::endl;
+    //std::cout << "Finished simulations! Ready to finalize MPI... " << " (" << partitioning_->ownRankNo() << ")" << ":" << MPI_Wtime() << std::endl;
     return;
 }
 
@@ -135,12 +135,12 @@ void ComputationParallel::communicationTest()
         }
 
         // write output before setting the boundaries/halos/ghost cells
-        std::cout << "Writing output..." << std::endl;
+        //std::cout << "Writing output..." << std::endl;
         outputWriterParaviewParallel_->writeFile(currentTime);
         outputWriterTextParallel_->writeFile(currentTime);
 
-        std::cout << "Applying boundary values for u/v and F/G..."
-                  << " (" << partitioning_->ownRankNo() << ")" << std::endl;
+        //std::cout << "Applying boundary values for u/v and F/G..."
+        //          << " (" << partitioning_->ownRankNo() << ")" << std::endl;
 
         // apply boundary values (u,v,F,G) and/or exchange u, v
         applyBoundaryValues();
@@ -151,7 +151,7 @@ void ComputationParallel::communicationTest()
         //pressureSolver_->solve();
 
         // write output after communications
-        std::cout << "Writing output..." << std::endl;
+        //std::cout << "Writing output..." << std::endl;
         outputWriterParaviewParallel_->writeFile(currentTime + 1);
         outputWriterTextParallel_->writeFile(currentTime + 1);
         
@@ -159,7 +159,7 @@ void ComputationParallel::communicationTest()
     }
 
     // end the MPI-session
-    std::cout << "Finished simulations! Finalizing MPI... " << std::endl;
+    //std::cout << "Finished simulations! Finalizing MPI... " << std::endl;
     return;
 
 }  
@@ -170,7 +170,7 @@ void ComputationParallel::computeTimeStepWidthParallel(double currentTime)
     // compute timestep for each subdomain
     computeTimeStepWidth();
 
-    std::cout << "Local timestep: " << dt_ << " (" << partitioning_->ownRankNo() << ")" << std::endl;
+    //std::cout << "Local timestep: " << dt_ << " (" << partitioning_->ownRankNo() << ")" << std::endl;
 
     // use the minimum as global timestep
     double dt_global;
@@ -193,7 +193,7 @@ void ComputationParallel::computeTimeStepWidthParallel(double currentTime)
         std::cout << "Final time step!" << std::endl;
     }
 
-    std::cout << "Global timestep: " << dt_global << " (" << partitioning_->ownRankNo() << ")" << std::endl;
+    //std::cout << "Global timestep: " << dt_global << " (" << partitioning_->ownRankNo() << ")" << std::endl;
 
     dt_ = dt_global;
 }
@@ -208,8 +208,8 @@ void ComputationParallel::applyBoundaryValues()
 
 void ComputationParallel::applyBoundaryValuesLeft()
 {
-    std::cout << "Applied boundary values left "
-              << " (" << partitioning_->ownRankNo() << ")" << std::endl;
+    //std::cout << "Applied boundary values left "
+    //          << " (" << partitioning_->ownRankNo() << ")" << std::endl;
     // u
     for (int j = discretization_->uJBegin(); j < discretization_->uJEnd(); j++)
     {
@@ -234,8 +234,8 @@ void ComputationParallel::applyBoundaryValuesLeft()
 
 void ComputationParallel::applyBoundaryValuesRight()
 {
-    std::cout << "Applied boundary values right "
-              << " (" << partitioning_->ownRankNo() << ")" << std::endl;
+   // std::cout << "Applied boundary values right "
+    //          << " (" << partitioning_->ownRankNo() << ")" << std::endl;
     // u
     for (int j = discretization_->uJBegin(); j < discretization_->uJEnd(); j++)
     {
@@ -260,8 +260,8 @@ void ComputationParallel::applyBoundaryValuesRight()
 
 void ComputationParallel::applyBoundaryValuesBottom()
 {
-    std::cout << "Applied boundary values bottom "
-              << " (" << partitioning_->ownRankNo() << ")" << std::endl;
+   // std::cout << "Applied boundary values bottom "
+    //          << " (" << partitioning_->ownRankNo() << ")" << std::endl;
     // bottom, set boundaries only in domain as corners belong to sides, computational domain begins at idx 0
 
    /* for (int i = 0; i < discretization_->nCells()[0] - 1; i++)
@@ -295,8 +295,8 @@ void ComputationParallel::applyBoundaryValuesBottom()
 
 void ComputationParallel::applyBoundaryValuesTop()
 {
-    std::cout << "Applied boundary values top "
-              << " (" << partitioning_->ownRankNo() << ")" << std::endl;
+  //  std::cout << "Applied boundary values top "
+  //            << " (" << partitioning_->ownRankNo() << ")" << std::endl;
     // set boundaries only in domain as corners belong to size, domain begins at idx 0
 
     /*for (int i = 0; i < discretization_->nCells()[0] - 1; i++)
@@ -330,8 +330,8 @@ void ComputationParallel::applyBoundaryValuesTop()
 
 void ComputationParallel::uvExchangeHorizontal()
 {
-    std::cout << "Exchange uv horizonal"
-              << " (" << partitioning_->ownRankNo() << ")" << std::endl;
+  //  std::cout << "Exchange uv horizonal"
+  //            << " (" << partitioning_->ownRankNo() << ")" << std::endl;
     // the even processes: send left, receive left (u inner, u outer), send right (u inner, u outer), receive right
     if ((partitioning_->ownRankCoordinate()[0] % 2) == 0)
     {
@@ -419,8 +419,8 @@ void ComputationParallel::uvExchangeHorizontal()
 
 void ComputationParallel::uvExchangeVertical()
 {
-    std::cout << "Exchange uv vertical"
-              << " (" << partitioning_->ownRankNo() << ")" << std::endl;
+    //std::cout << "Exchange uv vertical"
+    //          << " (" << partitioning_->ownRankNo() << ")" << std::endl;
     // the even processes: send top, receive top, send bottom, receive bottom
     if ((partitioning_->ownRankCoordinate()[1] % 2) == 0)
     {
@@ -511,8 +511,8 @@ void ComputationParallel::exchange(int rankCorrespondent, int indexToSend, int i
 {
     int ownRankNo = 0;
     MPI_Comm_rank(MPI_COMM_WORLD, &ownRankNo);
-    std::cout << "Exchanges " << ownRankNo << " to " << rankCorrespondent << " with data slices " << indexToSend << " to " << indexFromReceive << " " << std::endl
-              << " in " << direction << " with " << variable << " with " << ToFrom << " (" << partitioning_->ownRankNo() << ")" << std::endl;
+   // std::cout << "Exchanges " << ownRankNo << " to " << rankCorrespondent << " with data slices " << indexToSend << " to " << indexFromReceive << " " << std::endl
+   //           << " in " << direction << " with " << variable << " with " << ToFrom << " (" << partitioning_->ownRankNo() << ")" << std::endl;
     // index to or from can be NULL
 
     // initialize variables

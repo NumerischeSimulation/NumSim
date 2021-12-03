@@ -18,9 +18,6 @@ public:
   //! solve the pressure poisson equation
   void solve();
 
-  //! test communications of and red-black pattern of pressure solver
-  void communicationTest();
-
   //! calculate residual of pressure equation
   double calculateResidual();
 
