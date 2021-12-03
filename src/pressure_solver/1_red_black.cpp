@@ -136,8 +136,10 @@ void RedBlack::solve()
 
 
 
-// for testing
-void RedBlack::communicationTest()
+// for testing of boundary, communications and red black pattern
+
+/*
+void RedBlack::solve()  // communicationTest
 {
         // Black Solver
         // one half solver iteration
@@ -166,7 +168,7 @@ void RedBlack::communicationTest()
         pExchangeVertical();
     
 } 
-
+*/
 
 void RedBlack::pExchangeHorizontal()
 {

@@ -107,22 +107,21 @@ void ComputationParallel::runSimulation()
     return;
 }
 
-
-/*// for testing
-void ComputationParallel::runSimulation()
+// for testing
+void ComputationParallel::communicationTest()
 {
     double currentTime = 0;
     int iter = 0;
     int maxIter = 1;
-    // the steps correspond to the steps in our algorithm in the overleaf or docs/numsim-algos.tex
+    
     while (iter < maxIter)
     {
-        // set to ownRank + 1 *100
+        // set u, v to ownRank *10 
         for (int j = discretization_->uJBegin() + 1; j < discretization_->uJEnd() - 1; j++)
         {
             for (int i = discretization_->uIBegin() + 1; i < discretization_->uIEnd() - 1; i++)
             {
-                discretization_->u(i, j) = partitioning_->ownRankNo() + 1 * 100;
+                discretization_->u(i, j) = partitioning_->ownRankNo()*10 ;
             }
         }
 
@@ -131,27 +130,31 @@ void ComputationParallel::runSimulation()
         {
             for (int i = discretization_->vIBegin() + 1; i < discretization_->vIEnd() - 1; i++)
             {
-                discretization_->v(i, j) = partitioning_->ownRankNo() + 1 * 100;
+                discretization_->v(i, j) = partitioning_->ownRankNo()*10;
             }
         }
+
+        // write output before setting the boundaries/halos/ghost cells
         std::cout << "Writing output..." << std::endl;
         outputWriterParaviewParallel_->writeFile(currentTime);
         outputWriterTextParallel_->writeFile(currentTime);
 
-        // step 1: set the boundary values / exchange the final velocities at the borders
         std::cout << "Applying boundary values for u/v and F/G..."
                   << " (" << partitioning_->ownRankNo() << ")" << std::endl;
+
+        // apply boundary values (u,v,F,G) and/or exchange u, v
         applyBoundaryValues();
 
-        computePressure();
+        // to test communications of pressure solver
+        // comment the original solve and uncomment 
+        // the solve methodes "for testing" in RedBlack.cpp:)
+        //pressureSolver_->solve();
 
-        // step 9: write output
-        // if (std::floor(currentTime) == currentTime) // TODO
-        // {
+        // write output after communications
         std::cout << "Writing output..." << std::endl;
         outputWriterParaviewParallel_->writeFile(currentTime + 1);
         outputWriterTextParallel_->writeFile(currentTime + 1);
-        // }
+        
         iter = iter + 1;
     }
 
@@ -159,7 +162,8 @@ void ComputationParallel::runSimulation()
     std::cout << "Finished simulations! Finalizing MPI... " << std::endl;
     return;
 
-}  */
+}  
+
 
 void ComputationParallel::computeTimeStepWidthParallel(double currentTime)
 {
