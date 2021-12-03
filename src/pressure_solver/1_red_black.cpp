@@ -134,7 +134,10 @@ void RedBlack::solve()
 }
 */
 
-// for testing
+
+
+/*// for testing
+
 void RedBlack::solve()
 {
         // Black Solver
@@ -163,7 +166,9 @@ void RedBlack::solve()
         pExchangeHorizontal();
         pExchangeVertical();
     
-}
+
+} */
+
 void RedBlack::pExchangeHorizontal()
 {
     //std::cout << "pExchangeHorizontal" << std::endl;
