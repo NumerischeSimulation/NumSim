@@ -16,7 +16,8 @@ mkdir build
 cd build
 cmake -DCMAKE_BUILD_TYPE=Release ..
 make install
-mpirun -n $1 ./numsim_parallel ../ini/lid_driven_cavity.txt 
+mpirun -n $1 ./numsim_parallel ../ini/lid_driven_cavity.txt > logs.txt
 
 # zip the solution
+cd ..
 zip -r submission.zip src/ CMakeLists.txt
