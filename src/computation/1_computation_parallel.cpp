@@ -94,7 +94,7 @@ void ComputationParallel::runSimulation()
 
 
         // step 9: write output
-        // if (std::floor(currentTime) == currentTime) // TODO
+        // if (std::floor(currentTime) == currentTime || currentTime == settings_.endTime) // TODO
         // {
         std::cout << "Writing output..." << std::endl;
         outputWriterParaviewParallel_->writeFile(currentTime);
