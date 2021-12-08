@@ -96,7 +96,7 @@ void ComputationParallel::runSimulation()
         // step 9: write output
         if (std::floor(currentTime) == currentTime || currentTime == settings_.endTime) // TODO
         {
-        //std::cout << "Writing output..." << std::endl;
+            std::cout << "Writing output..." << std::endl;
             outputWriterParaviewParallel_->writeFile(currentTime);
             outputWriterTextParallel_->writeFile(currentTime);
         }
@@ -178,7 +178,7 @@ void ComputationParallel::computeTimeStepWidthParallel(double currentTime)
     MPI_Allreduce(&dt_local, &dt_global, 1, MPI_DOUBLE, MPI_MIN, MPI_COMM_WORLD);
 
     // if necessary adapt so that every full second is reached
-    if (std::floor(currentTime + dt_global) == std::floor(currentTime) + 1)
+    if (std::floor(currentTime + dt_global*1.25) == std::floor(currentTime) + 1) // increase dt_global to avoid numerically instable small time steps
     {
         //std::cout << "Adapting time step to reach full second..." << std::endl;
         dt_global = (double)(std::floor(currentTime) + 1) - currentTime; // currentTime hits exactly next second
