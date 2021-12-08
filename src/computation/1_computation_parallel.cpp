@@ -96,7 +96,7 @@ void ComputationParallel::runSimulation()
         // step 9: write output
         if (std::floor(currentTime) == currentTime || currentTime == settings_.endTime) // TODO
         {
-            std::cout << "Writing output..." << std::endl;
+            //std::cout << "Writing output..." << std::endl;
             outputWriterParaviewParallel_->writeFile(currentTime);
             outputWriterTextParallel_->writeFile(currentTime);
         }
@@ -451,15 +451,15 @@ void ComputationParallel::uvExchangeVertical()
         else
         {
             // u
-            // send u_-1, receive u_0
+            // send u_0, receive u_-1
             exchange(partitioning_->ownBottomNeighbour(),
-                     -1, 0, 
+                     0, -1, 
                      'y', 'u', true);
 
             // v
-            // send v-2, receive v_0
+            // send v_0, receive v_-2
             exchange(partitioning_->ownBottomNeighbour(),
-                     -2, 0, 
+                     0, -2, 
                      'y', 'v', true);
         }
     }
@@ -493,15 +493,15 @@ void ComputationParallel::uvExchangeVertical()
         else
         {
             // u
-            // receive u_n-1, send u_n
+            // receive u_n, send u_n-1
             exchange(partitioning_->ownTopNeighbour(),
-                     discretization_->nCells()[1], discretization_->nCells()[1] - 1,
+                     discretization_->nCells()[1]-1, discretization_->nCells()[1],
                      'y', 'u', false);
 
             // v
-            // receive v_n-2, send v_n
+            // receive v_n, send v_n-2
             exchange(partitioning_->ownTopNeighbour(),
-                     discretization_->nCells()[1], discretization_->nCells()[1] - 2,
+                     discretization_->nCells()[1]-2, discretization_->nCells()[1],
                      'y', 'v', false);
         }
     }
