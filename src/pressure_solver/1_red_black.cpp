@@ -45,7 +45,7 @@ double RedBlack::calculateResidual()
     return res_global;
 }
 
-/*
+
 void RedBlack::solve()
 {
     // cell size
@@ -133,15 +133,15 @@ void RedBlack::solve()
         
     }
 
-    std::cout << "RedBlack: " << iteration << " with a residuum of " << res << " from target " << std::pow(epsilon_,2) << std::endl;
+    //std::cout << "RedBlack: " << iteration << " with a residuum of " << res << " from target " << std::pow(epsilon_,2) << std::endl;
 }
-*/
+
 
 
 
 // for testing of boundary, communications and red black pattern
 
-
+/*
 void RedBlack::solve()  // communicationTest
 {
         // Black Solver
@@ -171,7 +171,7 @@ void RedBlack::solve()  // communicationTest
         pExchangeVertical();
     
 } 
-
+*/
 
 void RedBlack::pExchangeHorizontal()
 {

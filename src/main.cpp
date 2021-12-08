@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
   std::cout << "Starting parallel simulation ..."  << std::endl;
   std::cout << std::endl;
   
-  // // start simulating
+  // start simulating
   computation.runSimulation();
 
   // or test the communications, boundaries ect. 
@@ -43,9 +43,6 @@ int main(int argc, char *argv[])
   MPI_Finalize();
   std::cout << "-----------------------------" << std::endl;
   std::cout << "Finalized MPI" << std::endl;
-
-  // test some stuff
-  //computation.runTest();
 
   std::cout << "-------------------------------------------------" << std::endl;
   
