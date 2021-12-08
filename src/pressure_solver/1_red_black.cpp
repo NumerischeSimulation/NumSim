@@ -45,6 +45,7 @@ double RedBlack::calculateResidual()
     return res_global;
 }
 
+/*
 void RedBlack::solve()
 {
     // cell size
@@ -129,16 +130,18 @@ void RedBlack::solve()
 
         res = calculateResidual();
 
-        //std::cout << "RedBlack: " << iteration << " with a residuum of " << res << " from target " << std::pow(epsilon_,2) << std::endl;
+        
     }
-}
 
+    std::cout << "RedBlack: " << iteration << " with a residuum of " << res << " from target " << std::pow(epsilon_,2) << std::endl;
+}
+*/
 
 
 
 // for testing of boundary, communications and red black pattern
 
-/*
+
 void RedBlack::solve()  // communicationTest
 {
         // Black Solver
@@ -150,14 +153,14 @@ void RedBlack::solve()  // communicationTest
             {
                 for (int i = 0; i < discretization_->nCells()[0]; i = i + 2)
                 {
-                    discretization_->p(i, j) = 100 + partitioning_->ownRankNo();
+                    discretization_->p(i, j) = partitioning_->ownRankNo()+1;
                 }
             }
             else
             {
                 for (int i = 1; i < discretization_->nCells()[0]; i = i + 2)
                 {
-                    discretization_->p(i, j) = 300 + partitioning_->ownRankNo();
+                    discretization_->p(i, j) = partitioning_->ownRankNo()+1;
                 }
             }
         }
@@ -168,7 +171,7 @@ void RedBlack::solve()  // communicationTest
         pExchangeVertical();
     
 } 
-*/
+
 
 void RedBlack::pExchangeHorizontal()
 {
@@ -236,7 +239,7 @@ void RedBlack::pExchangeVertical()
     //std::cout << "pExchangeVertical" << std::endl;  
 
     // the even row processes: send top, receive top, send bottom, receive bottom
-    if ((partitioning_->ownRankCoordinate()[1] % 2) == 0)
+    if ((partitioning_->ownRankCoordinate()[1] % 2) == 1)
     {
         // top
         if (partitioning_->ownPartitionContainsTopBoundary())
@@ -257,14 +260,14 @@ void RedBlack::pExchangeVertical()
         } else
         {
             // p
-            // send p_-1, receive p_0
+            // send p_0, receive p_-1
             exchange(partitioning_->ownBottomNeighbour(), 
-                     -1, 0, 
+                     0, -1, 
                      'y', true);
         }
     }
     // the uneven row processes: receive bottom, send bottom, receive top, send top, 
-    if ((partitioning_->ownRankCoordinate()[1] % 2) == 1)
+    if ((partitioning_->ownRankCoordinate()[1] % 2) == 0)
     {
         // bottom
         if (partitioning_->ownPartitionContainsBottomBoundary())
@@ -285,9 +288,9 @@ void RedBlack::pExchangeVertical()
         } else 
         {
             // p
-            // receive p_n-1, send p_n
+            // receive p_n, send p_n-1
             exchange(partitioning_->ownTopNeighbour(), 
-                     discretization_->nCells()[1], discretization_->nCells()[1] -1, 
+                     discretization_->nCells()[1]-1, discretization_->nCells()[1], 
                      'y', false);
         }
     }
@@ -334,7 +337,7 @@ void RedBlack::exchange(int rankCorrespondent, int indexToSend, int indexFromRec
     }
 
     // send-receive or receive-send depending on the direction
-    std::vector<double> otherGhostFrom(nValuesCommunication, 0);
+    std::vector<double> otherGhostFrom(nValuesCommunication, 7);
     if (ToFrom)
     {
         // send
