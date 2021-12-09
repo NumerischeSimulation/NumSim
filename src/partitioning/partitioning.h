@@ -48,6 +48,17 @@ class Partitioning
         //! returns partition neighbours
         std::array<int, 4> ownPartitionNeighbours();
 
+        //! all the variables for profiling
+        double DURATION_COMPUTATION;
+
+        double DURATION_COMMUNICATION; // done
+
+        double DURATION_RESIDUAL_NORM; // done
+
+        double DURATION_TIME_STEP; // done
+
+        double DURATION_TOTAL; // done
+
     protected:
 
         //! global node offset of lower left cell
