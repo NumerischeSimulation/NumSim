@@ -401,7 +401,6 @@ void RedBlack::exchange(int rankCorrespondent, int indexToSend, int indexFromRec
             discretization_->p(i, indexFromReceive) = otherGhostFrom[i+offset];
         }
     }
-
     // profiling sum
     partitioning_->DURATION_COMMUNICATION += MPI_Wtime() - START_TIME;
 
