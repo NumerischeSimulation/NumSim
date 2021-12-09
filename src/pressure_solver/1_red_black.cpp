@@ -34,7 +34,6 @@ double RedBlack::calculateResidual()
     }
 
     //calculate residual
-    res_local = res_local/(discretization_->nCells()[0] * discretization_->nCells()[1]);
     double res_global;
     MPI_Allreduce(&res_local, &res_global, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
 
