@@ -26,4 +26,5 @@ module load cmake/3.18.2
 export CPATH=/scratch-nfs/maierbn/openmpi/install-3.1/include
 export PATH=/scratch-nfs/maierbn/openmpi/install-3.1/bin:$PATH
 
+cd build
 srun -n $1 ./numsim_parallel ../ini/lid_driven_cavity.txt
