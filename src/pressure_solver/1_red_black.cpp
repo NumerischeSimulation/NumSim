@@ -9,7 +9,7 @@ RedBlack::RedBlack(std::shared_ptr<Discretization> discretization, double epsilo
 double RedBlack::calculateResidual()
 {
     // profiling start
-    double START_TIME = MPI_Wtime();
+    double START_TIME_RES = MPI_Wtime();
 
     //std::cout << "Calculating Residual " << " (" << partitioning_->ownRankNo() << ")" << std::endl;
 
@@ -37,14 +37,21 @@ double RedBlack::calculateResidual()
 
     //calculate residual
     double res_global;
+
+    // profiling start
+    double START_TIME = MPI_Wtime();
+
     MPI_Allreduce(&res_local, &res_global, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+
+    // profiling sum
+    partitioning_->DURATION_COMMUNICATION_REDUCE += MPI_Wtime() - START_TIME;
 
     res_global = res_global/(partitioning_->nCellsGlobal()[0] *partitioning_->nCellsGlobal()[1]);
 
     // std::cout << "The global residual is: " << res_global << " and the local " << res_local << " (" << partitioning_->ownRankNo() << ")" << std::endl;
   
     // profiling sum
-    partitioning_->DURATION_RESIDUAL_NORM += MPI_Wtime() - START_TIME;
+    partitioning_->DURATION_RESIDUAL_NORM += MPI_Wtime() - START_TIME_RES;
 
     return res_global;
 }
@@ -402,6 +409,6 @@ void RedBlack::exchange(int rankCorrespondent, int indexToSend, int indexFromRec
         }
     }
     // profiling sum
-    partitioning_->DURATION_COMMUNICATION += MPI_Wtime() - START_TIME;
+    partitioning_->DURATION_COMMUNICATION_EXCHANGE += MPI_Wtime() - START_TIME;
 
 }

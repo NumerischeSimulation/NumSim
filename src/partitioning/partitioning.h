@@ -51,13 +51,16 @@ class Partitioning
         //! all the variables for profiling
         double DURATION_COMPUTATION;
 
-        double DURATION_COMMUNICATION; // done
+        double DURATION_COMMUNICATION_REDUCE;
+        double DURATION_COMMUNICATION_EXCHANGE;
 
-        double DURATION_RESIDUAL_NORM; // done
+        double DURATION_RESIDUAL_NORM;
 
-        double DURATION_TIME_STEP; // done
+        double DURATION_TIME_STEP;
 
-        double DURATION_TOTAL; // done
+        double DURATION_OUTPUT;
+
+        double DURATION_TOTAL;
 
     protected:
 
