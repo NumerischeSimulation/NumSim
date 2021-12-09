@@ -111,6 +111,14 @@ void Partitioning::factorizeSubdomains() {
     nSubdomains_[1] = m_opt;
     
     std::cout << "Computed optimal partition in subdomains: " << nSubdomains_[0] << ", " << nSubdomains_[1]  << " with comm. costs " << cost_opt << "(" << ownRankNo_ << ")" << std::endl;
+
+    // profiling
+    DURATION_COMPUTATION = 0;
+    DURATION_COMMUNICATION = 0;
+    DURATION_RESIDUAL_NORM = 0;
+    DURATION_TIME_STEP = 0;
+    DURATION_TOTAL = 0;
+
 }
 
 std::array<int, 2> Partitioning::nodeOffset() {

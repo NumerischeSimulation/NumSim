@@ -58,6 +58,9 @@ void ComputationParallel::runSimulation()
     //std::cout << "Starting at time: " << currentTime << " (" << partitioning_->ownRankNo() << ")" << std::endl;
     //std::cout << "+++++++++++++++++++++++" << std::endl;
 
+    // profiling start
+    double TOTAL_START_TIME = MPI_Wtime();
+
     // the steps correspond to the steps in our algorithm in the overleaf or docs/numsim-algos.tex
     while (currentTime < settings_.endTime)
     {
@@ -67,14 +70,24 @@ void ComputationParallel::runSimulation()
         //std::cout << "Applying boundary values for u/v and F/G..." << " (" << partitioning_->ownRankNo() << ")" << ":" << MPI_Wtime() << std::endl;
         applyBoundaryValues();
 
+        // profiling start
+        double START_TIME = MPI_Wtime();
+
         // step 2: compute time step width
         computeTimeStepWidthParallel(currentTime);
+
+        // profiling sum
+        partitioning_->DURATION_TIME_STEP += MPI_Wtime() - START_TIME;
 
         currentTime += dt_;
 
         //std::cout << "+++++++++++++++++++++++" << std::endl;
         //std::cout << "current Time: " << currentTime << " (" << partitioning_->ownRankNo() << ")" << ":" << MPI_Wtime()<< std::endl;
         //std::cout << "+++++++++++++++++++++++" << std::endl;
+
+        // // profiling start
+        // double COMMUNICATION_SUM = partitioning_->DURATION_COMMUNICATION;
+        // double START_TIME = MPI_Wtime();
 
         // step 4: calculate F, G with first setting the boundary conditions of F, G (step 1)
         //std::cout << "Computing preliminary velocities ..." << " (" << partitioning_->ownRankNo() << ")"<< ":" << MPI_Wtime() << std::endl;
@@ -92,6 +105,9 @@ void ComputationParallel::runSimulation()
         //std::cout << "Computing velocities..." << " (" << partitioning_->ownRankNo() << ")"<< ":" << MPI_Wtime() << std::endl;
         computeVelocities();
 
+        // // profiling sum
+        // double COMMUNICATION_DELTA = partitioning_->DURATION_COMMUNICATION - COMMUNICATION_SUM;
+        // partitioning_->DURATION_COMPUTATION += MPI_Wtime() - START_TIME - COMMUNICATION_DELTA;
 
         // step 9: write output
         if (std::floor(currentTime) == currentTime || currentTime == settings_.endTime) // TODO
@@ -104,6 +120,20 @@ void ComputationParallel::runSimulation()
 
     // end the MPI-session
     //std::cout << "Finished simulations! Ready to finalize MPI... " << " (" << partitioning_->ownRankNo() << ")" << ":" << MPI_Wtime() << std::endl;
+    
+    // profiling 
+    partitioning_->DURATION_TOTAL += MPI_Wtime() - TOTAL_START_TIME;
+
+    if (partitioning_->ownRankNo() == 0){
+        std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
+        std::cout << "Duration of the computation: " << partitioning_->DURATION_TOTAL - partitioning_->DURATION_COMMUNICATION << std::endl;
+        std::cout << "Duration of the communication: " << partitioning_->DURATION_COMMUNICATION << std::endl;
+        std::cout << "Duration of the residual norm: " << partitioning_->DURATION_RESIDUAL_NORM << std::endl;
+        std::cout << "Duration of the time step: " << partitioning_->DURATION_TIME_STEP << std::endl;
+        std::cout << "Duration of the total duration: " << partitioning_->DURATION_TOTAL << std::endl;
+        std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
+    }
+
     return;
 }
 
@@ -509,6 +539,9 @@ void ComputationParallel::uvExchangeVertical()
 
 void ComputationParallel::exchange(int rankCorrespondent, int indexToSend, int indexFromReceive, char direction, char variable, bool ToFrom)
 {
+    // profiling start
+    double START_TIME = MPI_Wtime();
+
     int ownRankNo = 0;
     MPI_Comm_rank(MPI_COMM_WORLD, &ownRankNo);
    // std::cout << "Exchanges " << ownRankNo << " to " << rankCorrespondent << " with data slices " << indexToSend << " to " << indexFromReceive << " " << std::endl
@@ -691,4 +724,8 @@ void ComputationParallel::exchange(int rankCorrespondent, int indexToSend, int i
             throw;
         }
     }
+
+    // profiling sum
+    partitioning_->DURATION_COMMUNICATION += MPI_Wtime() - START_TIME;
+
 }
