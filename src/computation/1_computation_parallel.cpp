@@ -109,6 +109,9 @@ void ComputationParallel::runSimulation()
         // double COMMUNICATION_DELTA = partitioning_->DURATION_COMMUNICATION - COMMUNICATION_SUM;
         // partitioning_->DURATION_COMPUTATION += MPI_Wtime() - START_TIME - COMMUNICATION_DELTA;
 
+        // profiling start
+        START_TIME = MPI_Wtime();
+
         // step 9: write output
         if (std::floor(currentTime) == currentTime || currentTime == settings_.endTime) // TODO
         {
@@ -116,6 +119,9 @@ void ComputationParallel::runSimulation()
             outputWriterParaviewParallel_->writeFile(currentTime);
             outputWriterTextParallel_->writeFile(currentTime);
         }
+
+        // profiling sum
+        partitioning_->DURATION_OUTPUT += MPI_Wtime() - START_TIME;
     }
 
     // end the MPI-session
@@ -123,14 +129,17 @@ void ComputationParallel::runSimulation()
     
     // profiling 
     partitioning_->DURATION_TOTAL += MPI_Wtime() - TOTAL_START_TIME;
+    double communication_time = partitioning_->DURATION_COMMUNICATION_REDUCE + partitioning_->DURATION_COMMUNICATION_EXCHANGE;
 
     if (partitioning_->ownRankNo() == 0){
         std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
-        std::cout << "Duration of the computation: " << partitioning_->DURATION_TOTAL - partitioning_->DURATION_COMMUNICATION << std::endl;
-        std::cout << "Duration of the communication: " << partitioning_->DURATION_COMMUNICATION << std::endl;
-        std::cout << "Duration of the residual norm: " << partitioning_->DURATION_RESIDUAL_NORM << std::endl;
-        std::cout << "Duration of the time step: " << partitioning_->DURATION_TIME_STEP << std::endl;
-        std::cout << "Duration of the total duration: " << partitioning_->DURATION_TOTAL << std::endl;
+        std::cout << "Duration of the computation: " << partitioning_->DURATION_TOTAL - communication_time - partitioning_->DURATION_OUTPUT << std::endl;
+        std::cout << "Duration of the total communication: " << communication_time << " with the exchange " << std::endl
+                  << partitioning_->DURATION_COMMUNICATION_EXCHANGE  << " and the reduce " << partitioning_->DURATION_COMMUNICATION_REDUCE << std::endl;
+        std::cout << "Duration of the residual norm calculation: " << partitioning_->DURATION_RESIDUAL_NORM << std::endl;
+        std::cout << "Duration of the time step calculation: " << partitioning_->DURATION_TIME_STEP << std::endl;
+        std::cout << "Duration of the total run: " << partitioning_->DURATION_TOTAL << std::endl;
+        std::cout << "Duration of the outputting: " << partitioning_->DURATION_OUTPUT << std::endl;
         std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
     }
 
@@ -205,7 +214,14 @@ void ComputationParallel::computeTimeStepWidthParallel(double currentTime)
     // use the minimum as global timestep
     double dt_global;
     double dt_local = dt_;
+
+    // profiling start
+    double START_TIME = MPI_Wtime();
+
     MPI_Allreduce(&dt_local, &dt_global, 1, MPI_DOUBLE, MPI_MIN, MPI_COMM_WORLD);
+
+    // profiling sum
+    partitioning_->DURATION_COMMUNICATION_REDUCE += MPI_Wtime() - START_TIME;
 
     // if necessary adapt so that every full second is reached
     if (std::floor(currentTime + dt_global*1.25) == std::floor(currentTime) + 1) // increase dt_global to avoid numerically instable small time steps
@@ -726,6 +742,6 @@ void ComputationParallel::exchange(int rankCorrespondent, int indexToSend, int i
     }
 
     // profiling sum
-    partitioning_->DURATION_COMMUNICATION += MPI_Wtime() - START_TIME;
+    partitioning_->DURATION_COMMUNICATION_EXCHANGE += MPI_Wtime() - START_TIME;
 
 }
